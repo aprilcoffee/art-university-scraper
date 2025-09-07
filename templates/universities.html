@@ -27,7 +27,7 @@
         <div class="card stat-card text-center">
             <div class="card-body">
                 <i class="fas fa-globe fa-2x text-primary mb-2"></i>
-                <h4>{{ universities|length }}</h4>
+                <h4>{{ universities_by_country.values()|map('length')|sum }}</h4>
                 <p class="mb-0">Total Universities</p>
             </div>
         </div>
@@ -35,17 +35,17 @@
     <div class="col-md-3 mb-3">
         <div class="card stat-card text-center">
             <div class="card-body">
-                <i class="fas fa-flag me-2"></i>
-                <h4>{{ universities|selectattr('country', 'equalto', 'Germany')|list|length }}</h4>
-                <p class="mb-0">German Universities</p>
+                <i class="fas fa-flag fa-2x text-success mb-2"></i>
+                <h4>{{ universities_by_country.germany|length }}</h4>
+                <p class="mb-0">🇩🇪 German Universities</p>
             </div>
         </div>
     </div>
     <div class="col-md-3 mb-3">
         <div class="card stat-card text-center">
             <div class="card-body">
-                <i class="fas fa-graduation-cap fa-2x text-success mb-2"></i>
-                <h4>{{ universities|selectattr('has_phd', 'equalto', true)|list|length }}</h4>
+                <i class="fas fa-graduation-cap fa-2x text-warning mb-2"></i>
+                <h4>{{ universities_by_country.values()|map('selectattr', 'has_phd', 'equalto', true)|map('list')|map('length')|sum }}</h4>
                 <p class="mb-0">PhD Programs</p>
             </div>
         </div>
@@ -53,9 +53,9 @@
     <div class="col-md-3 mb-3">
         <div class="card stat-card text-center">
             <div class="card-body">
-                <i class="fas fa-map-marker-alt fa-2x text-warning mb-2"></i>
-                <h4>{{ universities|map(attribute='city')|unique|list|length }}</h4>
-                <p class="mb-0">Cities</p>
+                <i class="fas fa-map-marker-alt fa-2x text-info mb-2"></i>
+                <h4>{{ universities_by_country.keys()|list|length }}</h4>
+                <p class="mb-0">Countries/Regions</p>
             </div>
         </div>
     </div>
@@ -100,8 +100,25 @@
     </div>
 </div>
 
-<!-- Universities Grid -->
-<div class="row" id="universitiesContainer">
+<!-- Universities by Country -->
+{% for country_key, universities in universities_by_country.items() %}
+<div class="row mb-5">
+    <div class="col-12">
+        <h3 class="mb-3">
+                   {% if country_key == 'germany' %}
+                       German Universities ({{ universities|length }})
+                   {% elif country_key == 'german_speaking' %}
+                       German-Speaking Countries ({{ universities|length }})
+                   {% elif country_key == 'eu_other' %}
+                       Other EU Countries ({{ universities|length }})
+                   {% elif country_key == 'others' %}
+                       Other Countries ({{ universities|length }})
+                   {% endif %}
+        </h3>
+    </div>
+</div>
+
+<div class="row mb-5">
     {% for university in universities %}
     <div class="col-md-6 col-lg-4 mb-4 university-card" data-university='{{ university|tojson }}'>
         <div class="card h-100">
@@ -151,6 +168,7 @@
     </div>
     {% endfor %}
 </div>
+{% endfor %}
 
 <!-- University Details Modal -->
 <div class="modal fade" id="universityModal" tabindex="-1">

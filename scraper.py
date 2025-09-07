@@ -18,7 +18,7 @@ from selenium.common.exceptions import TimeoutException, WebDriverException
 from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.chrome.service import Service
 
-from config import UNIVERSITIES, INTERNATIONAL_UNIVERSITIES, SEARCH_TERMS, SCRAPING_CONFIG
+from config import UNIVERSITIES_BY_COUNTRY, UNIVERSITIES, SEARCH_TERMS, SCRAPING_CONFIG
 from database import DatabaseManager
 
 logging.basicConfig(level=logging.INFO)
@@ -146,31 +146,130 @@ class ArtUniversityScraper:
         # Enhanced language detection
         language = self._detect_language(text_content)
         
-        # Search for different types of positions - now including artistic research and academic positions
-        search_categories = ['media_art', 'digital_art', 'ai_art', 'artistic_research_phd', 'academic_positions', 'phd', 'jobs']
+        # Search for PhD programs and job offers separately
+        phd_positions = self._extract_phd_programs(soup, text_content, language, university_name, url)
+        job_positions = self._extract_job_offers(soup, text_content, language, university_name, url)
         
-        for category in search_categories:
-            terms = SEARCH_TERMS[language][category]
+        # Also search for general job opportunities
+        general_job_positions = self._extract_general_job_opportunities_from_page(soup, text_content, language, university_name, url)
+        
+        positions.extend(phd_positions)
+        positions.extend(job_positions)
+        positions.extend(general_job_positions)
+        
+        return positions
+    
+    def _extract_phd_programs(self, soup: BeautifulSoup, text_content: str, language: str, university_name: str, url: str) -> List[Dict]:
+        """Extract PhD program information"""
+        positions = []
+        
+        # Search through PhD program categories
+        for category, terms in SEARCH_TERMS[language]['phd_programs'].items():
             found_terms = self.search_for_terms(text_content, terms)
             
             if found_terms:
-                # Try to extract position titles and descriptions
-                position_info = self._extract_position_details(soup, found_terms, category)
+                position_info = self._extract_position_details(soup, found_terms, category, 'phd')
                 
                 for info in position_info:
+                    # Get the specific PhD program URL if available
+                    phd_url = info.get('url', url)
+                    if not phd_url or phd_url == url:
+                        phd_url = self._find_phd_program_url(soup, university_name, url)
+                    
+                    # Extract additional details
+                    department = self._extract_department(soup, text_content, language)
+                    position_level = self._classify_academic_position(
+                        info.get('title', ''), info.get('description', ''), language
+                    )
+                    employment_details = self._extract_employment_details(soup, text_content, language)
+                    
+                    position = {
+                        'university': university_name,
+                        'position_type': category,
+                        'title': info.get('title', f"{category.replace('_', ' ').title()} PhD Program"),
+                        'description': info.get('description', ''),
+                        'url': phd_url,
+                        'language': language,
+                        'date_found': time.strftime('%Y-%m-%d'),
+                        'status': 'active',
+                        'position_category': 'phd_program',
+                        'department': department,
+                        'position_level': position_level,
+                        'employment_details': employment_details
+                    }
+                    positions.append(position)
+        
+        return positions
+    
+    def _extract_job_offers(self, soup: BeautifulSoup, text_content: str, language: str, university_name: str, url: str) -> List[Dict]:
+        """Extract job offer information"""
+        positions = []
+        
+        # Search through job offer categories
+        for category, terms in SEARCH_TERMS[language]['job_offers'].items():
+            found_terms = self.search_for_terms(text_content, terms)
+            
+            if found_terms:
+                position_info = self._extract_position_details(soup, found_terms, category, 'job')
+                
+                for info in position_info:
+                    # Get the specific job posting URL if available
+                    job_url = info.get('url', url)
+                    if not job_url or job_url == url:
+                        job_url = self._find_job_posting_url(soup, university_name, url)
+                    
+                    # Extract additional details
+                    department = self._extract_department(soup, text_content, language)
+                    position_level = self._classify_academic_position(
+                        info.get('title', ''), info.get('description', ''), language
+                    )
+                    employment_details = self._extract_employment_details(soup, text_content, language)
+                    
                     position = {
                         'university': university_name,
                         'position_type': category,
                         'title': info.get('title', f"{category.replace('_', ' ').title()} Position"),
                         'description': info.get('description', ''),
-                        'url': url,
+                        'url': job_url,
                         'language': language,
                         'date_found': time.strftime('%Y-%m-%d'),
-                        'status': 'active'
+                        'status': 'active',
+                        'position_category': 'job_offer',
+                        'department': department,
+                        'position_level': position_level,
+                        'employment_details': employment_details
                     }
                     positions.append(position)
         
         return positions
+    
+    def _extract_general_job_opportunities_from_page(self, soup: BeautifulSoup, text_content: str, language: str, university_name: str, url: str) -> List[Dict]:
+        """Extract general job opportunities from the entire page"""
+        positions = []
+        
+        # Search through general job terms
+        general_job_terms = SEARCH_TERMS[language]['job_offers']['general_jobs']
+        found_terms = self.search_for_terms(text_content, general_job_terms)
+        
+        if found_terms:
+            # Look for general job opportunities in the page
+            general_jobs = self._extract_general_job_opportunities(soup, found_terms, url)
+            
+            for job_info in general_jobs:
+                position = {
+                    'university': university_name,
+                    'position_type': 'general_jobs',
+                    'title': job_info.get('title', 'General Job Opportunity'),
+                    'description': job_info.get('description', ''),
+                    'url': url,
+                    'language': language,
+                    'date_found': time.strftime('%Y-%m-%d'),
+                    'status': 'active',
+                    'position_category': 'job_offer'
+                }
+                positions.append(position)
+        
+        return positions[:5]  # Limit to 5 general job opportunities per page
     
     def _detect_language(self, text_content: str) -> str:
         """Enhanced language detection"""
@@ -204,35 +303,14 @@ class ArtUniversityScraper:
             # Mixed content - try to determine primary language
             return 'german' if german_count >= english_count else 'english'
     
-    def _extract_position_details(self, soup: BeautifulSoup, found_terms: List[str], category: str) -> List[Dict]:
-        """Extract detailed position information"""
+    def _extract_position_details(self, soup: BeautifulSoup, found_terms: List[str], category: str, position_type: str) -> List[Dict]:
+        """Extract detailed position information with improved title extraction"""
         positions = []
         
-        # Look for headings that might contain position titles
-        headings = soup.find_all(['h1', 'h2', 'h3', 'h4', 'h5', 'h6'])
-        
-        for heading in headings:
-            heading_text = heading.get_text().strip()
-            
-            # Check if heading contains any of the found terms
-            if any(term.lower() in heading_text.lower() for term in found_terms):
-                # Try to find description in nearby content
-                description = self._find_description_near_heading(heading)
-                
-                positions.append({
-                    'title': heading_text,
-                    'description': description
-                })
-        
-        # Look for specific academic position patterns
-        if category in ['academic_positions', 'artistic_research_phd']:
-            academic_positions = self._extract_academic_positions(soup, found_terms)
-            positions.extend(academic_positions)
-        
-        # Look for job posting patterns
-        if category == 'jobs':
-            job_positions = self._extract_job_postings(soup, found_terms)
-            positions.extend(job_positions)
+        if position_type == 'phd':
+            positions = self._extract_phd_details(soup, found_terms, category)
+        elif position_type == 'job':
+            positions = self._extract_job_details(soup, found_terms, category)
         
         # If no specific positions found, create generic position
         if not positions:
@@ -242,6 +320,558 @@ class ArtUniversityScraper:
             })
         
         return positions
+    
+    def _extract_phd_details(self, soup: BeautifulSoup, found_terms: List[str], category: str) -> List[Dict]:
+        """Extract PhD program details"""
+        positions = []
+        
+        # Look for PhD-specific headings and content
+        headings = soup.find_all(['h1', 'h2', 'h3', 'h4', 'h5', 'h6'])
+        
+        for heading in headings:
+            heading_text = heading.get_text().strip()
+            
+            # Check if heading contains PhD-related terms
+            if any(term.lower() in heading_text.lower() for term in found_terms):
+                description = self._find_description_near_heading(heading)
+                
+                # Clean up the title to be more concise
+                clean_title = self._clean_phd_title(heading_text)
+                
+                positions.append({
+                    'title': clean_title,
+                    'description': description
+                })
+        
+        return positions[:3]  # Limit to 3 PhD programs per page
+    
+    def _extract_job_details(self, soup: BeautifulSoup, found_terms: List[str], category: str) -> List[Dict]:
+        """Extract job offer details with improved title extraction"""
+        positions = []
+        
+        # Look for job posting patterns with art/academic-focused search terms
+        job_elements = soup.find_all(['div', 'section', 'article', 'li'], 
+                                   class_=lambda x: x and any(word in x.lower() for word in 
+                                                           ['job', 'position', 'stelle', 'ausschreibung', 'bewerbung', 'mitarbeiter',
+                                                            'vacancy', 'employment', 'career', 'coordinator', 'manager', 'director',
+                                                            'specialist', 'curator', 'educator', 'freelance', 'contract', 'temporary']))
+        
+        for element in job_elements:
+            element_text = element.get_text().strip()
+            
+            # Skip inactive job postings
+            if self._is_inactive_job_posting(element_text):
+                continue
+            
+            if any(term.lower() in element_text.lower() for term in found_terms):
+                # Try to extract a clean job title
+                job_title = self._extract_job_title(element, found_terms)
+                
+                if job_title:
+                    # Try to find the specific job posting URL
+                    job_url = self._find_specific_job_url(element, url)
+                    
+                    positions.append({
+                        'title': job_title,
+                        'description': self._clean_job_description(element_text),
+                        'url': job_url
+                    })
+        
+        # Also look in headings for job titles
+        headings = soup.find_all(['h1', 'h2', 'h3', 'h4', 'h5', 'h6'])
+        
+        for heading in headings:
+            heading_text = heading.get_text().strip()
+            
+            # Skip inactive job postings
+            if self._is_inactive_job_posting(heading_text):
+                continue
+            
+            if any(term.lower() in heading_text.lower() for term in found_terms):
+                # Check if this looks like a job title
+                if self._is_job_title(heading_text, found_terms):
+                    description = self._find_description_near_heading(heading)
+                    
+                    # Try to find the specific job posting URL
+                    job_url = self._find_specific_job_url(heading, url)
+                    
+                    positions.append({
+                        'title': self._clean_job_title(heading_text),
+                        'description': description,
+                        'url': job_url
+                    })
+        
+        # Also look for general job opportunities in broader contexts
+        general_jobs = self._extract_general_job_opportunities(soup, found_terms, url)
+        positions.extend(general_jobs)
+        
+        return positions[:8]  # Limit to 8 job positions per page (increased for better coverage)
+    
+    def _is_inactive_job_posting(self, text: str) -> bool:
+        """Check if this is an inactive job posting"""
+        inactive_indicators = [
+            'aktuelle stellenausschreibungen',
+            'current job postings',
+            'archiv',
+            'archive',
+            'abgeschlossen',
+            'completed',
+            'beendet',
+            'ended',
+            'vergangen',
+            'past',
+            'nicht mehr aktiv',
+            'no longer active',
+            'ausgelaufen',
+            'expired',
+            'bewerbungsfrist abgelaufen',
+            'application deadline passed'
+        ]
+        
+        text_lower = text.lower()
+        return any(indicator in text_lower for indicator in inactive_indicators)
+    
+    def _extract_general_job_opportunities(self, soup: BeautifulSoup, found_terms: List[str], current_url: str) -> List[Dict]:
+        """Extract general job opportunities from broader page content"""
+        positions = []
+        
+        # Look for job-related sections and pages (art/academic focused)
+        job_sections = soup.find_all(['section', 'div', 'article'], 
+                                   class_=lambda x: x and any(word in x.lower() for word in 
+                                                           ['karriere', 'career', 'jobs', 'stellen', 'positions',
+                                                            'mitarbeiter', 'bewerbung', 'application', 'ausschreibung', 'vacancy',
+                                                            'kunst', 'art', 'forschung', 'research', 'lehre', 'teaching']))
+        
+        for section in job_sections:
+            section_text = section.get_text().strip()
+            
+            # Skip inactive sections
+            if self._is_inactive_job_posting(section_text):
+                continue
+            
+            # Look for job listings within the section
+            job_listings = section.find_all(['li', 'div', 'p'], 
+                                         string=lambda text: text and any(term.lower() in text.lower() for term in found_terms))
+            
+            for listing in job_listings:
+                listing_text = listing.get_text().strip()
+                
+                if any(term.lower() in listing_text.lower() for term in found_terms):
+                    # Try to extract job title from the listing
+                    job_title = self._extract_job_title_from_listing(listing)
+                    
+                    if job_title:
+                        # Try to find the specific job URL
+                        job_url = self._find_specific_job_url(listing, url)
+                        
+                        positions.append({
+                            'title': job_title,
+                            'description': self._clean_job_description(listing_text),
+                            'url': job_url
+                        })
+        
+        # Look for job-related links (art/academic focused)
+        job_links = soup.find_all('a', href=lambda x: x and any(word in x.lower() for word in 
+                                                             ['karriere', 'career', 'jobs', 'stellen', 'positions',
+                                                              'mitarbeiter', 'bewerbung', 'application', 'kunst', 'art',
+                                                              'forschung', 'research', 'lehre', 'teaching']))
+        
+        for link in job_links:
+            link_text = link.get_text().strip()
+            
+            if any(term.lower() in link_text.lower() for term in found_terms):
+                # Get the full URL for the job link
+                job_url = self._make_full_url(link.get('href', ''), url)
+                
+                positions.append({
+                    'title': self._clean_job_title(link_text),
+                    'description': f"Job opportunity link: {job_url}",
+                    'url': job_url
+                })
+        
+        return positions[:3]  # Limit to 3 additional general job opportunities
+    
+    def _extract_job_title_from_listing(self, listing_element) -> str:
+        """Extract job title from a job listing element"""
+        # Look for the most prominent text in the listing
+        title_element = listing_element.find(['strong', 'b', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6'])
+        
+        if title_element:
+            title_text = title_element.get_text().strip()
+            if self._is_job_title(title_text, []):
+                return self._clean_job_title(title_text)
+        
+        # If no title element found, use the first line of the listing
+        listing_text = listing_element.get_text().strip()
+        first_line = listing_text.split('\n')[0].strip()
+        
+        if len(first_line) < 100 and self._is_job_title(first_line, []):
+            return self._clean_job_title(first_line)
+        
+        return None
+    
+    def _find_phd_program_url(self, soup: BeautifulSoup, university_name: str, current_url: str) -> str:
+        """Find the specific PhD program URL"""
+        # Look for PhD-related links
+        phd_links = soup.find_all('a', href=True)
+        
+        for link in phd_links:
+            href = link.get('href', '').lower()
+            link_text = link.get_text().lower()
+            
+            # Check for PhD-related keywords in URL or text
+            phd_keywords = [
+                'phd', 'promotion', 'doktorand', 'doktorat', 'graduate', 'graduiertenschule',
+                'doktorandenprogramm', 'promotionsprogramm', 'research', 'forschung'
+            ]
+            
+            if any(keyword in href or keyword in link_text for keyword in phd_keywords):
+                # Make sure it's a full URL
+                full_url = self._make_full_url(href, current_url)
+                if full_url:
+                    return full_url
+        
+        # Look for PhD program sections
+        phd_sections = soup.find_all(['section', 'div'], 
+                                   class_=lambda x: x and any(word in x.lower() for word in 
+                                                           ['phd', 'promotion', 'doktorand', 'graduate', 'research']))
+        
+        for section in phd_sections:
+            # Look for links within the section
+            section_links = section.find_all('a', href=True)
+            for link in section_links:
+                href = link.get('href', '')
+                full_url = self._make_full_url(href, soup)
+                if full_url:
+                    return full_url
+        
+        return None
+    
+    def _find_job_posting_url(self, soup: BeautifulSoup, university_name: str, current_url: str) -> str:
+        """Find the specific job posting URL"""
+        # Look for job-related links
+        job_links = soup.find_all('a', href=True)
+        
+        for link in job_links:
+            href = link.get('href', '').lower()
+            link_text = link.get_text().lower()
+            
+            # Check for job-related keywords in URL or text
+            job_keywords = [
+                'stellenausschreibung', 'job', 'position', 'vacancy', 'career', 'karriere',
+                'mitarbeiter', 'bewerbung', 'application', 'stellen', 'jobs'
+            ]
+            
+            if any(keyword in href or keyword in link_text for keyword in job_keywords):
+                # Make sure it's a full URL
+                full_url = self._make_full_url(href, current_url)
+                if full_url:
+                    return full_url
+        
+        # Look for job posting sections
+        job_sections = soup.find_all(['section', 'div'], 
+                                   class_=lambda x: x and any(word in x.lower() for word in 
+                                                           ['job', 'stellen', 'karriere', 'career', 'mitarbeiter']))
+        
+        for section in job_sections:
+            # Look for links within the section
+            section_links = section.find_all('a', href=True)
+            for link in section_links:
+                href = link.get('href', '')
+                full_url = self._make_full_url(href, soup)
+                if full_url:
+                    return full_url
+        
+        return None
+    
+    def _make_full_url(self, href: str, current_url: str) -> str:
+        """Convert relative URL to full URL"""
+        if not href:
+            return None
+        
+        # If it's already a full URL, return it
+        if href.startswith(('http://', 'https://')):
+            return href
+        
+        # Parse the current URL to get the base URL
+        from urllib.parse import urljoin, urlparse
+        
+        # Use urljoin to properly combine URLs
+        full_url = urljoin(current_url, href)
+        
+        # Validate that the URL is properly formed
+        parsed = urlparse(full_url)
+        if parsed.netloc:  # Has a domain
+            return full_url
+        
+        return href  # Return original if parsing failed
+    
+    def _find_specific_job_url(self, element, current_url: str) -> str:
+        """Find the specific URL for a job posting within an element"""
+        # Look for links within the element
+        links = element.find_all('a', href=True)
+        
+        for link in links:
+            href = link.get('href', '')
+            link_text = link.get_text().lower()
+            
+            # Check if this looks like a job posting link
+            job_indicators = [
+                'stellenausschreibung', 'job', 'position', 'vacancy', 'bewerbung',
+                'application', 'mitarbeiter', 'stellen', 'karriere', 'career'
+            ]
+            
+            if any(indicator in href.lower() or indicator in link_text for indicator in job_indicators):
+                full_url = self._make_full_url(href, current_url)
+                if full_url:
+                    return full_url
+        
+        # Look for links in parent elements
+        parent = element.parent
+        if parent:
+            parent_links = parent.find_all('a', href=True)
+            for link in parent_links:
+                href = link.get('href', '')
+                link_text = link.get_text().lower()
+                
+                if any(indicator in href.lower() or indicator in link_text for indicator in job_indicators):
+                    full_url = self._make_full_url(href, current_url)
+                    if full_url:
+                        return full_url
+        
+        return None
+    
+    def _extract_department(self, soup: BeautifulSoup, text_content: str, language: str) -> str:
+        """Extract the department/faculty from the page content"""
+        departments = DEPARTMENTS.get(language, [])
+        
+        for dept in departments:
+            if dept.lower() in text_content.lower():
+                return dept
+        
+        # Look for department information in page structure
+        dept_elements = soup.find_all(['h1', 'h2', 'h3', 'nav', 'header'], 
+                                    string=lambda text: text and any(dept.lower() in text.lower() for dept in departments))
+        
+        for element in dept_elements:
+            element_text = element.get_text().strip()
+            for dept in departments:
+                if dept.lower() in element_text.lower():
+                    return dept
+        
+        return None
+    
+    def _classify_academic_position(self, title: str, description: str, language: str) -> str:
+        """Classify the academic position level"""
+        text = f"{title} {description}".lower()
+        positions = ACADEMIC_POSITIONS.get(language, {})
+        
+        for position_type, keywords in positions.items():
+            if any(keyword.lower() in text for keyword in keywords):
+                return position_type
+        
+        return 'unknown'
+    
+    def _extract_employment_details(self, soup: BeautifulSoup, text_content: str, language: str) -> Dict:
+        """Extract employment details like deadline, type, salary"""
+        details = {}
+        employment_details = EMPLOYMENT_DETAILS.get(language, {})
+        
+        # Extract deadline
+        deadline_patterns = employment_details.get('deadline', [])
+        for pattern in deadline_patterns:
+            if pattern.lower() in text_content.lower():
+                # Try to extract the actual date
+                deadline_text = self._extract_date_near_keyword(text_content, pattern)
+                if deadline_text:
+                    details['deadline'] = deadline_text
+                    break
+        
+        # Extract employment type
+        employment_types = employment_details.get('employment_type', [])
+        for emp_type in employment_types:
+            if emp_type.lower() in text_content.lower():
+                details['employment_type'] = emp_type
+                break
+        
+        # Extract salary information
+        salary_patterns = employment_details.get('salary', [])
+        for pattern in salary_patterns:
+            if pattern.lower() in text_content.lower():
+                salary_text = self._extract_salary_near_keyword(text_content, pattern)
+                if salary_text:
+                    details['salary'] = salary_text
+                    break
+        
+        return details
+    
+    def _extract_date_near_keyword(self, text: str, keyword: str) -> str:
+        """Extract date information near a keyword"""
+        import re
+        
+        # Look for date patterns near the keyword
+        keyword_pos = text.lower().find(keyword.lower())
+        if keyword_pos == -1:
+            return None
+        
+        # Extract text around the keyword (±200 characters)
+        start = max(0, keyword_pos - 200)
+        end = min(len(text), keyword_pos + 200)
+        context = text[start:end]
+        
+        # Look for date patterns
+        date_patterns = [
+            r'\d{1,2}\.\d{1,2}\.\d{4}',  # DD.MM.YYYY
+            r'\d{1,2}/\d{1,2}/\d{4}',    # DD/MM/YYYY
+            r'\d{4}-\d{1,2}-\d{1,2}',    # YYYY-MM-DD
+            r'\d{1,2}\.\s*\w+\s*\d{4}',  # DD. Month YYYY
+        ]
+        
+        for pattern in date_patterns:
+            match = re.search(pattern, context)
+            if match:
+                return match.group()
+        
+        return None
+    
+    def _extract_salary_near_keyword(self, text: str, keyword: str) -> str:
+        """Extract salary information near a keyword"""
+        import re
+        
+        keyword_pos = text.lower().find(keyword.lower())
+        if keyword_pos == -1:
+            return None
+        
+        # Extract text around the keyword (±100 characters)
+        start = max(0, keyword_pos - 100)
+        end = min(len(text), keyword_pos + 100)
+        context = text[start:end]
+        
+        # Look for salary patterns
+        salary_patterns = [
+            r'TV-L\s*\d+',  # TV-L 13
+            r'TVöD\s*\d+',  # TVöD 13
+            r'Entgeltgruppe\s*\d+',  # Entgeltgruppe 13
+            r'\d+\s*€',     # 3000 €
+            r'\d+\.\d+\s*€', # 3.000 €
+        ]
+        
+        for pattern in salary_patterns:
+            match = re.search(pattern, context, re.IGNORECASE)
+            if match:
+                return match.group()
+        
+        return None
+    
+    def _extract_job_title(self, element, found_terms: List[str]) -> str:
+        """Extract job title from element with improved accuracy"""
+        # Look for title within the element
+        title_element = element.find(['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'strong', 'b'])
+        
+        if title_element:
+            title_text = title_element.get_text().strip()
+            if self._is_job_title(title_text, found_terms):
+                return self._clean_job_title(title_text)
+        
+        # Look for job title patterns in the text
+        element_text = element.get_text().strip()
+        sentences = element_text.split('.')
+        
+        for sentence in sentences:
+            sentence = sentence.strip()
+            if self._is_job_title(sentence, found_terms):
+                return self._clean_job_title(sentence)
+        
+        return None
+    
+    def _is_job_title(self, text: str, found_terms: List[str]) -> bool:
+        """Check if text looks like a job title"""
+        text_lower = text.lower()
+        
+        # Must contain at least one found term
+        if not any(term.lower() in text_lower for term in found_terms):
+            return False
+        
+        # Job title indicators
+        job_indicators = [
+            'mitarbeiter', 'stelle', 'position', 'job', 'assistant', 'staff', 'fellow',
+            'coordinator', 'technician', 'collaborator', 'associate'
+        ]
+        
+        # PhD indicators (should not be job titles)
+        phd_indicators = [
+            'phd', 'promotion', 'doktorand', 'doctorate', 'doctoral', 'graduate program'
+        ]
+        
+        # Check for job indicators
+        has_job_indicator = any(indicator in text_lower for indicator in job_indicators)
+        
+        # Check for PhD indicators (exclude these from job titles)
+        has_phd_indicator = any(indicator in text_lower for indicator in phd_indicators)
+        
+        # Length check (job titles are usually shorter)
+        is_reasonable_length = len(text) < 100
+        
+        return has_job_indicator and not has_phd_indicator and is_reasonable_length
+    
+    def _clean_job_title(self, title: str) -> str:
+        """Clean and format job title"""
+        # Remove extra whitespace
+        title = ' '.join(title.split())
+        
+        # Remove common prefixes/suffixes
+        prefixes_to_remove = [
+            'Stellenausschreibung:', 'Stelle:', 'Position:', 'Job:', 'Vacancy:',
+            'Ausschreibung:', 'Bewerbung:', 'Karriere:'
+        ]
+        
+        for prefix in prefixes_to_remove:
+            if title.startswith(prefix):
+                title = title[len(prefix):].strip()
+        
+        # Capitalize properly
+        title = title.title()
+        
+        # Limit length
+        if len(title) > 80:
+            title = title[:77] + '...'
+        
+        return title
+    
+    def _clean_phd_title(self, title: str) -> str:
+        """Clean and format PhD program title"""
+        # Remove extra whitespace
+        title = ' '.join(title.split())
+        
+        # Remove common prefixes
+        prefixes_to_remove = [
+            'PhD Program:', 'Doctoral Program:', 'Promotionsprogramm:', 'Doktorandenprogramm:',
+            'Graduate Program:', 'PhD:', 'Doctorate:'
+        ]
+        
+        for prefix in prefixes_to_remove:
+            if title.startswith(prefix):
+                title = title[len(prefix):].strip()
+        
+        # Capitalize properly
+        title = title.title()
+        
+        # Limit length
+        if len(title) > 100:
+            title = title[:97] + '...'
+        
+        return title
+    
+    def _clean_job_description(self, description: str) -> str:
+        """Clean job description text"""
+        # Remove extra whitespace
+        description = ' '.join(description.split())
+        
+        # Limit length
+        if len(description) > 300:
+            description = description[:297] + '...'
+        
+        return description
     
     def _extract_academic_positions(self, soup: BeautifulSoup, found_terms: List[str]) -> List[Dict]:
         """Extract academic position details"""
@@ -369,7 +999,7 @@ class ArtUniversityScraper:
     
     def scrape_all_universities(self) -> Dict[str, int]:
         """Scrape all universities and return results summary"""
-        all_universities = UNIVERSITIES + INTERNATIONAL_UNIVERSITIES
+        all_universities = UNIVERSITIES  # This now includes all universities from all countries
         results = {}
         total_positions = 0
         
@@ -388,16 +1018,42 @@ class ArtUniversityScraper:
         logger.info(f"Scraping completed. Total positions found: {total_positions}")
         return results
     
+    def scrape_by_country(self, country: str) -> Dict[str, int]:
+        """Scrape universities from a specific country/region"""
+        if country not in UNIVERSITIES_BY_COUNTRY:
+            logger.error(f"Unknown country: {country}")
+            return {}
+        
+        universities = UNIVERSITIES_BY_COUNTRY[country]
+        results = {}
+        total_positions = 0
+        
+        logger.info(f"Starting to scrape {len(universities)} universities from {country}...")
+        
+        for i, university in enumerate(universities, 1):
+            logger.info(f"Progress: {i}/{len(universities)}")
+            
+            positions_found = self.scrape_university(university)
+            results[university['name']] = positions_found
+            total_positions += positions_found
+            
+            # Add delay between universities
+            time.sleep(SCRAPING_CONFIG['request_delay'] * 2)
+        
+        logger.info(f"Scraping completed for {country}. Total positions found: {total_positions}")
+        return results
+    
     def search_specific_terms(self, universities: List[str] = None, terms: List[str] = None) -> Dict[str, int]:
         """Search for specific terms across universities"""
         if not terms:
             terms = [
-                'artistic research', 'künstlerische mitarbeiter', 'wissenschaftliche mitarbeiter',
-                'practice-based PhD', 'media art', 'digital art', 'AI art', 'artificial intelligence'
+                'media art mitarbeiter', 'ai art mitarbeiter', 'artistic research mitarbeiter',
+                'künstlerische mitarbeiter', 'wissenschaftliche mitarbeiter', 'practice-based PhD',
+                'media art PhD', 'ai art PhD', 'artistic research PhD'
             ]
         
         if not universities:
-            universities = [uni['name'] for uni in UNIVERSITIES + INTERNATIONAL_UNIVERSITIES]
+            universities = [uni['name'] for uni in UNIVERSITIES]
         
         results = {}
         
@@ -406,7 +1062,7 @@ class ArtUniversityScraper:
             
             # Find university data
             university_data = None
-            for uni in UNIVERSITIES + INTERNATIONAL_UNIVERSITIES:
+            for uni in UNIVERSITIES:
                 if uni['name'] == university_name:
                     university_data = uni
                     break
@@ -422,21 +1078,86 @@ class ArtUniversityScraper:
                 text_content = self.extract_text_content(soup)
                 positions_found = 0
                 
-                # Enhanced search for academic positions
-                academic_terms = [
-                    'künstlerische mitarbeiter', 'wissenschaftliche mitarbeiter', 'artistic research',
-                    'practice-based PhD', 'artistic PhD', 'künstlerische forschung'
-                ]
-                
+                # Enhanced search for academic positions with consolidated types
                 for term in terms:
                     if term.lower() in text_content.lower():
                         # Determine position type based on term
                         position_type = 'specific_search'
-                        if any(academic_term in term.lower() for academic_term in academic_terms):
-                            if 'mitarbeiter' in term.lower():
-                                position_type = 'academic_positions'
-                            elif 'research' in term.lower() or 'phd' in term.lower():
+                        
+                        # Media Art positions
+                        if 'media art' in term.lower():
+                            if 'mitarbeiter' in term.lower() or 'assistant' in term.lower():
+                                position_type = 'media_art_jobs'
+                            elif 'phd' in term.lower() or 'promotion' in term.lower():
+                                position_type = 'media_art_phd'
+                            else:
+                                position_type = 'media_art_jobs'
+                        
+                        # AI Art positions
+                        elif 'ai art' in term.lower():
+                            if 'mitarbeiter' in term.lower() or 'assistant' in term.lower():
+                                position_type = 'ai_art_jobs'
+                            elif 'phd' in term.lower() or 'promotion' in term.lower():
+                                position_type = 'ai_art_phd'
+                            else:
+                                position_type = 'ai_art_jobs'
+                        
+                        # Sound Art positions
+                        elif 'sound art' in term.lower() or 'klangkunst' in term.lower():
+                            if 'mitarbeiter' in term.lower() or 'assistant' in term.lower():
+                                position_type = 'sound_art_jobs'
+                            elif 'phd' in term.lower() or 'promotion' in term.lower():
+                                position_type = 'sound_art_phd'
+                            else:
+                                position_type = 'sound_art_jobs'
+                        
+                        # Performance Art positions
+                        elif 'performance art' in term.lower() or 'aufführungskunst' in term.lower():
+                            if 'mitarbeiter' in term.lower() or 'assistant' in term.lower():
+                                position_type = 'performance_art_jobs'
+                            elif 'phd' in term.lower() or 'promotion' in term.lower():
+                                position_type = 'performance_art_phd'
+                            else:
+                                position_type = 'performance_art_jobs'
+                        
+                        # Interactive Art positions
+                        elif 'interactive art' in term.lower() or 'interaktive kunst' in term.lower():
+                            if 'mitarbeiter' in term.lower() or 'assistant' in term.lower():
+                                position_type = 'interactive_art_jobs'
+                            elif 'phd' in term.lower() or 'promotion' in term.lower():
+                                position_type = 'interactive_art_phd'
+                            else:
+                                position_type = 'interactive_art_jobs'
+                        
+                        # Artistic Research positions
+                        elif 'artistic research' in term.lower() or 'künstlerische forschung' in term.lower():
+                            if 'mitarbeiter' in term.lower() or 'assistant' in term.lower():
+                                position_type = 'artistic_research_jobs'
+                            elif 'phd' in term.lower() or 'promotion' in term.lower():
                                 position_type = 'artistic_research_phd'
+                            else:
+                                position_type = 'artistic_research_jobs'
+                        
+                        # General academic positions
+                        elif 'mitarbeiter' in term.lower() or 'assistant' in term.lower():
+                            position_type = 'academic_jobs'
+                        elif 'phd' in term.lower() or 'promotion' in term.lower():
+                            position_type = 'general_phd'
+                        else:
+                            # Check if it's a general job term (focused on mitarbeiter positions)
+                            general_job_indicators = [
+                                'stelle', 'position', 'job', 'vacancy', 'employment', 'career',
+                                'mitarbeiter', 'assistant', 'assistent', 'coordinator', 'manager',
+                                'curator', 'educator', 'freelance', 'contract', 'temporary',
+                                'part-time', 'full-time', 'kunst', 'art', 'forschung', 'research'
+                            ]
+                            if any(indicator in term.lower() for indicator in general_job_indicators):
+                                position_type = 'general_jobs'
+                            else:
+                                position_type = 'general_jobs'  # Default to general jobs for unmatched terms
+                        
+                        # Determine position category based on position type
+                        position_category = 'job_offer' if '_jobs' in position_type else 'phd_program'
                         
                         position = {
                             'university': university_name,
@@ -446,7 +1167,8 @@ class ArtUniversityScraper:
                             'url': university_data['website'],
                             'language': self._detect_language(text_content),
                             'date_found': time.strftime('%Y-%m-%d'),
-                            'status': 'active'
+                            'status': 'active',
+                            'position_category': position_category
                         }
                         
                         if self.db.add_position(position):

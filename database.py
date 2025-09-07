@@ -34,6 +34,10 @@ class DatabaseManager:
                         language TEXT NOT NULL,
                         date_found TEXT NOT NULL,
                         status TEXT DEFAULT 'active',
+                        position_category TEXT,
+                        department TEXT,
+                        position_level TEXT,
+                        employment_details TEXT,
                         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
                     )
                 ''')
@@ -87,9 +91,16 @@ class DatabaseManager:
                     logger.info(f"Position already exists: {position_data['title']}")
                     return False
                 
+                # Convert employment_details dict to JSON string
+                employment_details_json = None
+                if 'employment_details' in position_data and position_data['employment_details']:
+                    import json
+                    employment_details_json = json.dumps(position_data['employment_details'])
+                
                 cursor.execute('''
-                    INSERT INTO positions (university, position_type, title, description, url, language, date_found, status)
-                    VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+                    INSERT INTO positions (university, position_type, title, description, url, language, date_found, status, 
+                                         position_category, department, position_level, employment_details)
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                 ''', (
                     position_data['university'],
                     position_data['position_type'],
@@ -98,7 +109,11 @@ class DatabaseManager:
                     position_data['url'],
                     position_data['language'],
                     position_data['date_found'],
-                    position_data.get('status', 'active')
+                    position_data.get('status', 'active'),
+                    position_data.get('position_category'),
+                    position_data.get('department'),
+                    position_data.get('position_level'),
+                    employment_details_json
                 ))
                 
                 conn.commit()

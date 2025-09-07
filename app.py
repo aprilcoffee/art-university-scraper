@@ -11,7 +11,7 @@ import time
 
 from database import DatabaseManager
 from scraper import ArtUniversityScraper
-from config import UNIVERSITIES, INTERNATIONAL_UNIVERSITIES
+from config import UNIVERSITIES_BY_COUNTRY, UNIVERSITIES
 
 app = Flask(__name__)
 CORS(app)
@@ -50,8 +50,20 @@ def get_positions():
 @app.route('/api/universities')
 def get_universities():
     """API endpoint to get list of universities"""
-    all_universities = UNIVERSITIES + INTERNATIONAL_UNIVERSITIES
-    return jsonify(all_universities)
+    return jsonify(UNIVERSITIES)
+
+@app.route('/api/universities-by-country')
+def get_universities_by_country():
+    """API endpoint to get universities organized by country"""
+    return jsonify(UNIVERSITIES_BY_COUNTRY)
+
+@app.route('/api/universities/<country>')
+def get_universities_by_country_specific(country):
+    """API endpoint to get universities from a specific country"""
+    if country in UNIVERSITIES_BY_COUNTRY:
+        return jsonify(UNIVERSITIES_BY_COUNTRY[country])
+    else:
+        return jsonify({'error': 'Country not found'}), 404
 
 @app.route('/api/statistics')
 def get_statistics():
@@ -71,7 +83,7 @@ def start_scraping():
         scraper = ArtUniversityScraper()
         scraping_status['running'] = True
         scraping_status['progress'] = 0
-        scraping_status['total'] = len(UNIVERSITIES) + len(INTERNATIONAL_UNIVERSITIES)
+        scraping_status['total'] = len(UNIVERSITIES)
         scraping_status['current'] = ''
         scraping_status['results'] = {}
         
@@ -128,7 +140,7 @@ def run_scraping():
     global scraping_status, scraper
     
     try:
-        all_universities = UNIVERSITIES + INTERNATIONAL_UNIVERSITIES
+        all_universities = UNIVERSITIES
         
         for i, university in enumerate(all_universities):
             if not scraping_status['running']:
@@ -157,8 +169,12 @@ def positions_page():
 @app.route('/universities')
 def universities_page():
     """Universities listing page"""
-    all_universities = UNIVERSITIES + INTERNATIONAL_UNIVERSITIES
-    return render_template('universities.html', universities=all_universities)
+    return render_template('universities.html', universities_by_country=UNIVERSITIES_BY_COUNTRY)
+
+@app.route('/map')
+def map_page():
+    """Interactive map page"""
+    return render_template('map.html')
 
 @app.route('/scraper')
 def scraper_page():
@@ -166,4 +182,4 @@ def scraper_page():
     return render_template('scraper.html')
 
 if __name__ == '__main__':
-    app.run(debug=True, host='0.0.0.0', port=5001)
+    app.run(debug=True, host='0.0.0.0', port=5002)

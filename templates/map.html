@@ -1,0 +1,624 @@
+{% extends "base.html" %}
+
+{% block title %}Interactive Map - Art University Job Scraper{% endblock %}
+
+{% block content %}
+<div id="alert-container"></div>
+
+<!-- Header -->
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body">
+                <h1 class="card-title">
+                    <i class="fas fa-map-marked-alt me-2"></i>Interactive University Map
+                </h1>
+                <p class="card-text text-muted">
+                    Explore universities and positions geographically across Europe and beyond
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Map Controls -->
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-3 mb-3">
+                        <label for="mapCountryFilter" class="form-label">Country/Region</label>
+                        <select class="form-select" id="mapCountryFilter">
+                            <option value="">All Countries</option>
+                            <option value="germany">Germany</option>
+                            <option value="german_speaking">German-Speaking</option>
+                            <option value="eu_other">Other EU Countries</option>
+                            <option value="others">Others</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <label for="mapPositionFilter" class="form-label">Position Type</label>
+                        <select class="form-select" id="mapPositionFilter">
+                            <option value="">All Positions</option>
+                            <option value="phd_program">PhD Programs</option>
+                            <option value="job_offer">Job Offers</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <label for="mapDepartmentFilter" class="form-label">Department</label>
+                        <select class="form-select" id="mapDepartmentFilter">
+                            <option value="">All Departments</option>
+                            <option value="ai">AI & Machine Learning</option>
+                            <option value="media_art">Media Art</option>
+                            <option value="sound_art">Sound Art</option>
+                            <option value="design">Design</option>
+                            <option value="fine_arts">Fine Arts</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3 mb-3 d-flex align-items-end">
+                        <button class="btn btn-primary me-2" onclick="applyMapFilters()">
+                            <i class="fas fa-filter me-1"></i>Apply Filters
+                        </button>
+                        <button class="btn btn-outline-secondary" onclick="clearMapFilters()">
+                            <i class="fas fa-times me-1"></i>Clear
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Map Statistics -->
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body">
+                <div class="row text-center">
+                    <div class="col-md-3">
+                        <h5 class="text-primary" id="totalUniversities">0</h5>
+                        <small class="text-muted">Total Universities</small>
+                    </div>
+                    <div class="col-md-3">
+                        <h5 class="text-success" id="totalPhD">0</h5>
+                        <small class="text-muted">PhD Programs</small>
+                    </div>
+                    <div class="col-md-3">
+                        <h5 class="text-warning" id="totalJobs">0</h5>
+                        <small class="text-muted">Job Offers</small>
+                    </div>
+                    <div class="col-md-3">
+                        <h5 class="text-info" id="totalCountries">0</h5>
+                        <small class="text-muted">Countries</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Interactive Map -->
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body p-0">
+                <div id="universityMap" style="height: 600px; width: 100%;"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Map Legend -->
+<div class="row mt-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body">
+                <h6 class="card-title">Map Legend</h6>
+                <div class="row">
+                    <div class="col-md-6">
+                        <h6>University Types:</h6>
+                        <div class="d-flex align-items-center mb-2">
+                            <div class="map-legend-icon" style="background-color: #007bff; width: 20px; height: 20px; border-radius: 50%; margin-right: 10px;"></div>
+                            <span>German Universities</span>
+                        </div>
+                        <div class="d-flex align-items-center mb-2">
+                            <div class="map-legend-icon" style="background-color: #28a745; width: 20px; height: 20px; border-radius: 50%; margin-right: 10px;"></div>
+                            <span>German-Speaking Countries</span>
+                        </div>
+                        <div class="d-flex align-items-center mb-2">
+                            <div class="map-legend-icon" style="background-color: #ffc107; width: 20px; height: 20px; border-radius: 50%; margin-right: 10px;"></div>
+                            <span>Other EU Countries</span>
+                        </div>
+                        <div class="d-flex align-items-center mb-2">
+                            <div class="map-legend-icon" style="background-color: #6c757d; width: 20px; height: 20px; border-radius: 50%; margin-right: 10px;"></div>
+                            <span>Other Countries</span>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <h6>Position Types:</h6>
+                        <div class="d-flex align-items-center mb-2">
+                            <div class="map-legend-icon" style="background-color: #dc3545; width: 20px; height: 20px; border-radius: 50%; margin-right: 10px;"></div>
+                            <span>PhD Programs Available</span>
+                        </div>
+                        <div class="d-flex align-items-center mb-2">
+                            <div class="map-legend-icon" style="background-color: #17a2b8; width: 20px; height: 20px; border-radius: 50%; margin-right: 10px;"></div>
+                            <span>Job Offers Available</span>
+                        </div>
+                        <div class="d-flex align-items-center mb-2">
+                            <div class="map-legend-icon" style="background-color: #6f42c1; width: 20px; height: 20px; border-radius: 50%; margin-right: 10px;"></div>
+                            <span>Both PhD & Jobs</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- University Details Modal -->
+<div class="modal fade" id="universityModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="universityModalTitle">University Details</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body" id="universityModalBody">
+                <!-- Content will be populated by JavaScript -->
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" id="viewPositionsBtn">View Positions</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+<!-- Leaflet CSS -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+
+<!-- Leaflet JavaScript -->
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+<!-- Leaflet MarkerCluster -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.4.1/dist/MarkerCluster.css" />
+<link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.4.1/dist/MarkerCluster.Default.css" />
+<script src="https://unpkg.com/leaflet.markercluster@1.4.1/dist/leaflet.markercluster.js"></script>
+
+<script>
+let map;
+let markerCluster;
+let allUniversities = [];
+let allPositions = [];
+let filteredUniversities = [];
+let filteredPositions = [];
+
+// Initialize map when page loads
+document.addEventListener('DOMContentLoaded', function() {
+    initializeMap();
+    loadMapData();
+});
+
+function initializeMap() {
+    // Initialize the map centered on Europe
+    map = L.map('universityMap').setView([50.0, 10.0], 4);
+    
+    // Add OpenStreetMap tiles
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© OpenStreetMap contributors'
+    }).addTo(map);
+    
+    // Initialize marker cluster group
+    markerCluster = L.markerClusterGroup({
+        chunkedLoading: true,
+        maxClusterRadius: 50
+    });
+    map.addLayer(markerCluster);
+}
+
+function loadMapData() {
+    // Load universities data
+    $.get('/api/universities')
+        .done(function(universities) {
+            allUniversities = universities;
+            filteredUniversities = [...universities];
+            addUniversitiesToMap();
+            updateMapStatistics();
+        });
+    
+    // Load positions data
+    $.get('/api/positions')
+        .done(function(positions) {
+            allPositions = positions;
+            filteredPositions = [...positions];
+            updateMapStatistics();
+        });
+}
+
+function addUniversitiesToMap() {
+    // Clear existing markers
+    markerCluster.clearLayers();
+    
+    filteredUniversities.forEach(function(university) {
+        // Get coordinates for the university (you'll need to add these to your data)
+        const coords = getUniversityCoordinates(university);
+        if (coords) {
+            const marker = L.marker(coords, {
+                icon: getUniversityIcon(university)
+            });
+            
+            marker.bindPopup(createUniversityPopup(university));
+            marker.on('click', function() {
+                showUniversityDetails(university);
+            });
+            
+            markerCluster.addLayer(marker);
+        }
+    });
+}
+
+function getUniversityCoordinates(university) {
+    // First check if coordinates are provided in the university data
+    if (university.coordinates && university.coordinates.length === 2) {
+        return university.coordinates;
+    }
+    
+    // Fallback to city-based coordinates
+    const coordinates = {
+        'Berlin': [52.5200, 13.4050],
+        'Munich': [48.1351, 11.5820],
+        'Hamburg': [53.5511, 9.9937],
+        'Cologne': [50.9375, 6.9603],
+        'Frankfurt': [50.1109, 8.6821],
+        'Stuttgart': [48.7758, 9.1829],
+        'Düsseldorf': [51.2277, 6.7735],
+        'Dortmund': [51.5136, 7.4653],
+        'Essen': [51.4556, 7.0116],
+        'Leipzig': [51.3397, 12.3731],
+        'Bremen': [53.0793, 8.8017],
+        'Dresden': [51.0504, 13.7373],
+        'Hannover': [52.3759, 9.7320],
+        'Nuremberg': [49.4521, 11.0767],
+        'Duisburg': [51.4344, 6.7623],
+        'Bochum': [51.4818, 7.2162],
+        'Wuppertal': [51.2562, 7.1508],
+        'Bielefeld': [52.0302, 8.5325],
+        'Bonn': [50.7374, 7.0982],
+        'Münster': [51.9607, 7.6261],
+        'Karlsruhe': [49.0069, 8.4037],
+        'Mannheim': [49.4875, 8.4660],
+        'Augsburg': [48.3705, 10.8978],
+        'Wiesbaden': [50.0826, 8.2493],
+        'Gelsenkirchen': [51.5177, 7.0857],
+        'Mönchengladbach': [51.1805, 6.4428],
+        'Braunschweig': [52.2689, 10.5268],
+        'Chemnitz': [50.8278, 12.9214],
+        'Kiel': [54.3233, 10.1228],
+        'Aachen': [50.7753, 6.0839],
+        'Halle': [51.4962, 11.9682],
+        'Magdeburg': [52.1205, 11.6276],
+        'Freiburg': [47.9990, 7.8421],
+        'Krefeld': [51.3388, 6.5853],
+        'Lübeck': [53.8655, 10.6866],
+        'Oberhausen': [51.4962, 6.8519],
+        'Erfurt': [50.9848, 11.0299],
+        'Mainz': [49.9929, 8.2473],
+        'Rostock': [54.0924, 12.0991],
+        'Kassel': [51.3127, 9.4797],
+        'Hagen': [51.3596, 7.4708],
+        'Hamm': [51.6806, 7.8207],
+        'Saarbrücken': [49.2401, 6.9969],
+        'Mülheim': [51.4274, 6.8827],
+        'Potsdam': [52.4009, 13.0591],
+        'Ludwigshafen': [49.4774, 8.4452],
+        'Oldenburg': [53.1434, 8.2146],
+        'Leverkusen': [51.0459, 7.0192],
+        'Osnabrück': [52.2799, 8.0472],
+        'Solingen': [51.1717, 7.0839],
+        'Heidelberg': [49.3988, 8.6724],
+        'Herne': [51.5388, 7.2223],
+        'Neuss': [51.1986, 6.6852],
+        'Darmstadt': [49.8728, 8.6512],
+        'Paderborn': [51.7189, 8.7575],
+        'Regensburg': [49.0134, 12.1016],
+        'Ingolstadt': [48.7665, 11.4258],
+        'Würzburg': [49.7913, 9.9534],
+        'Fürth': [49.4771, 10.9887],
+        'Wolfsburg': [52.4227, 10.7865],
+        'Offenbach': [50.0956, 8.7761],
+        'Ulm': [48.4011, 9.9876],
+        'Heilbronn': [49.1427, 9.2109],
+        'Pforzheim': [48.8944, 8.7072],
+        'Göttingen': [51.5413, 9.9158],
+        'Bottrop': [51.5232, 6.9287],
+        'Trier': [49.7596, 6.6439],
+        'Recklinghausen': [51.6138, 7.1974],
+        'Reutlingen': [48.4914, 9.2043],
+        'Bremerhaven': [53.5396, 8.5809],
+        'Koblenz': [50.3569, 7.5890],
+        'Bergisch Gladbach': [50.9856, 7.1329],
+        'Remscheid': [51.1790, 7.1920],
+        'Jena': [50.9279, 11.5892],
+        'Rheda-Wiedenbrück': [51.8367, 8.3000],
+        'Erlangen': [49.5897, 11.0122],
+        'Moers': [51.4504, 6.6314],
+        'Siegen': [50.8751, 8.0243],
+        'Hildesheim': [52.1500, 9.9500],
+        'Salzgitter': [52.1500, 10.3333],
+        'Cottbus': [51.7606, 14.3342],
+        'Kaiserslautern': [49.4432, 7.7716],
+        'Gütersloh': [51.9069, 8.3785],
+        'Schwerin': [53.6355, 11.4012],
+        'Düren': [50.8047, 6.4920],
+        'Esslingen': [48.7406, 9.3068],
+        'Ludwigsburg': [48.8974, 9.1916],
+        'Hagen': [51.3596, 7.4708],
+        'Hamm': [51.6806, 7.8207],
+        'Saarbrücken': [49.2401, 6.9969],
+        'Mülheim': [51.4274, 6.8827],
+        'Potsdam': [52.4009, 13.0591],
+        'Ludwigshafen': [49.4774, 8.4452],
+        'Oldenburg': [53.1434, 8.2146],
+        'Leverkusen': [51.0459, 7.0192],
+        'Osnabrück': [52.2799, 8.0472],
+        'Solingen': [51.1717, 7.0839],
+        'Heidelberg': [49.3988, 8.6724],
+        'Herne': [51.5388, 7.2223],
+        'Neuss': [51.1986, 6.6852],
+        'Darmstadt': [49.8728, 8.6512],
+        'Paderborn': [51.7189, 8.7575],
+        'Regensburg': [49.0134, 12.1016],
+        'Ingolstadt': [48.7665, 11.4258],
+        'Würzburg': [49.7913, 9.9534],
+        'Fürth': [49.4771, 10.9887],
+        'Wolfsburg': [52.4227, 10.7865],
+        'Offenbach': [50.0956, 8.7761],
+        'Ulm': [48.4011, 9.9876],
+        'Heilbronn': [49.1427, 9.2109],
+        'Pforzheim': [48.8944, 8.7072],
+        'Göttingen': [51.5413, 9.9158],
+        'Bottrop': [51.5232, 6.9287],
+        'Trier': [49.7596, 6.6439],
+        'Recklinghausen': [51.6138, 7.1974],
+        'Reutlingen': [48.4914, 9.2043],
+        'Bremerhaven': [53.5396, 8.5809],
+        'Koblenz': [50.3569, 7.5890],
+        'Bergisch Gladbach': [50.9856, 7.1329],
+        'Remscheid': [51.1790, 7.1920],
+        'Jena': [50.9279, 11.5892],
+        'Rheda-Wiedenbrück': [51.8367, 8.3000],
+        'Erlangen': [49.5897, 11.0122],
+        'Moers': [51.4504, 6.6314],
+        'Siegen': [50.8751, 8.0243],
+        'Hildesheim': [52.1500, 9.9500],
+        'Salzgitter': [52.1500, 10.3333],
+        'Cottbus': [51.7606, 14.3342],
+        'Kaiserslautern': [49.4432, 7.7716],
+        'Gütersloh': [51.9069, 8.3785],
+        'Schwerin': [53.6355, 11.4012],
+        'Düren': [50.8047, 6.4920],
+        'Esslingen': [48.7406, 9.3068],
+        'Ludwigsburg': [48.8974, 9.1916],
+        // International cities
+        'Vienna': [48.2082, 16.3738],
+        'Zurich': [47.3769, 8.5417],
+        'Bern': [46.9481, 7.4474],
+        'Lucerne': [47.0502, 8.3093],
+        'London': [51.5074, -0.1278],
+        'Amsterdam': [52.3676, 4.9041],
+        'Rotterdam': [51.9244, 4.4777],
+        'The Hague': [52.0705, 4.3007],
+        'Utrecht': [52.0907, 5.1214],
+        'Eindhoven': [51.4416, 5.4697],
+        'Arnhem': [51.9851, 5.8987],
+        'Brussels': [50.8503, 4.3517],
+        'Antwerp': [51.2194, 4.4025],
+        'Tallinn': [59.4370, 24.7536],
+        'Viljandi': [58.3639, 25.5900],
+        'Stockholm': [59.3293, 18.0686],
+        'Copenhagen': [55.6761, 12.5683],
+        'Oslo': [59.9139, 10.7522],
+        'Paris': [48.8566, 2.3522],
+        'Milan': [45.4642, 9.1900],
+        'Florence': [43.7696, 11.2558],
+        'New York': [40.7128, -74.0060],
+        'Toronto': [43.6532, -79.3832],
+        'Vancouver': [49.2827, -123.1207]
+    };
+    
+    return coordinates[university.city] || null;
+}
+
+function getUniversityIcon(university) {
+    let color = '#6c757d'; // Default gray
+    
+    // Determine color based on country/region
+    if (university.country === 'Germany') {
+        color = '#007bff'; // Blue for Germany
+    } else if (['Austria', 'Switzerland'].includes(university.country)) {
+        color = '#28a745'; // Green for German-speaking
+    } else if (['UK', 'Netherlands', 'Sweden', 'Denmark', 'Norway', 'France', 'Italy', 'Belgium', 'Estonia'].includes(university.country)) {
+        color = '#ffc107'; // Yellow for other EU
+    } else {
+        color = '#6c757d'; // Gray for others
+    }
+    
+    // Create custom icon
+    return L.divIcon({
+        className: 'custom-div-icon',
+        html: `<div style="background-color: ${color}; width: 20px; height: 20px; border-radius: 50%; border: 2px solid white; box-shadow: 0 2px 4px rgba(0,0,0,0.3);"></div>`,
+        iconSize: [20, 20],
+        iconAnchor: [10, 10]
+    });
+}
+
+function createUniversityPopup(university) {
+    const positions = filteredPositions.filter(p => p.university === university.name);
+    const phdCount = positions.filter(p => p.position_category === 'phd_program').length;
+    const jobCount = positions.filter(p => p.position_category === 'job_offer').length;
+    
+    return `
+        <div class="university-popup">
+            <h6>${university.name}</h6>
+            <p class="mb-1"><strong>${university.city}, ${university.country}</strong></p>
+            <div class="mb-2">
+                ${phdCount > 0 ? `<span class="badge bg-danger me-1">${phdCount} PhD</span>` : ''}
+                ${jobCount > 0 ? `<span class="badge bg-info me-1">${jobCount} Jobs</span>` : ''}
+            </div>
+            <small class="text-muted">Click for details</small>
+        </div>
+    `;
+}
+
+function showUniversityDetails(university) {
+    const positions = filteredPositions.filter(p => p.university === university.name);
+    const phdPositions = positions.filter(p => p.position_category === 'phd_program');
+    const jobPositions = positions.filter(p => p.position_category === 'job_offer');
+    
+    $('#universityModalTitle').text(university.name);
+    
+    const modalBody = `
+        <div class="row">
+            <div class="col-md-6">
+                <h6><i class="fas fa-map-marker-alt me-2"></i>Location</h6>
+                <p>${university.city}, ${university.country}</p>
+                
+                <h6><i class="fas fa-globe me-2"></i>Website</h6>
+                <p><a href="${university.website}" target="_blank">${university.website}</a></p>
+                
+                <h6><i class="fas fa-graduation-cap me-2"></i>PhD Programs</h6>
+                <p>${university.has_phd ? 'Available' : 'Not Available'}</p>
+            </div>
+            <div class="col-md-6">
+                <h6><i class="fas fa-briefcase me-2"></i>Current Positions</h6>
+                <p><strong>${phdPositions.length}</strong> PhD Programs</p>
+                <p><strong>${jobPositions.length}</strong> Job Offers</p>
+                
+                <h6><i class="fas fa-info-circle me-2"></i>Alternative Programs</h6>
+                <p>${university.alternative || 'None'}</p>
+            </div>
+        </div>
+        
+        ${positions.length > 0 ? `
+        <div class="row mt-3">
+            <div class="col-12">
+                <h6><i class="fas fa-list me-2"></i>Available Positions</h6>
+                <div class="list-group">
+                    ${positions.slice(0, 5).map(pos => `
+                        <div class="list-group-item">
+                            <div class="d-flex w-100 justify-content-between">
+                                <h6 class="mb-1">${pos.title}</h6>
+                                <small>${pos.date_found}</small>
+                            </div>
+                            <p class="mb-1">${pos.position_type.replace('_', ' ').toUpperCase()}</p>
+                            <small><a href="${pos.url}" target="_blank">View Details</a></small>
+                        </div>
+                    `).join('')}
+                </div>
+            </div>
+        </div>
+        ` : ''}
+    `;
+    
+    $('#universityModalBody').html(modalBody);
+    $('#viewPositionsBtn').off('click').on('click', function() {
+        window.location.href = `/positions?university=${encodeURIComponent(university.name)}`;
+    });
+    $('#universityModal').modal('show');
+}
+
+function applyMapFilters() {
+    const countryFilter = $('#mapCountryFilter').val();
+    const positionFilter = $('#mapPositionFilter').val();
+    const departmentFilter = $('#mapDepartmentFilter').val();
+    
+    // Filter universities
+    filteredUniversities = allUniversities.filter(function(university) {
+        let matches = true;
+        
+        if (countryFilter) {
+            const countryMapping = {
+                'germany': ['Germany'],
+                'german_speaking': ['Switzerland', 'Austria'],
+                'eu_other': ['UK', 'Netherlands', 'Sweden', 'Denmark', 'Norway', 'France', 'Italy', 'Belgium', 'Estonia'],
+                'others': ['USA', 'Canada']
+            };
+            matches = countryMapping[countryFilter] && countryMapping[countryFilter].includes(university.country);
+        }
+        
+        return matches;
+    });
+    
+    // Filter positions
+    filteredPositions = allPositions.filter(function(position) {
+        let matches = true;
+        
+        if (positionFilter) {
+            matches = position.position_category === positionFilter;
+        }
+        
+        if (departmentFilter) {
+            const departmentKeywords = {
+                'ai': ['ai', 'ki', 'artificial intelligence', 'machine learning', 'neural'],
+                'media_art': ['media', 'digital', 'new media'],
+                'sound_art': ['sound', 'audio', 'music'],
+                'design': ['design', 'gestaltung'],
+                'fine_arts': ['fine arts', 'bildende kunst', 'kunst']
+            };
+            
+            const keywords = departmentKeywords[departmentFilter] || [];
+            const text = `${position.title} ${position.description}`.toLowerCase();
+            matches = keywords.some(keyword => text.includes(keyword));
+        }
+        
+        return matches;
+    });
+    
+    addUniversitiesToMap();
+    updateMapStatistics();
+}
+
+function clearMapFilters() {
+    $('#mapCountryFilter').val('');
+    $('#mapPositionFilter').val('');
+    $('#mapDepartmentFilter').val('');
+    
+    filteredUniversities = [...allUniversities];
+    filteredPositions = [...allPositions];
+    
+    addUniversitiesToMap();
+    updateMapStatistics();
+}
+
+function updateMapStatistics() {
+    const uniqueCountries = [...new Set(filteredUniversities.map(u => u.country))];
+    const phdCount = filteredPositions.filter(p => p.position_category === 'phd_program').length;
+    const jobCount = filteredPositions.filter(p => p.position_category === 'job_offer').length;
+    
+    $('#totalUniversities').text(filteredUniversities.length);
+    $('#totalPhD').text(phdCount);
+    $('#totalJobs').text(jobCount);
+    $('#totalCountries').text(uniqueCountries.length);
+}
+</script>
+
+<style>
+.custom-div-icon {
+    background: transparent !important;
+    border: none !important;
+}
+
+.university-popup {
+    min-width: 200px;
+}
+
+.map-legend-icon {
+    display: inline-block;
+    margin-right: 8px;
+}
+</style>
+{% endblock %}

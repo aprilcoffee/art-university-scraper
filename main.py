@@ -10,7 +10,7 @@ from datetime import datetime
 
 from scraper import ArtUniversityScraper
 from database import DatabaseManager
-from config import UNIVERSITIES, INTERNATIONAL_UNIVERSITIES
+from config import UNIVERSITIES_BY_COUNTRY, UNIVERSITIES
 
 def main():
     parser = argparse.ArgumentParser(description='Art University Job Scraper')
@@ -25,11 +25,11 @@ def main():
     
     if args.mode == 'web':
         print("Starting web interface...")
-        print("Open your browser and go to: http://localhost:5001")
+        print("Open your browser and go to: http://localhost:5002")
         print("Press Ctrl+C to stop the server")
         
         from app import app
-        app.run(debug=True, host='0.0.0.0', port=5001)
+        app.run(debug=True, host='0.0.0.0', port=5002)
         
     elif args.mode == 'scrape':
         print("Starting command line scraping...")
@@ -39,7 +39,7 @@ def main():
             if args.universities:
                 # Scrape specific universities
                 universities_to_scrape = []
-                all_universities = UNIVERSITIES + INTERNATIONAL_UNIVERSITIES
+                all_universities = UNIVERSITIES
                 
                 for uni_name in args.universities:
                     for uni in all_universities:
