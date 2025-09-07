@@ -20,6 +20,7 @@ from selenium.webdriver.chrome.service import Service
 
 from config import UNIVERSITIES_BY_COUNTRY, UNIVERSITIES, SEARCH_TERMS, SCRAPING_CONFIG
 from database import DatabaseManager
+from utils import PositionBuilder, URLResolver, TextProcessor, SearchHelper, DatabaseHelper
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -129,14 +130,7 @@ class ArtUniversityScraper:
     
     def search_for_terms(self, text: str, terms: List[str]) -> List[str]:
         """Search for specific terms in text and return matches"""
-        found_terms = []
-        text_lower = text.lower()
-        
-        for term in terms:
-            if term.lower() in text_lower:
-                found_terms.append(term)
-        
-        return found_terms
+        return SearchHelper.search_for_terms(text, terms)
     
     def extract_positions_from_page(self, soup: BeautifulSoup, url: str, university_name: str) -> List[Dict]:
         """Extract position information from a page"""
@@ -174,29 +168,17 @@ class ArtUniversityScraper:
                     # Get the specific PhD program URL if available
                     phd_url = info.get('url', url)
                     if not phd_url or phd_url == url:
-                        phd_url = self._find_phd_program_url(soup, university_name, url)
+                        phd_url = URLResolver.find_specific_url(soup, university_name, url, 'phd')
                     
-                    # Extract additional details
-                    department = self._extract_department(soup, text_content, language)
-                    position_level = self._classify_academic_position(
-                        info.get('title', ''), info.get('description', ''), language
-                    )
-                    employment_details = self._extract_employment_details(soup, text_content, language)
-                    
-                    position = {
-                        'university': university_name,
-                        'position_type': category,
-                        'title': info.get('title', f"{category.replace('_', ' ').title()} PhD Program"),
-                        'description': info.get('description', ''),
-                        'url': phd_url,
-                        'language': language,
-                        'date_found': time.strftime('%Y-%m-%d'),
-                        'status': 'active',
-                        'position_category': 'phd_program',
-                        'department': department,
-                        'position_level': position_level,
-                        'employment_details': employment_details
-                    }
+                    # Create position using builder pattern
+                    position = (PositionBuilder(university_name, language, url)
+                               .set_basic_info(category, 
+                                              info.get('title', f"{category.replace('_', ' ').title()} PhD Program"),
+                                              info.get('description', ''),
+                                              phd_url)
+                               .set_category('phd_program')
+                               .add_metadata(soup, text_content)
+                               .build())
                     positions.append(position)
         
         return positions
@@ -216,29 +198,17 @@ class ArtUniversityScraper:
                     # Get the specific job posting URL if available
                     job_url = info.get('url', url)
                     if not job_url or job_url == url:
-                        job_url = self._find_job_posting_url(soup, university_name, url)
+                        job_url = URLResolver.find_specific_url(soup, university_name, url, 'job')
                     
-                    # Extract additional details
-                    department = self._extract_department(soup, text_content, language)
-                    position_level = self._classify_academic_position(
-                        info.get('title', ''), info.get('description', ''), language
-                    )
-                    employment_details = self._extract_employment_details(soup, text_content, language)
-                    
-                    position = {
-                        'university': university_name,
-                        'position_type': category,
-                        'title': info.get('title', f"{category.replace('_', ' ').title()} Position"),
-                        'description': info.get('description', ''),
-                        'url': job_url,
-                        'language': language,
-                        'date_found': time.strftime('%Y-%m-%d'),
-                        'status': 'active',
-                        'position_category': 'job_offer',
-                        'department': department,
-                        'position_level': position_level,
-                        'employment_details': employment_details
-                    }
+                    # Create position using builder pattern
+                    position = (PositionBuilder(university_name, language, url)
+                               .set_basic_info(category,
+                                              info.get('title', f"{category.replace('_', ' ').title()} Position"),
+                                              info.get('description', ''),
+                                              job_url)
+                               .set_category('job_offer')
+                               .add_metadata(soup, text_content)
+                               .build())
                     positions.append(position)
         
         return positions
@@ -256,52 +226,21 @@ class ArtUniversityScraper:
             general_jobs = self._extract_general_job_opportunities(soup, found_terms, url)
             
             for job_info in general_jobs:
-                position = {
-                    'university': university_name,
-                    'position_type': 'general_jobs',
-                    'title': job_info.get('title', 'General Job Opportunity'),
-                    'description': job_info.get('description', ''),
-                    'url': url,
-                    'language': language,
-                    'date_found': time.strftime('%Y-%m-%d'),
-                    'status': 'active',
-                    'position_category': 'job_offer'
-                }
+                position = (PositionBuilder(university_name, language, url)
+                           .set_basic_info('general_jobs',
+                                          job_info.get('title', 'General Job Opportunity'),
+                                          job_info.get('description', ''),
+                                          job_info.get('url', url))
+                           .set_category('job_offer')
+                           .add_metadata(soup, text_content)
+                           .build())
                 positions.append(position)
         
         return positions[:5]  # Limit to 5 general job opportunities per page
     
     def _detect_language(self, text_content: str) -> str:
         """Enhanced language detection"""
-        text_lower = text_content.lower()
-        
-        # German indicators
-        german_indicators = [
-            'der', 'die', 'das', 'und', 'für', 'mit', 'von', 'zu', 'auf', 'in', 'an',
-            'stellenausschreibung', 'bewerbung', 'promotion', 'doktorand', 'mitarbeiter',
-            'künstlerische', 'wissenschaftliche', 'forschung', 'kunst', 'hochschule',
-            'universität', 'studium', 'semester', 'bewerbungsfrist', 'zulassung'
-        ]
-        
-        # English indicators
-        english_indicators = [
-            'the', 'and', 'for', 'with', 'from', 'to', 'on', 'in', 'at', 'of',
-            'job opening', 'position', 'vacancy', 'employment', 'career', 'application',
-            'artistic', 'research', 'art', 'university', 'study', 'semester',
-            'application deadline', 'admission', 'graduate', 'doctoral'
-        ]
-        
-        german_count = sum(1 for indicator in german_indicators if indicator in text_lower)
-        english_count = sum(1 for indicator in english_indicators if indicator in text_lower)
-        
-        # If German indicators are significantly more present, classify as German
-        if german_count > english_count * 1.5:
-            return 'german'
-        elif english_count > german_count * 1.5:
-            return 'english'
-        else:
-            # Mixed content - try to determine primary language
-            return 'german' if german_count >= english_count else 'english'
+        return SearchHelper.detect_language(text_content)
     
     def _extract_position_details(self, soup: BeautifulSoup, found_terms: List[str], category: str, position_type: str) -> List[Dict]:
         """Extract detailed position information with improved title extraction"""
@@ -641,127 +580,10 @@ class ArtUniversityScraper:
         
         return None
     
-    def _extract_department(self, soup: BeautifulSoup, text_content: str, language: str) -> str:
-        """Extract the department/faculty from the page content"""
-        departments = DEPARTMENTS.get(language, [])
-        
-        for dept in departments:
-            if dept.lower() in text_content.lower():
-                return dept
-        
-        # Look for department information in page structure
-        dept_elements = soup.find_all(['h1', 'h2', 'h3', 'nav', 'header'], 
-                                    string=lambda text: text and any(dept.lower() in text.lower() for dept in departments))
-        
-        for element in dept_elements:
-            element_text = element.get_text().strip()
-            for dept in departments:
-                if dept.lower() in element_text.lower():
-                    return dept
-        
-        return None
     
-    def _classify_academic_position(self, title: str, description: str, language: str) -> str:
-        """Classify the academic position level"""
-        text = f"{title} {description}".lower()
-        positions = ACADEMIC_POSITIONS.get(language, {})
-        
-        for position_type, keywords in positions.items():
-            if any(keyword.lower() in text for keyword in keywords):
-                return position_type
-        
-        return 'unknown'
     
-    def _extract_employment_details(self, soup: BeautifulSoup, text_content: str, language: str) -> Dict:
-        """Extract employment details like deadline, type, salary"""
-        details = {}
-        employment_details = EMPLOYMENT_DETAILS.get(language, {})
-        
-        # Extract deadline
-        deadline_patterns = employment_details.get('deadline', [])
-        for pattern in deadline_patterns:
-            if pattern.lower() in text_content.lower():
-                # Try to extract the actual date
-                deadline_text = self._extract_date_near_keyword(text_content, pattern)
-                if deadline_text:
-                    details['deadline'] = deadline_text
-                    break
-        
-        # Extract employment type
-        employment_types = employment_details.get('employment_type', [])
-        for emp_type in employment_types:
-            if emp_type.lower() in text_content.lower():
-                details['employment_type'] = emp_type
-                break
-        
-        # Extract salary information
-        salary_patterns = employment_details.get('salary', [])
-        for pattern in salary_patterns:
-            if pattern.lower() in text_content.lower():
-                salary_text = self._extract_salary_near_keyword(text_content, pattern)
-                if salary_text:
-                    details['salary'] = salary_text
-                    break
-        
-        return details
     
-    def _extract_date_near_keyword(self, text: str, keyword: str) -> str:
-        """Extract date information near a keyword"""
-        import re
-        
-        # Look for date patterns near the keyword
-        keyword_pos = text.lower().find(keyword.lower())
-        if keyword_pos == -1:
-            return None
-        
-        # Extract text around the keyword (±200 characters)
-        start = max(0, keyword_pos - 200)
-        end = min(len(text), keyword_pos + 200)
-        context = text[start:end]
-        
-        # Look for date patterns
-        date_patterns = [
-            r'\d{1,2}\.\d{1,2}\.\d{4}',  # DD.MM.YYYY
-            r'\d{1,2}/\d{1,2}/\d{4}',    # DD/MM/YYYY
-            r'\d{4}-\d{1,2}-\d{1,2}',    # YYYY-MM-DD
-            r'\d{1,2}\.\s*\w+\s*\d{4}',  # DD. Month YYYY
-        ]
-        
-        for pattern in date_patterns:
-            match = re.search(pattern, context)
-            if match:
-                return match.group()
-        
-        return None
     
-    def _extract_salary_near_keyword(self, text: str, keyword: str) -> str:
-        """Extract salary information near a keyword"""
-        import re
-        
-        keyword_pos = text.lower().find(keyword.lower())
-        if keyword_pos == -1:
-            return None
-        
-        # Extract text around the keyword (±100 characters)
-        start = max(0, keyword_pos - 100)
-        end = min(len(text), keyword_pos + 100)
-        context = text[start:end]
-        
-        # Look for salary patterns
-        salary_patterns = [
-            r'TV-L\s*\d+',  # TV-L 13
-            r'TVöD\s*\d+',  # TVöD 13
-            r'Entgeltgruppe\s*\d+',  # Entgeltgruppe 13
-            r'\d+\s*€',     # 3000 €
-            r'\d+\.\d+\s*€', # 3.000 €
-        ]
-        
-        for pattern in salary_patterns:
-            match = re.search(pattern, context, re.IGNORECASE)
-            if match:
-                return match.group()
-        
-        return None
     
     def _extract_job_title(self, element, found_terms: List[str]) -> str:
         """Extract job title from element with improved accuracy"""
@@ -816,62 +638,15 @@ class ArtUniversityScraper:
     
     def _clean_job_title(self, title: str) -> str:
         """Clean and format job title"""
-        # Remove extra whitespace
-        title = ' '.join(title.split())
-        
-        # Remove common prefixes/suffixes
-        prefixes_to_remove = [
-            'Stellenausschreibung:', 'Stelle:', 'Position:', 'Job:', 'Vacancy:',
-            'Ausschreibung:', 'Bewerbung:', 'Karriere:'
-        ]
-        
-        for prefix in prefixes_to_remove:
-            if title.startswith(prefix):
-                title = title[len(prefix):].strip()
-        
-        # Capitalize properly
-        title = title.title()
-        
-        # Limit length
-        if len(title) > 80:
-            title = title[:77] + '...'
-        
-        return title
+        return TextProcessor.clean_job_title(title)
     
     def _clean_phd_title(self, title: str) -> str:
         """Clean and format PhD program title"""
-        # Remove extra whitespace
-        title = ' '.join(title.split())
-        
-        # Remove common prefixes
-        prefixes_to_remove = [
-            'PhD Program:', 'Doctoral Program:', 'Promotionsprogramm:', 'Doktorandenprogramm:',
-            'Graduate Program:', 'PhD:', 'Doctorate:'
-        ]
-        
-        for prefix in prefixes_to_remove:
-            if title.startswith(prefix):
-                title = title[len(prefix):].strip()
-        
-        # Capitalize properly
-        title = title.title()
-        
-        # Limit length
-        if len(title) > 100:
-            title = title[:97] + '...'
-        
-        return title
+        return TextProcessor.clean_phd_title(title)
     
     def _clean_job_description(self, description: str) -> str:
         """Clean job description text"""
-        # Remove extra whitespace
-        description = ' '.join(description.split())
-        
-        # Limit length
-        if len(description) > 300:
-            description = description[:297] + '...'
-        
-        return description
+        return TextProcessor.clean_description(description)
     
     def _extract_academic_positions(self, soup: BeautifulSoup, found_terms: List[str]) -> List[Dict]:
         """Extract academic position details"""

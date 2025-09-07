@@ -7,6 +7,7 @@ import json
 from datetime import datetime
 from typing import List, Dict, Optional
 import logging
+from utils import DatabaseHelper
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -91,30 +92,17 @@ class DatabaseManager:
                     logger.info(f"Position already exists: {position_data['title']}")
                     return False
                 
-                # Convert employment_details dict to JSON string
-                employment_details_json = None
-                if 'employment_details' in position_data and position_data['employment_details']:
-                    import json
-                    employment_details_json = json.dumps(position_data['employment_details'])
+                # Prepare position data for database insertion
+                prepared_data = DatabaseHelper.prepare_position_for_db(position_data)
                 
-                cursor.execute('''
-                    INSERT INTO positions (university, position_type, title, description, url, language, date_found, status, 
-                                         position_category, department, position_level, employment_details)
-                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-                ''', (
-                    position_data['university'],
-                    position_data['position_type'],
-                    position_data['title'],
-                    position_data['description'],
-                    position_data['url'],
-                    position_data['language'],
-                    position_data['date_found'],
-                    position_data.get('status', 'active'),
-                    position_data.get('position_category'),
-                    position_data.get('department'),
-                    position_data.get('position_level'),
-                    employment_details_json
-                ))
+                # Get field names and values
+                fields = DatabaseHelper.get_position_fields()
+                values = [prepared_data.get(field) for field in fields]
+                
+                cursor.execute(f'''
+                    INSERT INTO positions ({', '.join(fields)})
+                    VALUES ({', '.join(['?' for _ in fields])})
+                ''', values)
                 
                 conn.commit()
                 logger.info(f"Added new position: {position_data['title']}")
