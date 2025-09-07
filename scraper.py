@@ -140,11 +140,11 @@ class ArtUniversityScraper:
         # Enhanced language detection
         language = self._detect_language(text_content)
         
-        # Search for PhD programs and job offers separately
+        # Search for both PhD programs and job positions
         phd_positions = self._extract_phd_programs(soup, text_content, language, university_name, url)
         job_positions = self._extract_job_offers(soup, text_content, language, university_name, url)
         
-        # Also search for general job opportunities
+        # Also search for general job opportunities (mitarbeiter positions)
         general_job_positions = self._extract_general_job_opportunities_from_page(soup, text_content, language, university_name, url)
         
         positions.extend(phd_positions)
@@ -370,22 +370,62 @@ class ArtUniversityScraper:
         text_lower = text.lower()
         return any(indicator in text_lower for indicator in inactive_indicators)
     
+    def _is_non_position_content(self, text: str) -> bool:
+        """Check if this content is not about job positions (exhibitions, research catalogues, etc.)"""
+        non_position_indicators = [
+            'exhibition', 'ausstellung', 'expo', 'show', 'schau',
+            'research catalogue', 'forschungsverzeichnis', 'research catalog',
+            'publication', 'publikation', 'book', 'buch', 'journal', 'zeitschrift',
+            'event', 'veranstaltung', 'conference', 'konferenz', 'symposium',
+            'gallery', 'galerie', 'museum', 'collection', 'sammlung',
+            'student work', 'studentenarbeit', 'student project', 'studentenprojekt',
+            'graduation', 'absolvent', 'alumni', 'alumnus',
+            'news', 'nachrichten', 'announcement', 'ankündigung',
+            'program', 'programm', 'course', 'kurs', 'workshop',
+            'visit', 'besuch', 'opening', 'eröffnung', 'closing', 'schließung'
+        ]
+        
+        text_lower = text.lower()
+        
+        # If the text contains multiple non-position indicators, it's likely not a job posting
+        non_position_count = sum(1 for indicator in non_position_indicators if indicator in text_lower)
+        
+        # Also check for specific patterns that indicate non-position content
+        non_position_patterns = [
+            r'exhibition.*opening',
+            r'research.*catalogue',
+            r'student.*work',
+            r'graduation.*show',
+            r'publication.*release',
+            r'event.*announcement'
+        ]
+        
+        import re
+        pattern_matches = sum(1 for pattern in non_position_patterns if re.search(pattern, text_lower))
+        
+        # Consider it non-position content if it has multiple indicators or pattern matches
+        return non_position_count >= 2 or pattern_matches >= 1
+    
     def _extract_general_job_opportunities(self, soup: BeautifulSoup, found_terms: List[str], current_url: str) -> List[Dict]:
         """Extract general job opportunities from broader page content"""
         positions = []
         
-        # Look for job-related sections and pages (art/academic focused)
+        # Look for job-related sections and pages (more specific job-focused terms)
         job_sections = soup.find_all(['section', 'div', 'article'], 
                                    class_=lambda x: x and any(word in x.lower() for word in 
                                                            ['karriere', 'career', 'jobs', 'stellen', 'positions',
                                                             'mitarbeiter', 'bewerbung', 'application', 'ausschreibung', 'vacancy',
-                                                            'kunst', 'art', 'forschung', 'research', 'lehre', 'teaching']))
+                                                            'lehre', 'teaching', 'employment', 'recruitment']))
         
         for section in job_sections:
             section_text = section.get_text().strip()
             
             # Skip inactive sections
             if self._is_inactive_job_posting(section_text):
+                continue
+            
+            # Skip non-position content like exhibitions, research catalogues, etc.
+            if self._is_non_position_content(section_text):
                 continue
             
             # Look for job listings within the section
@@ -466,7 +506,7 @@ class ArtUniversityScraper:
             
             if any(keyword in href or keyword in link_text for keyword in phd_keywords):
                 # Make sure it's a full URL
-                full_url = self._make_full_url(href, current_url)
+                full_url = URLResolver.make_full_url(href, current_url)
                 if full_url:
                     return full_url
         
@@ -480,7 +520,7 @@ class ArtUniversityScraper:
             section_links = section.find_all('a', href=True)
             for link in section_links:
                 href = link.get('href', '')
-                full_url = self._make_full_url(href, soup)
+                full_url = URLResolver.make_full_url(href, current_url)
                 if full_url:
                     return full_url
         
@@ -503,7 +543,7 @@ class ArtUniversityScraper:
             
             if any(keyword in href or keyword in link_text for keyword in job_keywords):
                 # Make sure it's a full URL
-                full_url = self._make_full_url(href, current_url)
+                full_url = URLResolver.make_full_url(href, current_url)
                 if full_url:
                     return full_url
         
@@ -517,33 +557,12 @@ class ArtUniversityScraper:
             section_links = section.find_all('a', href=True)
             for link in section_links:
                 href = link.get('href', '')
-                full_url = self._make_full_url(href, soup)
+                full_url = URLResolver.make_full_url(href, current_url)
                 if full_url:
                     return full_url
         
         return None
     
-    def _make_full_url(self, href: str, current_url: str) -> str:
-        """Convert relative URL to full URL"""
-        if not href:
-            return None
-        
-        # If it's already a full URL, return it
-        if href.startswith(('http://', 'https://')):
-            return href
-        
-        # Parse the current URL to get the base URL
-        from urllib.parse import urljoin, urlparse
-        
-        # Use urljoin to properly combine URLs
-        full_url = urljoin(current_url, href)
-        
-        # Validate that the URL is properly formed
-        parsed = urlparse(full_url)
-        if parsed.netloc:  # Has a domain
-            return full_url
-        
-        return href  # Return original if parsing failed
     
     def _find_specific_job_url(self, element, current_url: str) -> str:
         """Find the specific URL for a job posting within an element"""
@@ -561,7 +580,7 @@ class ArtUniversityScraper:
             ]
             
             if any(indicator in href.lower() or indicator in link_text for indicator in job_indicators):
-                full_url = self._make_full_url(href, current_url)
+                full_url = URLResolver.make_full_url(href, current_url)
                 if full_url:
                     return full_url
         
@@ -574,7 +593,7 @@ class ArtUniversityScraper:
                 link_text = link.get_text().lower()
                 
                 if any(indicator in href.lower() or indicator in link_text for indicator in job_indicators):
-                    full_url = self._make_full_url(href, current_url)
+                    full_url = URLResolver.make_full_url(href, current_url)
                     if full_url:
                         return full_url
         
@@ -822,9 +841,30 @@ class ArtUniversityScraper:
         """Search for specific terms across universities"""
         if not terms:
             terms = [
+                # Mitarbeiter positions (German)
+                'künstlerische mitarbeiter', 'wissenschaftliche mitarbeiter',
                 'media art mitarbeiter', 'ai art mitarbeiter', 'artistic research mitarbeiter',
-                'künstlerische mitarbeiter', 'wissenschaftliche mitarbeiter', 'practice-based PhD',
-                'media art PhD', 'ai art PhD', 'artistic research PhD'
+                'medienkunst mitarbeiter', 'ki-kunst mitarbeiter', 'klangkunst mitarbeiter',
+                'performance art mitarbeiter', 'interactive art mitarbeiter',
+                
+                # PhD programs (German)
+                'media art phd', 'ai art phd', 'artistic research phd',
+                'medienkunst promotion', 'ki-kunst promotion', 'klangkunst promotion',
+                'practice-based phd', 'künstlerische forschung', 'praxis-basierte forschung',
+                'practice-led research', 'artistic practice phd', 'creative research phd',
+                'dfa', 'doctor of fine arts',
+                'studio-based research', 'research through practice', 'practice as research',
+                
+                # Staff positions (English)
+                'artistic staff', 'research staff', 'academic staff',
+                'media art staff', 'ai art staff', 'artistic research staff',
+                
+                # PhD programs (English)
+                'media art phd', 'ai art phd', 'artistic research phd',
+                'practice-based phd', 'creative research phd', 'practice-led research',
+                'artistic practice phd', 'research through practice', 'practice as research',
+                'dfa', 'doctor of fine arts',
+                'studio-based research', 'creative practice phd', 'interdisciplinary research'
             ]
         
         if not universities:
@@ -856,6 +896,10 @@ class ArtUniversityScraper:
                 # Enhanced search for academic positions with consolidated types
                 for term in terms:
                     if term.lower() in text_content.lower():
+                        # Skip if this appears to be non-position content
+                        if self._is_non_position_content(text_content):
+                            continue
+                            
                         # Determine position type based on term
                         position_type = 'specific_search'
                         
