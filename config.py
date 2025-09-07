@@ -400,6 +400,108 @@ for country, unis in UNIVERSITIES_BY_COUNTRY.items():
             'website': f'https://{uni.lower().replace(" ", "").replace("ä", "ae").replace("ö", "oe").replace("ü", "ue")}.de' if country == 'germany' else f'https://{uni.lower().replace(" ", "").replace("ä", "ae").replace("ö", "oe").replace("ü", "ue")}.com'
         })
 
+# Department names for extraction
+DEPARTMENTS = {
+    'german': [
+        'Kunsthochschule', 'Kunstakademie', 'Hochschule für Bildende Künste',
+        'Fakultät für Kunst', 'Fakultät für Design', 'Fakultät für Medien',
+        'Institut für Kunst', 'Institut für Design', 'Institut für Medien',
+        'Fachbereich Kunst', 'Fachbereich Design', 'Fachbereich Medien',
+        'Studiengang Kunst', 'Studiengang Design', 'Studiengang Medien',
+        'Kunstwissenschaft', 'Medienwissenschaft', 'Designwissenschaft',
+        'Digitale Kunst', 'Neue Medien', 'Interaktive Medien',
+        'Fotografie', 'Malerei', 'Skulptur', 'Grafik', 'Illustration',
+        'Kommunikationsdesign', 'Produktdesign', 'Mode', 'Textil',
+        'Architektur', 'Innenarchitektur', 'Landschaftsarchitektur',
+        'Kunstgeschichte', 'Kunstpädagogik', 'Kunsttherapie',
+        'Forschungsinstitut', 'Forschungszentrum', 'Graduiertenschule',
+        'Künstliche Intelligenz', 'KI', 'Artificial Intelligence', 'AI', 'Machine Learning',
+        'Maschinelles Lernen', 'Deep Learning', 'Neuronale Netze', 'Neural Networks',
+        'Algorithmic Art', 'Algorithmische Kunst', 'Generative AI', 'Generative Kunst',
+        'AI Art', 'KI-Kunst', 'Computational Creativity', 'Computational Arts',
+        'Creative AI', 'Kreative KI', 'AI Tools', 'KI-Tools',
+        'Informatik', 'Computer Science', 'Software Engineering', 'Programmierung',
+        'Digitale Technologien', 'Medieninformatik', 'Computational Arts',
+        'Creative Coding', 'Generative Design', 'Algorithmic Design',
+        'Musik', 'Musikwissenschaft', 'Komposition', 'Sound Design', 'Klangkunst',
+        'Audio Engineering', 'Tontechnik', 'Audioproduktion', 'Musikproduktion',
+        'Elektronische Musik', 'Elektroakustik', 'Akustik', 'Sound Art',
+        'Medienkunst', 'Digital Art', 'Electronic Art', 'Cyber Art',
+        'Net Art', 'Internet Art', 'Web Art', 'Software Art',
+        'Generative Art', 'Algorithmic Art', 'Computational Art',
+        'Interactive Art', 'Participatory Art', 'Installation Art',
+        'Video Art', 'Digital Video', 'Experimental Film', 'Animation',
+        'Performance Art', 'Live Art', 'Body Art', 'Conceptual Art'
+    ],
+    'english': [
+        'Art School', 'Academy of Art', 'College of Art', 'University of Art',
+        'Faculty of Art', 'Faculty of Design', 'Faculty of Media',
+        'Institute of Art', 'Institute of Design', 'Institute of Media',
+        'Department of Art', 'Department of Design', 'Department of Media',
+        'Program in Art', 'Program in Design', 'Program in Media',
+        'Art Studies', 'Media Studies', 'Design Studies',
+        'Digital Art', 'New Media', 'Interactive Media',
+        'Photography', 'Painting', 'Sculpture', 'Graphics', 'Illustration',
+        'Communication Design', 'Product Design', 'Fashion', 'Textile',
+        'Architecture', 'Interior Architecture', 'Landscape Architecture',
+        'Art History', 'Art Education', 'Art Therapy',
+        'Research Institute', 'Research Center', 'Graduate School',
+        'Artificial Intelligence', 'AI', 'Machine Learning',
+        'Deep Learning', 'Neural Networks',
+        'Algorithmic Art', 'Generative AI', 'Generative Art',
+        'AI Art', 'Computational Creativity', 'Computational Arts',
+        'Creative AI', 'AI Tools',
+        'Computer Science', 'Software Engineering', 'Programming',
+        'Digital Technologies', 'Media Informatics', 'Computational Arts',
+        'Creative Coding', 'Generative Design', 'Algorithmic Design',
+        'Music', 'Music Studies', 'Composition', 'Sound Design', 'Sound Art',
+        'Audio Engineering', 'Audio Production', 'Music Production',
+        'Electronic Music', 'Electroacoustics', 'Acoustics',
+        'Media Art', 'Digital Art', 'Electronic Art', 'Cyber Art',
+        'Net Art', 'Internet Art', 'Web Art', 'Software Art',
+        'Generative Art', 'Algorithmic Art', 'Computational Art',
+        'Interactive Art', 'Participatory Art', 'Installation Art',
+        'Video Art', 'Digital Video', 'Experimental Film', 'Animation',
+        'Performance Art', 'Live Art', 'Body Art', 'Conceptual Art'
+    ]
+}
+
+# Academic position classifications
+ACADEMIC_POSITIONS = {
+    'german': {
+        'professor': ['Professor', 'Professorin', 'W2 Professor', 'W3 Professor', 'Universitätsprofessor'],
+        'lecturer': ['Dozent', 'Dozentin', 'Lehrbeauftragter', 'Lehrbeauftragte', 'Lektor', 'Lektorin'],
+        'researcher': ['Wissenschaftliche Mitarbeiter', 'Wissenschaftliche Mitarbeiterin', 'Forschungsassistent', 'Forschungsassistentin'],
+        'artistic_staff': ['Künstlerische Mitarbeiter', 'Künstlerische Mitarbeiterin', 'Künstlerische Assistenz'],
+        'phd_student': ['Doktorand', 'Doktorandin', 'Promovend', 'Promovendin'],
+        'postdoc': ['Postdoc', 'Postdoktorand', 'Postdoktorandin', 'Postdoktorand/in']
+    },
+    'english': {
+        'professor': ['Professor', 'Full Professor', 'Associate Professor', 'Assistant Professor'],
+        'lecturer': ['Lecturer', 'Senior Lecturer', 'Reader', 'Teaching Fellow'],
+        'researcher': ['Research Assistant', 'Research Associate', 'Research Fellow', 'Research Officer'],
+        'artistic_staff': ['Artistic Assistant', 'Studio Assistant', 'Technical Assistant'],
+        'phd_student': ['PhD Student', 'Graduate Student', 'Doctoral Student', 'PhD Candidate'],
+        'postdoc': ['Postdoc', 'Postdoctoral Researcher', 'Postdoctoral Fellow']
+    }
+}
+
+# Employment details detection patterns
+EMPLOYMENT_DETAILS = {
+    'german': {
+        'deadline': ['Bewerbungsfrist', 'Einsendeschluss', 'Deadline', 'bis zum', 'bis spätestens'],
+        'employment_type': ['Vollzeit', 'Teilzeit', 'befristet', 'unbefristet', 'Werkvertrag'],
+        'salary': ['Entgeltgruppe', 'Gehalt', 'Vergütung', 'Besoldung', 'TV-L', 'TVöD'],
+        'requirements': ['Voraussetzungen', 'Qualifikation', 'Studium', 'Abschluss', 'Erfahrung']
+    },
+    'english': {
+        'deadline': ['Application Deadline', 'Deadline', 'Closing Date', 'Due Date', 'Apply by'],
+        'employment_type': ['Full-time', 'Part-time', 'Temporary', 'Permanent', 'Contract'],
+        'salary': ['Salary', 'Compensation', 'Pay', 'Wage', 'Remuneration'],
+        'requirements': ['Requirements', 'Qualifications', 'Education', 'Experience', 'Skills']
+    }
+}
+
 # Scraping configuration
 SCRAPING_CONFIG = {
     'max_pages_per_university': 3,

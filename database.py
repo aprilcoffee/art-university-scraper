@@ -224,8 +224,8 @@ class DatabaseManager:
                 
                 cursor.execute('''
                     DELETE FROM positions 
-                    WHERE created_at < datetime('now', '-{} days')
-                '''.format(days_old))
+                    WHERE created_at < datetime('now', '-? days')
+                ''', (days_old,))
                 
                 deleted_count = cursor.rowcount
                 conn.commit()

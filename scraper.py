@@ -29,7 +29,6 @@ class ArtUniversityScraper:
     def __init__(self):
         self.db = DatabaseManager()
         self.session = requests.Session()
-        self.session.headers.update(SCRAPING_CONFIG['headers'])
         self.session.headers['User-Agent'] = SCRAPING_CONFIG['user_agent']
         self.driver = None
         self.setup_selenium()
@@ -807,7 +806,7 @@ class ArtUniversityScraper:
             total_positions += positions_found
             
             # Add delay between universities
-            time.sleep(SCRAPING_CONFIG['request_delay'] * 2)
+            time.sleep(SCRAPING_CONFIG['delay_between_requests'] * 2)
         
         logger.info(f"Scraping completed. Total positions found: {total_positions}")
         return results
@@ -832,7 +831,7 @@ class ArtUniversityScraper:
             total_positions += positions_found
             
             # Add delay between universities
-            time.sleep(SCRAPING_CONFIG['request_delay'] * 2)
+            time.sleep(SCRAPING_CONFIG['delay_between_requests'] * 2)
         
         logger.info(f"Scraping completed for {country}. Total positions found: {total_positions}")
         return results
