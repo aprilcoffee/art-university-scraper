@@ -1,0 +1,402 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - Art University Job Scraper{% endblock %}
+
+{% block content %}
+<div id="alert-container"></div>
+
+<!-- Hero Section -->
+<div class="row mb-5">
+    <div class="col-12">
+        <div class="card text-center">
+            <div class="card-body py-5">
+                <h1 class="display-4 mb-3">
+                    <i class="fas fa-university text-primary me-3"></i>
+                    Art University Job Scraper
+                </h1>
+                <p class="lead mb-4">
+                    Discover media art, digital art, and AI art positions at universities worldwide
+                </p>
+                <div class="row justify-content-center">
+                    <div class="col-md-8">
+                        <div class="input-group">
+                            <input type="text" class="form-control search-box" id="quickSearch" placeholder="Search for positions...">
+                            <button class="btn btn-primary" type="button" onclick="quickSearch()">
+                                <i class="fas fa-search me-1"></i>Search
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Statistics Cards -->
+<div class="row mb-5">
+    <div class="col-md-3 mb-4">
+        <div class="card stat-card h-100">
+            <div class="card-body text-center">
+                <i class="fas fa-briefcase fa-3x text-primary mb-3"></i>
+                <h3 class="card-title" id="totalPositions">{{ stats.total_positions or 0 }}</h3>
+                <p class="card-text">Total Positions Found</p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-3 mb-4">
+        <div class="card stat-card h-100">
+            <div class="card-body text-center">
+                <i class="fas fa-building fa-3x text-success mb-3"></i>
+                <h3 class="card-title" id="totalUniversities">{{ (stats.top_universities|length) + 5 }}</h3>
+                <p class="card-text">Universities Monitored</p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-3 mb-4">
+        <div class="card stat-card h-100">
+            <div class="card-body text-center">
+                <i class="fas fa-language fa-3x text-warning mb-3"></i>
+                <h3 class="card-title" id="languagesCount">{{ stats.languages|length or 2 }}</h3>
+                <p class="card-text">Languages Supported</p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-3 mb-4">
+        <div class="card stat-card h-100">
+            <div class="card-body text-center">
+                <i class="fas fa-chart-line fa-3x text-info mb-3"></i>
+                <h3 class="card-title" id="activePositions">{{ stats.total_positions or 0 }}</h3>
+                <p class="card-text">Active Positions</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Quick Actions -->
+<div class="row mb-5">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="fas fa-bolt me-2"></i>Quick Actions
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-3 mb-3">
+                        <button class="btn btn-primary w-100" onclick="startScraping()">
+                            <i class="fas fa-spider me-2"></i>Start Scraping
+                        </button>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <a href="{{ url_for('positions_page') }}" class="btn btn-success w-100">
+                            <i class="fas fa-list me-2"></i>View All Positions
+                        </a>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <a href="{{ url_for('universities_page') }}" class="btn btn-info w-100">
+                            <i class="fas fa-university me-2"></i>Browse Universities
+                        </a>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <button class="btn btn-warning w-100" onclick="refreshStats()">
+                            <i class="fas fa-sync me-2"></i>Refresh Stats
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Position Types Distribution -->
+<div class="row mb-5">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="fas fa-chart-pie me-2"></i>Position Types
+                </h5>
+            </div>
+            <div class="card-body">
+                <canvas id="positionTypesChart" width="400" height="200"></canvas>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="fas fa-globe me-2"></i>Languages
+                </h5>
+            </div>
+            <div class="card-body">
+                <canvas id="languagesChart" width="400" height="200"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Recent Positions -->
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">
+                    <i class="fas fa-clock me-2"></i>Recent Positions
+                </h5>
+                <a href="{{ url_for('positions_page') }}" class="btn btn-sm btn-outline-primary">
+                    View All <i class="fas fa-arrow-right ms-1"></i>
+                </a>
+            </div>
+            <div class="card-body">
+                <div id="recentPositions">
+                    <div class="text-center">
+                        <div class="spinner-border text-primary" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                        <p class="mt-2">Loading recent positions...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Scraping Status Modal -->
+<div class="modal fade" id="scrapingModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    <i class="fas fa-spider me-2"></i>Scraping Progress
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3">
+                    <div class="d-flex justify-content-between mb-1">
+                        <span id="scrapingCurrent">Starting...</span>
+                        <span id="scrapingProgress">0/0</span>
+                    </div>
+                    <div class="progress">
+                        <div class="progress-bar" id="scrapingProgressBar" style="width: 0%"></div>
+                    </div>
+                </div>
+                
+                <div id="scrapingResults" class="mt-4">
+                    <h6>Results:</h6>
+                    <div id="scrapingResultsList" class="list-group">
+                        <!-- Results will be populated here -->
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+let scrapingInterval = null;
+
+$(document).ready(function() {
+    loadRecentPositions();
+    loadCharts();
+    refreshStats();
+});
+
+function quickSearch() {
+    const query = $('#quickSearch').val();
+    if (query.trim()) {
+        window.location.href = `{{ url_for('positions_page') }}?search=${encodeURIComponent(query)}`;
+    }
+}
+
+function startScraping() {
+    $.ajax({
+        url: '/api/start-scraping',
+        method: 'POST',
+        success: function(response) {
+            showAlert('Scraping started successfully!', 'success');
+            $('#scrapingModal').modal('show');
+            startScrapingStatusCheck();
+        },
+        error: function(xhr) {
+            const error = xhr.responseJSON?.error || 'Failed to start scraping';
+            showAlert(`Error: ${error}`, 'danger');
+        }
+    });
+}
+
+function startScrapingStatusCheck() {
+    scrapingInterval = setInterval(function() {
+        $.get('/api/scraping-status')
+            .done(function(status) {
+                updateScrapingProgress(status);
+                
+                if (!status.running) {
+                    clearInterval(scrapingInterval);
+                    scrapingInterval = null;
+                    refreshStats();
+                    showAlert('Scraping completed!', 'success');
+                }
+            })
+            .fail(function() {
+                clearInterval(scrapingInterval);
+                scrapingInterval = null;
+                showAlert('Error checking scraping status', 'danger');
+            });
+    }, 2000);
+}
+
+function updateScrapingProgress(status) {
+    $('#scrapingCurrent').text(status.current);
+    $('#scrapingProgress').text(`${status.progress}/${status.total}`);
+    
+    const percentage = status.total > 0 ? (status.progress / status.total) * 100 : 0;
+    $('#scrapingProgressBar').css('width', `${percentage}%`);
+    
+    // Update results list
+    const resultsList = $('#scrapingResultsList');
+    resultsList.empty();
+    
+    for (const [university, count] of Object.entries(status.results)) {
+        const resultItem = $(`
+            <div class="list-group-item d-flex justify-content-between align-items-center">
+                <span>${university}</span>
+                <span class="badge bg-primary rounded-pill">${count}</span>
+            </div>
+        `);
+        resultsList.append(resultItem);
+    }
+}
+
+function loadRecentPositions() {
+    $.get('/api/positions?limit=5')
+        .done(function(positions) {
+            const container = $('#recentPositions');
+            
+            if (positions.length === 0) {
+                container.html('<p class="text-muted text-center">No positions found yet. Start scraping to discover opportunities!</p>');
+                return;
+            }
+            
+            let html = '';
+            positions.forEach(function(position) {
+                html += `
+                    <div class="position-card card mb-3">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <div>
+                                    <h6 class="card-title mb-1">${position.title}</h6>
+                                    <p class="card-text text-muted mb-2">${position.university}</p>
+                                    <p class="card-text small">${truncateText(position.description, 150)}</p>
+                                </div>
+                                <div class="text-end">
+                                    <span class="badge badge-custom mb-2">${position.position_type}</span>
+                                    <br>
+                                    <small class="text-muted">${formatDate(position.date_found)}</small>
+                                </div>
+                            </div>
+                            <div class="mt-2">
+                                <a href="${position.url}" target="_blank" class="btn btn-sm btn-outline-primary">
+                                    <i class="fas fa-external-link-alt me-1"></i>View
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            container.html(html);
+        })
+        .fail(function() {
+            $('#recentPositions').html('<p class="text-danger text-center">Error loading recent positions</p>');
+        });
+}
+
+function loadCharts() {
+    // Position Types Chart
+    const positionTypesCtx = document.getElementById('positionTypesChart').getContext('2d');
+    const positionTypesData = {{ stats.position_types|tojson|safe }};
+    
+    new Chart(positionTypesCtx, {
+        type: 'doughnut',
+        data: {
+            labels: Object.keys(positionTypesData),
+            datasets: [{
+                data: Object.values(positionTypesData),
+                backgroundColor: [
+                    '#3498db',
+                    '#e74c3c',
+                    '#2ecc71',
+                    '#f39c12',
+                    '#9b59b6'
+                ]
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false
+        }
+    });
+    
+    // Languages Chart
+    const languagesCtx = document.getElementById('languagesChart').getContext('2d');
+    const languagesData = {{ stats.languages|tojson|safe }};
+    
+    new Chart(languagesCtx, {
+        type: 'bar',
+        data: {
+            labels: Object.keys(languagesData),
+            datasets: [{
+                label: 'Positions',
+                data: Object.values(languagesData),
+                backgroundColor: '#3498db'
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+}
+
+function refreshStats() {
+    $.get('/api/statistics')
+        .done(function(stats) {
+            $('#totalPositions').text(stats.total_positions || 0);
+            $('#activePositions').text(stats.total_positions || 0);
+            $('#languagesCount').text(Object.keys(stats.languages || {}).length || 2);
+        })
+        .fail(function() {
+            showAlert('Error refreshing statistics', 'danger');
+        });
+}
+
+// Cleanup on page unload
+$(window).on('beforeunload', function() {
+    if (scrapingInterval) {
+        clearInterval(scrapingInterval);
+    }
+});
+</script>
+{% endblock %}

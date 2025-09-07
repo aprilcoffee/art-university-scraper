@@ -1,0 +1,402 @@
+{% extends "base.html" %}
+
+{% block title %}Universities - Art University Job Scraper{% endblock %}
+
+{% block content %}
+<div id="alert-container"></div>
+
+<!-- Header -->
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body">
+                <h1 class="card-title">
+                    <i class="fas fa-university me-2"></i>Art Universities Worldwide
+                </h1>
+                <p class="card-text text-muted">
+                    Comprehensive list of universities offering art, media art, and digital art programs
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Statistics -->
+<div class="row mb-4">
+    <div class="col-md-3 mb-3">
+        <div class="card stat-card text-center">
+            <div class="card-body">
+                <i class="fas fa-globe fa-2x text-primary mb-2"></i>
+                <h4>{{ universities|length }}</h4>
+                <p class="mb-0">Total Universities</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 mb-3">
+        <div class="card stat-card text-center">
+            <div class="card-body">
+                <i class="fas fa-flag me-2"></i>
+                <h4>{{ universities|selectattr('country', 'equalto', 'Germany')|list|length }}</h4>
+                <p class="mb-0">German Universities</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 mb-3">
+        <div class="card stat-card text-center">
+            <div class="card-body">
+                <i class="fas fa-graduation-cap fa-2x text-success mb-2"></i>
+                <h4>{{ universities|selectattr('has_phd', 'equalto', true)|list|length }}</h4>
+                <p class="mb-0">PhD Programs</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 mb-3">
+        <div class="card stat-card text-center">
+            <div class="card-body">
+                <i class="fas fa-map-marker-alt fa-2x text-warning mb-2"></i>
+                <h4>{{ universities|map(attribute='city')|unique|list|length }}</h4>
+                <p class="mb-0">Cities</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Filters -->
+<div class="filter-section">
+    <h5 class="mb-3">
+        <i class="fas fa-filter me-2"></i>Filter Universities
+    </h5>
+    <div class="row">
+        <div class="col-md-3 mb-3">
+            <label for="countryFilter" class="form-label">Country</label>
+            <select class="form-select" id="countryFilter">
+                <option value="">All Countries</option>
+                <option value="Germany">Germany</option>
+                <option value="Austria">Austria</option>
+                <option value="UK">UK</option>
+                <option value="USA">USA</option>
+            </select>
+        </div>
+        <div class="col-md-3 mb-3">
+            <label for="phdFilter" class="form-label">PhD Programs</label>
+            <select class="form-select" id="phdFilter">
+                <option value="">All Universities</option>
+                <option value="true">Has PhD Programs</option>
+                <option value="false">No PhD Programs</option>
+            </select>
+        </div>
+        <div class="col-md-3 mb-3">
+            <label for="searchInput" class="form-label">Search</label>
+            <input type="text" class="form-control search-box" id="searchInput" placeholder="Search universities...">
+        </div>
+        <div class="col-md-3 mb-3 d-flex align-items-end">
+            <button class="btn btn-primary me-2" onclick="applyFilters()">
+                <i class="fas fa-search me-1"></i>Filter
+            </button>
+            <button class="btn btn-outline-secondary" onclick="clearFilters()">
+                <i class="fas fa-times me-1"></i>Clear
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Universities Grid -->
+<div class="row" id="universitiesContainer">
+    {% for university in universities %}
+    <div class="col-md-6 col-lg-4 mb-4 university-card" data-university='{{ university|tojson }}'>
+        <div class="card h-100">
+            <div class="card-body">
+                <h5 class="card-title">{{ university.name }}</h5>
+                <p class="card-text text-muted mb-2">
+                    <i class="fas fa-map-marker-alt me-1"></i>{{ university.city }}, {{ university.country }}
+                </p>
+                
+                <div class="mb-3">
+                    {% if university.has_phd %}
+                        <span class="badge bg-success me-2">
+                            <i class="fas fa-graduation-cap me-1"></i>PhD Available
+                        </span>
+                    {% else %}
+                        <span class="badge bg-secondary me-2">
+                            <i class="fas fa-times me-1"></i>No PhD
+                        </span>
+                    {% endif %}
+                    
+                    {% if university.alternative %}
+                        <span class="badge bg-info">
+                            <i class="fas fa-info-circle me-1"></i>{{ university.alternative }}
+                        </span>
+                    {% endif %}
+                </div>
+                
+                <div class="mb-3">
+                    <small class="text-muted">
+                        <i class="fas fa-globe me-1"></i>
+                        <a href="{{ university.website }}" target="_blank" class="text-decoration-none">
+                            {{ university.website }}
+                        </a>
+                    </small>
+                </div>
+                
+                <div class="d-flex justify-content-between">
+                    <button class="btn btn-outline-primary btn-sm" onclick="scrapeUniversity('{{ university.name }}')">
+                        <i class="fas fa-spider me-1"></i>Scrape
+                    </button>
+                    <button class="btn btn-outline-info btn-sm" onclick="viewPositions('{{ university.name }}')">
+                        <i class="fas fa-briefcase me-1"></i>View Positions
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+<!-- University Details Modal -->
+<div class="modal fade" id="universityModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="universityModalTitle">University Details</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body" id="universityModalBody">
+                <!-- University details will be loaded here -->
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" onclick="scrapeUniversityFromModal()">
+                    <i class="fas fa-spider me-1"></i>Scrape This University
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Scraping Progress Modal -->
+<div class="modal fade" id="scrapingModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    <i class="fas fa-spider me-2"></i>Scraping University
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="text-center">
+                    <div class="spinner-border text-primary mb-3" role="status">
+                        <span class="visually-hidden">Scraping...</span>
+                    </div>
+                    <p id="scrapingStatus">Starting to scrape...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+let allUniversities = {{ universities|tojson|safe }};
+let filteredUniversities = [...allUniversities];
+
+$(document).ready(function() {
+    // Set up search input
+    $('#searchInput').on('keypress', function(e) {
+        if (e.which === 13) { // Enter key
+            applyFilters();
+        }
+    });
+});
+
+function applyFilters() {
+    const country = $('#countryFilter').val();
+    const hasPhd = $('#phdFilter').val();
+    const searchTerm = $('#searchInput').val().toLowerCase();
+    
+    filteredUniversities = allUniversities.filter(function(university) {
+        let matches = true;
+        
+        if (country && university.country !== country) {
+            matches = false;
+        }
+        
+        if (hasPhd !== '' && university.has_phd.toString() !== hasPhd) {
+            matches = false;
+        }
+        
+        if (searchTerm) {
+            const searchableText = `${university.name} ${university.city} ${university.country}`.toLowerCase();
+            if (!searchableText.includes(searchTerm)) {
+                matches = false;
+            }
+        }
+        
+        return matches;
+    });
+    
+    displayUniversities();
+}
+
+function clearFilters() {
+    $('#countryFilter').val('');
+    $('#phdFilter').val('');
+    $('#searchInput').val('');
+    
+    filteredUniversities = [...allUniversities];
+    displayUniversities();
+}
+
+function displayUniversities() {
+    const container = $('#universitiesContainer');
+    container.empty();
+    
+    if (filteredUniversities.length === 0) {
+        container.html(`
+            <div class="col-12">
+                <div class="alert alert-info alert-custom">
+                    <i class="fas fa-info-circle me-2"></i>
+                    No universities found matching your criteria.
+                </div>
+            </div>
+        `);
+        return;
+    }
+    
+    filteredUniversities.forEach(function(university) {
+        const phdBadge = university.has_phd 
+            ? `<span class="badge bg-success me-2"><i class="fas fa-graduation-cap me-1"></i>PhD Available</span>`
+            : `<span class="badge bg-secondary me-2"><i class="fas fa-times me-1"></i>No PhD</span>`;
+        
+        const alternativeBadge = university.alternative 
+            ? `<span class="badge bg-info"><i class="fas fa-info-circle me-1"></i>${university.alternative}</span>`
+            : '';
+        
+        const cardHtml = `
+            <div class="col-md-6 col-lg-4 mb-4">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h5 class="card-title">${university.name}</h5>
+                        <p class="card-text text-muted mb-2">
+                            <i class="fas fa-map-marker-alt me-1"></i>${university.city}, ${university.country}
+                        </p>
+                        
+                        <div class="mb-3">
+                            ${phdBadge}
+                            ${alternativeBadge}
+                        </div>
+                        
+                        <div class="mb-3">
+                            <small class="text-muted">
+                                <i class="fas fa-globe me-1"></i>
+                                <a href="${university.website}" target="_blank" class="text-decoration-none">
+                                    ${university.website}
+                                </a>
+                            </small>
+                        </div>
+                        
+                        <div class="d-flex justify-content-between">
+                            <button class="btn btn-outline-primary btn-sm" onclick="scrapeUniversity('${university.name}')">
+                                <i class="fas fa-spider me-1"></i>Scrape
+                            </button>
+                            <button class="btn btn-outline-info btn-sm" onclick="viewPositions('${university.name}')">
+                                <i class="fas fa-briefcase me-1"></i>View Positions
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        container.append(cardHtml);
+    });
+}
+
+function scrapeUniversity(universityName) {
+    $('#scrapingModal').modal('show');
+    $('#scrapingStatus').text(`Scraping ${universityName}...`);
+    
+    // Simulate scraping process
+    setTimeout(function() {
+        $.ajax({
+            url: '/api/search-specific',
+            method: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify({
+                universities: [universityName],
+                terms: ['media art', 'digital art', 'AI art', 'artificial intelligence']
+            }),
+            success: function(response) {
+                $('#scrapingModal').modal('hide');
+                const count = response.results[universityName] || 0;
+                showAlert(`Scraping completed! Found ${count} positions at ${universityName}`, 'success');
+            },
+            error: function() {
+                $('#scrapingModal').modal('hide');
+                showAlert(`Error scraping ${universityName}`, 'danger');
+            }
+        });
+    }, 2000);
+}
+
+function scrapeUniversityFromModal() {
+    const universityName = $('#universityModalTitle').text();
+    scrapeUniversity(universityName);
+}
+
+function viewPositions(universityName) {
+    window.location.href = `{{ url_for('positions_page') }}?university=${encodeURIComponent(universityName)}`;
+}
+
+// Export functionality
+function exportUniversities() {
+    const csvContent = generateUniversitiesCSV(filteredUniversities);
+    const blob = new Blob([csvContent], { type: 'text/csv' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `art_universities_${new Date().toISOString().split('T')[0]}.csv`;
+    a.click();
+    window.URL.revokeObjectURL(url);
+    
+    showAlert('Universities exported successfully!', 'success');
+}
+
+function generateUniversitiesCSV(universities) {
+    const headers = ['Name', 'City', 'Country', 'Website', 'Has PhD', 'Alternative', 'PhD URL'];
+    const csvRows = [headers.join(',')];
+    
+    universities.forEach(function(university) {
+        const row = [
+            `"${university.name}"`,
+            `"${university.city}"`,
+            `"${university.country}"`,
+            `"${university.website}"`,
+            `"${university.has_phd}"`,
+            `"${university.alternative || ''}"`,
+            `"${university.phd_url || ''}"`
+        ];
+        csvRows.push(row.join(','));
+    });
+    
+    return csvRows.join('\n');
+}
+
+// Add export button to the page
+$(document).ready(function() {
+    const headerCard = $('.card').first();
+    const cardBody = headerCard.find('.card-body');
+    
+    const exportButton = `
+        <div class="mt-3">
+            <button class="btn btn-outline-success" onclick="exportUniversities()">
+                <i class="fas fa-download me-1"></i>Export Universities List
+            </button>
+        </div>
+    `;
+    
+    cardBody.append(exportButton);
+});
+</script>
+{% endblock %}

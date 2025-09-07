@@ -1,0 +1,489 @@
+{% extends "base.html" %}
+
+{% block title %}Scraper Control - Art University Job Scraper{% endblock %}
+
+{% block content %}
+<div id="alert-container"></div>
+
+<!-- Header -->
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body">
+                <h1 class="card-title">
+                    <i class="fas fa-spider me-2"></i>Scraper Control Panel
+                </h1>
+                <p class="card-text text-muted">
+                    Control and monitor the web scraping process for art university positions
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Scraper Status -->
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="fas fa-tachometer-alt me-2"></i>Scraper Status
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-3 mb-3">
+                        <div class="text-center">
+                            <div class="spinner-border text-primary mb-2" id="statusSpinner" style="display: none;"></div>
+                            <h4 id="statusText">Ready</h4>
+                            <p class="text-muted mb-0">Current Status</p>
+                        </div>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <div class="text-center">
+                            <h4 id="progressText">0/0</h4>
+                            <p class="text-muted mb-0">Progress</p>
+                        </div>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <div class="text-center">
+                            <h4 id="currentUniversity">-</h4>
+                            <p class="text-muted mb-0">Current University</p>
+                        </div>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <div class="text-center">
+                            <h4 id="totalPositions">0</h4>
+                            <p class="text-muted mb-0">Positions Found</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="mt-3">
+                    <div class="progress">
+                        <div class="progress-bar" id="progressBar" style="width: 0%"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Control Buttons -->
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="fas fa-play-circle me-2"></i>Scraper Controls
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-3 mb-3">
+                        <button class="btn btn-success w-100" id="startScrapingBtn" onclick="startScraping()">
+                            <i class="fas fa-play me-2"></i>Start Full Scraping
+                        </button>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <button class="btn btn-warning w-100" onclick="startSpecificSearch()">
+                            <i class="fas fa-search me-2"></i>Specific Search
+                        </button>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <button class="btn btn-info w-100" onclick="refreshStatus()">
+                            <i class="fas fa-sync me-2"></i>Refresh Status
+                        </button>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <button class="btn btn-danger w-100" onclick="clearOldPositions()">
+                            <i class="fas fa-trash me-2"></i>Clear Old Data
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Specific Search Section -->
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="fas fa-search me-2"></i>Specific Search
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="searchTerms" class="form-label">Search Terms</label>
+                        <input type="text" class="form-control" id="searchTerms" 
+                               placeholder="Enter terms separated by commas" 
+                               value="artistic research, künstlerische mitarbeiter, wissenschaftliche mitarbeiter, practice-based PhD, media art, digital art, AI art">
+                        <small class="form-text text-muted">Separate multiple terms with commas</small>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="selectedUniversities" class="form-label">Universities</label>
+                        <select class="form-select" id="selectedUniversities" multiple>
+                            <!-- Universities will be loaded here -->
+                        </select>
+                        <small class="form-text text-muted">Hold Ctrl/Cmd to select multiple universities</small>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12">
+                        <button class="btn btn-primary" onclick="executeSpecificSearch()">
+                            <i class="fas fa-search me-2"></i>Execute Search
+                        </button>
+                        <button class="btn btn-outline-secondary ms-2" onclick="selectAllUniversities()">
+                            <i class="fas fa-check-square me-1"></i>Select All
+                        </button>
+                        <button class="btn btn-outline-secondary ms-2" onclick="clearUniversitySelection()">
+                            <i class="fas fa-square me-1"></i>Clear Selection
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Recent Results -->
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">
+                    <i class="fas fa-history me-2"></i>Recent Scraping Results
+                </h5>
+                <button class="btn btn-sm btn-outline-primary" onclick="refreshResults()">
+                    <i class="fas fa-sync me-1"></i>Refresh
+                </button>
+            </div>
+            <div class="card-body">
+                <div id="recentResults">
+                    <div class="text-center">
+                        <div class="spinner-border text-primary" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                        <p class="mt-2">Loading recent results...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Scraping Log -->
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="fas fa-list me-2"></i>Scraping Log
+                </h5>
+            </div>
+            <div class="card-body">
+                <div id="scrapingLog" class="border rounded p-3 bg-light" style="height: 300px; overflow-y: auto;">
+                    <p class="text-muted mb-0">Scraping log will appear here...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Specific Search Modal -->
+<div class="modal fade" id="specificSearchModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    <i class="fas fa-search me-2"></i>Specific Search Progress
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3">
+                    <div class="d-flex justify-content-between mb-1">
+                        <span id="searchCurrent">Starting...</span>
+                        <span id="searchProgress">0/0</span>
+                    </div>
+                    <div class="progress">
+                        <div class="progress-bar" id="searchProgressBar" style="width: 0%"></div>
+                    </div>
+                </div>
+                
+                <div id="searchResults" class="mt-4">
+                    <h6>Results:</h6>
+                    <div id="searchResultsList" class="list-group">
+                        <!-- Results will be populated here -->
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+let statusInterval = null;
+let isScraping = false;
+
+$(document).ready(function() {
+    loadUniversities();
+    refreshStatus();
+    loadRecentResults();
+    
+    // Auto-refresh status every 5 seconds
+    statusInterval = setInterval(refreshStatus, 5000);
+});
+
+function loadUniversities() {
+    $.get('/api/universities')
+        .done(function(universities) {
+            const select = $('#selectedUniversities');
+            select.empty();
+            
+            universities.forEach(function(uni) {
+                select.append(`<option value="${uni.name}">${uni.name}</option>`);
+            });
+        });
+}
+
+function startScraping() {
+    if (isScraping) {
+        showAlert('Scraping is already running!', 'warning');
+        return;
+    }
+    
+    $('#startScrapingBtn').prop('disabled', true);
+    $('#statusSpinner').show();
+    $('#statusText').text('Starting...');
+    
+    $.ajax({
+        url: '/api/start-scraping',
+        method: 'POST',
+        success: function(response) {
+            isScraping = true;
+            showAlert('Scraping started successfully!', 'success');
+            addToLog('Full scraping process started');
+        },
+        error: function(xhr) {
+            const error = xhr.responseJSON?.error || 'Failed to start scraping';
+            showAlert(`Error: ${error}`, 'danger');
+            addToLog(`Error starting scraping: ${error}`);
+            $('#startScrapingBtn').prop('disabled', false);
+            $('#statusSpinner').hide();
+        }
+    });
+}
+
+function startSpecificSearch() {
+    $('#specificSearchModal').modal('show');
+}
+
+function executeSpecificSearch() {
+    const terms = $('#searchTerms').val().split(',').map(t => t.trim()).filter(t => t);
+    const universities = $('#selectedUniversities').val();
+    
+    if (terms.length === 0) {
+        showAlert('Please enter at least one search term', 'warning');
+        return;
+    }
+    
+    if (!universities || universities.length === 0) {
+        showAlert('Please select at least one university', 'warning');
+        return;
+    }
+    
+    $('#specificSearchModal').modal('show');
+    $('#searchCurrent').text('Starting specific search...');
+    $('#searchProgress').text(`0/${universities.length}`);
+    $('#searchProgressBar').css('width', '0%');
+    $('#searchResultsList').empty();
+    
+    $.ajax({
+        url: '/api/search-specific',
+        method: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify({
+            terms: terms,
+            universities: universities
+        }),
+        success: function(response) {
+            displaySearchResults(response.results);
+            addToLog(`Specific search completed for ${universities.length} universities`);
+        },
+        error: function(xhr) {
+            const error = xhr.responseJSON?.error || 'Search failed';
+            showAlert(`Search error: ${error}`, 'danger');
+            addToLog(`Search error: ${error}`);
+        }
+    });
+}
+
+function displaySearchResults(results) {
+    let totalFound = 0;
+    const resultsList = $('#searchResultsList');
+    resultsList.empty();
+    
+    for (const [university, count] of Object.entries(results)) {
+        totalFound += count;
+        const resultItem = $(`
+            <div class="list-group-item d-flex justify-content-between align-items-center">
+                <span>${university}</span>
+                <span class="badge bg-primary rounded-pill">${count}</span>
+            </div>
+        `);
+        resultsList.append(resultItem);
+    }
+    
+    $('#searchProgress').text(`${Object.keys(results).length}/${Object.keys(results).length}`);
+    $('#searchProgressBar').css('width', '100%');
+    $('#searchCurrent').text(`Completed - Found ${totalFound} total positions`);
+    
+    showAlert(`Specific search completed! Found ${totalFound} positions`, 'success');
+}
+
+function refreshStatus() {
+    $.get('/api/scraping-status')
+        .done(function(status) {
+            updateStatusDisplay(status);
+            
+            if (!status.running && isScraping) {
+                isScraping = false;
+                $('#startScrapingBtn').prop('disabled', false);
+                $('#statusSpinner').hide();
+                addToLog('Scraping process completed');
+            }
+        })
+        .fail(function() {
+            addToLog('Error refreshing status');
+        });
+}
+
+function updateStatusDisplay(status) {
+    $('#statusText').text(status.running ? 'Running' : 'Ready');
+    $('#progressText').text(`${status.progress}/${status.total}`);
+    $('#currentUniversity').text(status.current || '-');
+    
+    const percentage = status.total > 0 ? (status.progress / status.total) * 100 : 0;
+    $('#progressBar').css('width', `${percentage}%`);
+    
+    // Calculate total positions found
+    let totalPositions = 0;
+    for (const count of Object.values(status.results)) {
+        totalPositions += count;
+    }
+    $('#totalPositions').text(totalPositions);
+}
+
+function refreshResults() {
+    loadRecentResults();
+}
+
+function loadRecentResults() {
+    $.get('/api/positions?limit=10')
+        .done(function(positions) {
+            const container = $('#recentResults');
+            
+            if (positions.length === 0) {
+                container.html(`
+                    <div class="alert alert-info alert-custom">
+                        <i class="fas fa-info-circle me-2"></i>
+                        No positions found yet. Start scraping to discover opportunities!
+                    </div>
+                `);
+                return;
+            }
+            
+            let html = '<div class="table-responsive"><table class="table table-custom">';
+            html += '<thead><tr><th>University</th><th>Position</th><th>Type</th><th>Date</th><th>Actions</th></tr></thead><tbody>';
+            
+            positions.forEach(function(position) {
+                html += `
+                    <tr>
+                        <td>${position.university}</td>
+                        <td>${truncateText(position.title, 50)}</td>
+                        <td><span class="badge bg-primary">${position.position_type}</span></td>
+                        <td>${formatDate(position.date_found)}</td>
+                        <td>
+                            <a href="${position.url}" target="_blank" class="btn btn-sm btn-outline-primary">
+                                <i class="fas fa-external-link-alt"></i>
+                            </a>
+                        </td>
+                    </tr>
+                `;
+            });
+            
+            html += '</tbody></table></div>';
+            container.html(html);
+        })
+        .fail(function() {
+            $('#recentResults').html(`
+                <div class="alert alert-danger alert-custom">
+                    <i class="fas fa-exclamation-triangle me-2"></i>
+                    Error loading recent results.
+                </div>
+            `);
+        });
+}
+
+function clearOldPositions() {
+    if (!confirm('Are you sure you want to clear positions older than 30 days?')) {
+        return;
+    }
+    
+    $.ajax({
+        url: '/api/clear-old-positions',
+        method: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify({ days: 30 }),
+        success: function(response) {
+            showAlert(`Cleared ${response.deleted_count} old positions`, 'success');
+            addToLog(`Cleared ${response.deleted_count} old positions`);
+            loadRecentResults();
+        },
+        error: function(xhr) {
+            const error = xhr.responseJSON?.error || 'Failed to clear old positions';
+            showAlert(`Error: ${error}`, 'danger');
+            addToLog(`Error clearing old positions: ${error}`);
+        }
+    });
+}
+
+function selectAllUniversities() {
+    $('#selectedUniversities option').prop('selected', true);
+}
+
+function clearUniversitySelection() {
+    $('#selectedUniversities option').prop('selected', false);
+}
+
+function addToLog(message) {
+    const timestamp = new Date().toLocaleTimeString();
+    const logEntry = `[${timestamp}] ${message}`;
+    
+    const logContainer = $('#scrapingLog');
+    if (logContainer.find('p').length === 1 && logContainer.find('p').text().includes('Scraping log will appear here')) {
+        logContainer.empty();
+    }
+    
+    logContainer.append(`<div class="mb-1">${logEntry}</div>`);
+    logContainer.scrollTop(logContainer[0].scrollHeight);
+}
+
+// Cleanup on page unload
+$(window).on('beforeunload', function() {
+    if (statusInterval) {
+        clearInterval(statusInterval);
+    }
+});
+</script>
+{% endblock %}
