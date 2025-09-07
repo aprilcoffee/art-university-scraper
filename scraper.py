@@ -191,7 +191,7 @@ class ArtUniversityScraper:
             found_terms = self.search_for_terms(text_content, terms)
             
             if found_terms:
-                position_info = self._extract_position_details(soup, found_terms, category, 'job')
+                position_info = self._extract_position_details(soup, found_terms, category, 'job', url)
                 
                 for info in position_info:
                     # Get the specific job posting URL if available
@@ -241,14 +241,14 @@ class ArtUniversityScraper:
         """Enhanced language detection"""
         return SearchHelper.detect_language(text_content)
     
-    def _extract_position_details(self, soup: BeautifulSoup, found_terms: List[str], category: str, position_type: str) -> List[Dict]:
+    def _extract_position_details(self, soup: BeautifulSoup, found_terms: List[str], category: str, position_type: str, url: str) -> List[Dict]:
         """Extract detailed position information with improved title extraction"""
         positions = []
         
         if position_type == 'phd':
             positions = self._extract_phd_details(soup, found_terms, category)
         elif position_type == 'job':
-            positions = self._extract_job_details(soup, found_terms, category)
+                positions = self._extract_job_details(soup, found_terms, category, url)
         
         # If no specific positions found, create generic position
         if not positions:
@@ -283,7 +283,7 @@ class ArtUniversityScraper:
         
         return positions[:3]  # Limit to 3 PhD programs per page
     
-    def _extract_job_details(self, soup: BeautifulSoup, found_terms: List[str], category: str) -> List[Dict]:
+    def _extract_job_details(self, soup: BeautifulSoup, found_terms: List[str], category: str, url: str) -> List[Dict]:
         """Extract job offer details with improved title extraction"""
         positions = []
         
@@ -787,6 +787,8 @@ class ArtUniversityScraper:
             
         except Exception as e:
             logger.error(f"Error scraping {university_name}: {e}")
+            import traceback
+            logger.error(f"Full traceback: {traceback.format_exc()}")
             self.db.log_search(university_name, "general_search", 0, "error")
             return 0
     

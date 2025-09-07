@@ -390,14 +390,72 @@ UNIVERSITIES_BY_COUNTRY = {
     ]
 }
 
-# Flatten the universities list
+# Real university websites mapping
+UNIVERSITY_WEBSITES = {
+    # German Universities
+    'Alanus Hochschule für Kunst und Gesellschaft': 'https://www.alanus.edu',
+    'Kunsthochschule Berlin-Weißensee': 'https://www.kh-berlin.de',
+    'Universität der Künste Berlin': 'https://www.udk-berlin.de',
+    'Hochschule für Bildende Künste Braunschweig': 'https://www.hbk-bs.de',
+    'Hochschule für Künste Bremen': 'https://www.hfk-bremen.de',
+    'Hochschule für Bildende Künste Dresden': 'https://www.hfbk-dresden.de',
+    'Kunstakademie Düsseldorf': 'https://www.kunstakademie-duesseldorf.de',
+    'Folkwang Universität der Künste': 'https://www.folkwang-uni.de',
+    'Hochschule der bildenden Künste Essen': 'https://www.hbk-essen.de',
+    'Staatliche Hochschule für Bildende Künste – Städelschule': 'https://www.staedelschule.de',
+    'Burg Giebichenstein Kunsthochschule Halle': 'https://www.burg-halle.de',
+    'Hochschule für bildende Künste Hamburg': 'https://www.hfbk-hamburg.de',
+    'Staatliche Hochschule für Gestaltung Karlsruhe': 'https://www.hfg-karlsruhe.de',
+    'Muthesius Kunsthochschule': 'https://www.muthesius.de',
+    'Kunsthochschule für Medien Köln': 'https://www.khm.de',
+    'Hochschule für Grafik und Buchkunst Leipzig': 'https://www.hgb-leipzig.de',
+    'Kunsthochschule Mainz': 'https://www.kunsthochschule-mainz.de',
+    'Akademie der Bildenden Künste München': 'https://www.adbk.de',
+    'Kunstakademie Münster': 'https://www.kunstakademie-muenster.de',
+    'Akademie der Bildenden Künste Nürnberg': 'https://www.adbk-nuernberg.de',
+    'Hochschule für Gestaltung Offenbach am Main': 'https://www.hfg-offenbach.de',
+    'Hochschule der Bildenden Künste Saar': 'https://www.hbksaar.de',
+    'Staatliche Akademie der Bildenden Künste Stuttgart': 'https://www.abk-stuttgart.de',
+    'Bauhaus-Universität Weimar': 'https://www.uni-weimar.de',
+    
+    # Austrian Universities
+    'Universität für angewandte Kunst Wien': 'https://www.dieangewandte.at',
+    'Kunstuniversität Linz': 'https://www.ufg.at',
+    'Kunstuniversität Graz': 'https://www.kug.ac.at',
+    'Universität Mozarteum Salzburg': 'https://www.moz.ac.at',
+    'Hochschule für Musik und Darstellende Kunst Wien': 'https://www.mdw.ac.at',
+    
+    # Swiss Universities
+    'Hochschule für Gestaltung und Kunst Basel': 'https://www.fhnw.ch/de/hochschule-fur-gestaltung-und-kunst',
+    'Hochschule für Gestaltung und Kunst Bern': 'https://www.hkb.bfh.ch',
+    
+    # UK Universities
+    'Royal College of Art': 'https://www.rca.ac.uk',
+    'Goldsmiths University of London': 'https://www.gold.ac.uk',
+    'Slade School of Fine Art': 'https://www.ucl.ac.uk/slade',
+    'Glasgow School of Art': 'https://www.gsa.ac.uk',
+    'Edinburgh College of Art': 'https://www.eca.ed.ac.uk',
+    
+    # Netherlands Universities
+    'Design Academy Eindhoven': 'https://www.designacademy.nl',
+    'Royal Academy of Art The Hague': 'https://www.kabk.nl',
+    
+    # Swedish Universities
+    'Konstfack University of Arts, Crafts and Design': 'https://www.konstfack.se',
+    
+    # French Universities
+    'École Nationale Supérieure des Beaux-Arts': 'https://www.beauxartsparis.fr'
+}
+
+# Flatten the universities list with real websites
 UNIVERSITIES = []
 for country, unis in UNIVERSITIES_BY_COUNTRY.items():
     for uni in unis:
+        website = UNIVERSITY_WEBSITES.get(uni, f'https://www.{uni.lower().replace(" ", "").replace("ä", "ae").replace("ö", "oe").replace("ü", "ue")}.de')
         UNIVERSITIES.append({
             'name': uni,
             'country': country,
-            'website': f'https://{uni.lower().replace(" ", "").replace("ä", "ae").replace("ö", "oe").replace("ü", "ue")}.de' if country == 'germany' else f'https://{uni.lower().replace(" ", "").replace("ä", "ae").replace("ö", "oe").replace("ü", "ue")}.com'
+            'website': website
         })
 
 # Department names for extraction
