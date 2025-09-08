@@ -93,40 +93,44 @@ SEARCH_TERMS = {
                 'Doktorandenprogramm Interaktion', 'Promotionsprogramm Interactive Art'
             ],
             'general_phd': [
-                # Traditional German terms
-                'Promotion', 'Doktorand', 'PhD', 'Doktorarbeit', 'Doktorat', 'Doktorandenstelle',
-                'Promotionsstelle', 'Doktorandenprogramm', 'Graduate School', 'Graduiertenschule',
-                'Doktorandenkolleg', 'Promotionsprogramm', 'Doktorandenausbildung',
+                # Specific PhD program terms
+                'PhD Program', 'PhD Programme', 'Doctoral Program', 'Doctoral Programme',
+                'Promotionsprogramm', 'Doktorandenprogramm', 'Graduate Program', 'Graduate Programme',
                 
-                # English terms
-                'Doctoral', 'Doctorate', 'Graduate Program', 'Research Program',
-                'PhD Program', 'Doctoral Program', 'Graduate Studies',
+                # PhD positions and opportunities
+                'PhD Position', 'PhD Stelle', 'Doktorandenstelle', 'Promotionsstelle',
+                'PhD Opportunity', 'Doctoral Opportunity', 'PhD Vacancy', 'Doctoral Vacancy',
                 
-                # Alternative PhD degree names
-                'DFA', 'Doctor of Fine Arts', 'Doktor der Bildenden Künste', 'Doctor of Arts', 'Doktor der Künste',
+                # PhD degrees
+                'PhD', 'Doctor of Philosophy', 'Doctor of Fine Arts', 'DFA',
+                'Doktor der Bildenden Künste', 'Doctor of Arts', 'Doktor der Künste',
                 
-                # Research-focused terms
-                'Research Studies', 'Advanced Studies', 'Postgraduate Studies', 'Graduate Research',
-                'Research Training', 'Research Education', 'Research Development', 'Research Mentoring',
+                # PhD application and admission
+                'PhD Application', 'PhD Bewerbung', 'Doctoral Application', 'Promotionsbewerbung',
+                'PhD Admission', 'Doctoral Admission', 'PhD Zulassung', 'Promotionszulassung',
                 
-                # Program variations
-                'Graduate School', 'Research School', 'Doctoral School', 'PhD School',
-                'Graduate Center', 'Research Center', 'Doctoral Center', 'PhD Center',
-                'Graduate Institute', 'Research Institute', 'Doctoral Institute', 'PhD Institute',
-                
-                # Specific to art universities
-                'Artistic Research', 'Creative Research', 'Practice-based Research', 'Studio Research',
-                'Fine Arts Research', 'Visual Arts Research', 'Performing Arts Research',
-                'Digital Arts Research', 'Media Arts Research', 'Contemporary Arts Research',
-                
-                # International variations
-                'Candidature', 'Candidacy', 'Dissertation', 'Thesis', 'Final Project',
-                'Research Project', 'Creative Project', 'Artistic Project', 'Practice Project'
+                # Graduate schools and centers
+                'Graduate School', 'Graduiertenschule', 'Doctoral School', 'Promotionsschule',
+                'Graduate Center', 'Graduiertenzentrum', 'Doctoral Center', 'Promotionszentrum'
             ]
         },
         
         # JOB OFFERS - Flexible Language Support for Staff Positions
         'job_offers': {
+            'general_jobs': [
+                # Focus on mitarbeiter positions specifically
+                'mitarbeiter gesucht', 'mitarbeiterin gesucht', 'mitarbeiter/in gesucht',
+                'wissenschaftliche mitarbeiter gesucht', 'künstlerische mitarbeiter gesucht',
+                'akademische mitarbeiter gesucht', 'research staff gesucht',
+                'artistic staff gesucht', 'academic staff gesucht',
+                
+                # Job posting pages
+                'stellenausschreibung', 'stellenangebot', 'stellenausschreibungen',
+                'job posting', 'job postings', 'position available', 'positions available',
+                
+                # Career pages
+                'karriere', 'career', 'bewerbung', 'application', 'recruitment'
+            ],
             'academic_staff': [
                 # German terms
                 'Künstlerische Mitarbeiter', 'Wissenschaftliche Mitarbeiter', 
@@ -269,41 +273,43 @@ SEARCH_TERMS = {
                 'Digital Interaction Graduate Program', 'Interactive Art Research Program'
             ],
             'general_phd': [
-                # Traditional English terms
-                'PhD', 'Doctoral', 'Doctorate', 'Graduate Program', 'Research Program',
-                'PhD Program', 'Doctoral Program', 'Graduate Studies', 'Graduate School',
-                'Research Studies', 'Advanced Studies', 'Postgraduate Program',
+                # Specific PhD program terms
+                'PhD Program', 'PhD Programme', 'Doctoral Program', 'Doctoral Programme',
+                'Graduate Program', 'Graduate Programme', 'PhD Studies', 'Doctoral Studies',
                 
-                # Alternative PhD degree names
-                'DFA', 'Doctor of Fine Arts', 'Doctor of Arts', 'Doctor of Creative Arts',
+                # PhD positions and opportunities
+                'PhD Position', 'PhD Opportunity', 'Doctoral Position', 'Doctoral Opportunity',
+                'PhD Vacancy', 'Doctoral Vacancy', 'PhD Opening', 'Doctoral Opening',
                 
-                # Research-focused terms
-                'Research Studies', 'Advanced Studies', 'Postgraduate Studies', 'Graduate Research',
-                'Research Training', 'Research Education', 'Research Development', 'Research Mentoring',
+                # PhD degrees
+                'PhD', 'Doctor of Philosophy', 'Doctor of Fine Arts', 'DFA',
+                'Doctor of Arts', 'Doctor of Creative Arts', 'Doctorate',
                 
-                # Program variations
-                'Graduate School', 'Research School', 'Doctoral School', 'PhD School',
-                'Graduate Center', 'Research Center', 'Doctoral Center', 'PhD Center',
-                'Graduate Institute', 'Research Institute', 'Doctoral Institute', 'PhD Institute',
+                # PhD application and admission
+                'PhD Application', 'Doctoral Application', 'PhD Admission', 'Doctoral Admission',
+                'PhD Requirements', 'Doctoral Requirements', 'PhD Entry', 'Doctoral Entry',
                 
-                # Specific to art universities
-                'Artistic Research', 'Creative Research', 'Practice-based Research', 'Studio Research',
-                'Fine Arts Research', 'Visual Arts Research', 'Performing Arts Research',
-                'Digital Arts Research', 'Media Arts Research', 'Contemporary Arts Research',
-                
-                # International variations
-                'Candidature', 'Candidacy', 'Dissertation', 'Thesis', 'Final Project',
-                'Research Project', 'Creative Project', 'Artistic Project', 'Practice Project',
-                
-                # Additional art-specific terms
-                'Art Research', 'Creative Studies', 'Artistic Studies', 'Creative Arts Research',
-                'Visual Studies', 'Performance Studies', 'Media Studies', 'Digital Studies',
-                'Contemporary Studies', 'Critical Studies', 'Theoretical Studies', 'Experimental Studies'
+                # Graduate schools and centers
+                'Graduate School', 'Doctoral School', 'PhD School', 'Graduate Center',
+                'Doctoral Center', 'PhD Center', 'Graduate Institute', 'Doctoral Institute'
             ]
         },
         
         # JOB OFFERS - Staff Positions (English Focus)
         'job_offers': {
+            'general_jobs': [
+                # Focus on staff positions specifically
+                'staff wanted', 'staff position', 'staff positions', 'staff vacancy', 'staff vacancies',
+                'academic staff wanted', 'research staff wanted', 'artistic staff wanted',
+                'academic position', 'research position', 'artistic position',
+                
+                # Job posting pages
+                'job posting', 'job postings', 'position available', 'positions available',
+                'job opening', 'job openings', 'vacancy', 'vacancies',
+                
+                # Career pages
+                'career', 'careers', 'employment', 'recruitment', 'hiring'
+            ],
             'academic_staff': [
                 # Core staff terms
                 'Artistic Staff', 'Research Staff', 'Academic Staff',

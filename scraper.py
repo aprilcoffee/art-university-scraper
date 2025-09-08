@@ -161,7 +161,7 @@ class ArtUniversityScraper:
             found_terms = self.search_for_terms(text_content, terms)
             
             if found_terms:
-                position_info = self._extract_position_details(soup, found_terms, category, 'phd')
+                position_info = self._extract_position_details(soup, found_terms, category, 'phd', url)
                 
                 for info in position_info:
                     # Get the specific PhD program URL if available
@@ -372,38 +372,131 @@ class ArtUniversityScraper:
     def _is_non_position_content(self, text: str) -> bool:
         """Check if this content is not about job positions (exhibitions, research catalogues, etc.)"""
         non_position_indicators = [
-            'exhibition', 'ausstellung', 'expo', 'show', 'schau',
-            'research catalogue', 'forschungsverzeichnis', 'research catalog',
-            'publication', 'publikation', 'book', 'buch', 'journal', 'zeitschrift',
-            'event', 'veranstaltung', 'conference', 'konferenz', 'symposium',
-            'gallery', 'galerie', 'museum', 'collection', 'sammlung',
+            # Exhibition and display terms
+            'exhibition', 'ausstellung', 'expo', 'show', 'schau', 'display', 'zeigen', 'präsentieren',
+            'stellen aus', 'put on display', 'ausstellen', 'exhibit', 'exhibiting',
+            
+            # Student and alumni work
             'student work', 'studentenarbeit', 'student project', 'studentenprojekt',
-            'graduation', 'absolvent', 'alumni', 'alumnus',
-            'news', 'nachrichten', 'announcement', 'ankündigung',
-            'program', 'programm', 'course', 'kurs', 'workshop',
-            'visit', 'besuch', 'opening', 'eröffnung', 'closing', 'schließung'
+            'student exhibition', 'studentenausstellung', 'student show', 'studentenschau',
+            'alumni', 'alumnus', 'absolvent', 'graduate', 'graduation',
+            'klasse', 'class', 'studenten', 'students',
+            
+            # Events and activities
+            'event', 'veranstaltung', 'conference', 'konferenz', 'symposium',
+            'workshop', 'seminar', 'vortrag', 'lecture', 'talk',
+            'visit', 'besuch', 'opening', 'eröffnung', 'closing', 'schließung',
+            'kooperation', 'cooperation', 'collaboration', 'zusammenarbeit',
+            
+            # Publications and research catalogues
+            'publication', 'publikation', 'book', 'buch', 'journal', 'zeitschrift',
+            'research catalogue', 'forschungsverzeichnis', 'research catalog',
+            'catalogue', 'katalog', 'verzeichnis', 'directory',
+            
+            # Cultural institutions
+            'gallery', 'galerie', 'museum', 'collection', 'sammlung',
+            'cultural', 'kulturell', 'cultural institution', 'kultureinrichtung',
+            
+            # News and announcements
+            'news', 'nachrichten', 'announcement', 'ankündigung', 'meldung',
+            'press release', 'pressemitteilung', 'press', 'presse',
+            
+            # Academic programs (not job positions)
+            'program', 'programm', 'course', 'kurs', 'studium', 'study',
+            'curriculum', 'lehrplan', 'syllabus',
+            
+            # Specific problematic terms from our data
+            'demokratie', 'democracy', 'baustelle', 'construction site',
+            'küchengespräche', 'kitchen conversations', 'visual exchange',
+            'kunstprojekt', 'art project', 'kunstwerk', 'artwork',
+            'wasserstoff', 'hydrogen', 'tankstellen', 'fuel stations',
+            'praxispartner', 'practice partner', 'praxis', 'practice',
+            
+            # Additional exhibition and student work terms
+            'klasse knapp', 'class knapp', 'klasse reisch', 'class reisch',
+            'bunker 101', 'student exhibition', 'studentenausstellung',
+            'studierende gestalten', 'students create', 'studierende ausstellung',
+            'student work', 'studentenarbeit', 'student project', 'studentenprojekt'
         ]
         
         text_lower = text.lower()
         
-        # If the text contains multiple non-position indicators, it's likely not a job posting
+        # Count non-position indicators
         non_position_count = sum(1 for indicator in non_position_indicators if indicator in text_lower)
         
         # Also check for specific patterns that indicate non-position content
         non_position_patterns = [
-            r'exhibition.*opening',
-            r'research.*catalogue',
-            r'student.*work',
-            r'graduation.*show',
-            r'publication.*release',
-            r'event.*announcement'
+            r'ausstellung.*student', r'student.*ausstellung', r'exhibition.*student', r'student.*exhibition',
+            r'klasse.*stellen', r'class.*display', r'alumni.*stellen', r'graduate.*show',
+            r'stellen.*aus', r'display.*work', r'show.*work', r'exhibit.*work',
+            r'kooperation.*mit', r'cooperation.*with', r'zusammenarbeit.*mit',
+            r'exhibition.*opening', r'research.*catalogue', r'graduation.*show',
+            r'publication.*release', r'event.*announcement',
+            r'klasse knapp.*stellen', r'class knapp.*display', r'klasse reisch.*stellen',
+            r'küchengespräche.*baustelle', r'kitchen.*conversations.*construction',
+            r'studierende.*gestalten', r'students.*create', r'student.*tankstellen',
+            r'vaude.*praxispartner', r'vaude.*practice.*partner'
         ]
         
         import re
         pattern_matches = sum(1 for pattern in non_position_patterns if re.search(pattern, text_lower))
         
-        # Consider it non-position content if it has multiple indicators or pattern matches
-        return non_position_count >= 2 or pattern_matches >= 1
+        # More aggressive filtering: consider it non-position content if it has any indicators or pattern matches
+        return non_position_count >= 1 or pattern_matches >= 1
+    
+    def _extract_term_context(self, text: str, term: str, context_length: int = 200) -> str:
+        """Extract context around a found term to better determine if it's a job position"""
+        text_lower = text.lower()
+        term_lower = term.lower()
+        
+        # Find all occurrences of the term
+        start_pos = 0
+        contexts = []
+        
+        while True:
+            pos = text_lower.find(term_lower, start_pos)
+            if pos == -1:
+                break
+            
+            # Extract context around the term
+            context_start = max(0, pos - context_length)
+            context_end = min(len(text), pos + len(term) + context_length)
+            context = text[context_start:context_end]
+            contexts.append(context)
+            
+            start_pos = pos + 1
+        
+        # Return the first context found, or empty string if none found
+        return contexts[0] if contexts else ""
+    
+    def _make_full_url(self, href: str, base_url: str) -> str:
+        """Convert relative URLs to absolute URLs"""
+        if not href:
+            return base_url
+        
+        # If it's already an absolute URL, return as is
+        if href.startswith(('http://', 'https://')):
+            return href
+        
+        # If it starts with //, add the protocol from base_url
+        if href.startswith('//'):
+            protocol = base_url.split('://')[0] if '://' in base_url else 'https'
+            return f"{protocol}:{href}"
+        
+        # If it starts with /, it's an absolute path on the same domain
+        if href.startswith('/'):
+            base_domain = base_url.split('://')[1].split('/')[0] if '://' in base_url else base_url.split('/')[0]
+            protocol = base_url.split('://')[0] if '://' in base_url else 'https'
+            return f"{protocol}://{base_domain}{href}"
+        
+        # Otherwise, it's a relative path
+        # Remove the filename from base_url if it exists
+        if '.' in base_url.split('/')[-1] and not base_url.endswith('/'):
+            base_url = '/'.join(base_url.split('/')[:-1]) + '/'
+        elif not base_url.endswith('/'):
+            base_url += '/'
+        
+        return base_url + href
     
     def _extract_general_job_opportunities(self, soup: BeautifulSoup, found_terms: List[str], current_url: str) -> List[Dict]:
         """Extract general job opportunities from broader page content"""
@@ -459,7 +552,7 @@ class ArtUniversityScraper:
             
             if any(term.lower() in link_text.lower() for term in found_terms):
                 # Get the full URL for the job link
-                job_url = self._make_full_url(link.get('href', ''), url)
+                job_url = self._make_full_url(link.get('href', ''), current_url)
                 
                 positions.append({
                     'title': self._clean_job_title(link_text),
@@ -565,18 +658,18 @@ class ArtUniversityScraper:
     
     def _find_specific_job_url(self, element, current_url: str) -> str:
         """Find the specific URL for a job posting within an element"""
+        # Check if this looks like a job posting link
+        job_indicators = [
+            'stellenausschreibung', 'job', 'position', 'vacancy', 'bewerbung',
+            'application', 'mitarbeiter', 'stellen', 'karriere', 'career'
+        ]
+        
         # Look for links within the element
         links = element.find_all('a', href=True)
         
         for link in links:
             href = link.get('href', '')
             link_text = link.get_text().lower()
-            
-            # Check if this looks like a job posting link
-            job_indicators = [
-                'stellenausschreibung', 'job', 'position', 'vacancy', 'bewerbung',
-                'application', 'mitarbeiter', 'stellen', 'karriere', 'career'
-            ]
             
             if any(indicator in href.lower() or indicator in link_text for indicator in job_indicators):
                 full_url = URLResolver.make_full_url(href, current_url)
@@ -760,7 +853,7 @@ class ArtUniversityScraper:
             
             for link in job_links[:5]:  # Limit to first 5 job-related links
                 try:
-                    time.sleep(SCRAPING_CONFIG['request_delay'])
+                    time.sleep(SCRAPING_CONFIG['delay_between_requests'])
                     
                     # Use Selenium for complex pages
                     use_selenium = 'career' in link.lower() or 'job' in link.lower()
@@ -897,8 +990,11 @@ class ArtUniversityScraper:
                 # Enhanced search for academic positions with consolidated types
                 for term in terms:
                     if term.lower() in text_content.lower():
+                        # Extract the context around the found term to check if it's actually a job position
+                        term_context = self._extract_term_context(text_content, term)
+                        
                         # Skip if this appears to be non-position content
-                        if self._is_non_position_content(text_content):
+                        if self._is_non_position_content(term_context):
                             continue
                             
                         # Determine position type based on term
@@ -988,7 +1084,10 @@ class ArtUniversityScraper:
                             'language': self._detect_language(text_content),
                             'date_found': time.strftime('%Y-%m-%d'),
                             'status': 'active',
-                            'position_category': position_category
+                            'position_category': position_category,
+                            'department': None,
+                            'position_level': None,
+                            'employment_details': None
                         }
                         
                         if self.db.add_position(position):

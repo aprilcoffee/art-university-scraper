@@ -377,8 +377,11 @@ class DatabaseHelper:
     def prepare_position_for_db(position_data: Dict[str, Any]) -> Dict[str, Any]:
         """Prepare position data for database insertion"""
         # Convert employment_details dict to JSON string
-        if 'employment_details' in position_data and position_data['employment_details']:
-            position_data['employment_details'] = json.dumps(position_data['employment_details'])
+        if 'employment_details' in position_data:
+            if position_data['employment_details']:
+                position_data['employment_details'] = json.dumps(position_data['employment_details'])
+            else:
+                position_data['employment_details'] = None
         
         return position_data
     
