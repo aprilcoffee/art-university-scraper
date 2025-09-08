@@ -75,12 +75,20 @@ A comprehensive web scraping system designed to find **PhD programs** and **job 
 
 ### Setup
 1. **Clone or download** the project files
-2. **Install dependencies**:
+2. **Create a virtual environment** (recommended):
+   ```bash
+   python3 -m venv venv
+   source venv/bin/activate
+   ```
+3. **Install dependencies**:
+   ```bash
+   pip install -r requirements.txt
+   ```
+   
+   *Alternative: If you prefer to install system-wide (not recommended):*
    ```bash
    pip3 install --break-system-packages -r requirements.txt
    ```
-   
-   *Note: On macOS with externally managed Python, use the `--break-system-packages` flag*
 
 3. **Run the application**:
    ```bash
@@ -304,7 +312,16 @@ python3 main.py --mode scrape --verbose
 ```
 
 ### Installation Issues
-If you encounter externally managed environment errors:
+
+**Externally Managed Environment Error:**
+This is a security feature in newer Python installations. Use a virtual environment instead:
+```bash
+python3 -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+```
+
+**Alternative (not recommended):**
 ```bash
 pip3 install --break-system-packages -r requirements.txt
 ```
