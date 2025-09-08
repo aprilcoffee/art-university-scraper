@@ -150,7 +150,13 @@ class ArtUniversityScraper:
         positions.extend(job_positions)
         positions.extend(general_job_positions)
         
-        return positions
+        # Filter out research pages that aren't actual positions
+        filtered_positions = []
+        for position in positions:
+            if SearchHelper.is_valid_position_content(position.get('description', ''), position.get('url', '')):
+                filtered_positions.append(position)
+        
+        return filtered_positions
     
     def _extract_phd_programs(self, soup: BeautifulSoup, text_content: str, language: str, university_name: str, url: str) -> List[Dict]:
         """Extract PhD program information"""

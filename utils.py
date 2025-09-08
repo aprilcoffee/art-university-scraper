@@ -411,6 +411,62 @@ class SearchHelper:
         return found_terms
     
     @staticmethod
+    def is_valid_position_content(text_content: str, url: str) -> bool:
+        """Check if content represents a valid position (not just research info)"""
+        text_lower = text_content.lower()
+        url_lower = url.lower()
+        
+        # Exclude research pages that aren't actual positions
+        research_exclusion_patterns = [
+            'research overview', 'research areas', 'research focus', 'research topics',
+            'research projects', 'research groups', 'research centers', 'research institutes',
+            'research activities', 'research interests', 'research themes', 'research fields',
+            'forschung überblick', 'forschungsschwerpunkte', 'forschungsbereiche',
+            'forschungsprojekte', 'forschungsgruppen', 'forschungszentren',
+            'forschungsaktivitäten', 'forschungsinteressen', 'forschungsfelder',
+            'about research', 'research information', 'research at', 'research in',
+            'current research', 'ongoing research', 'research news', 'research updates',
+            'research publications', 'research results', 'research findings',
+            'research collaboration', 'research partnerships', 'research network'
+        ]
+        
+        # Check if content is just research information
+        for pattern in research_exclusion_patterns:
+            if pattern in text_lower:
+                return False
+        
+        # Exclude URLs that are clearly research info pages
+        research_url_patterns = [
+            '/research/', '/forschung/', '/research-overview', '/research-areas',
+            '/research-projects', '/research-groups', '/research-centers',
+            '/forschung/', '/forschungsbereiche/', '/forschungsprojekte/',
+            '/about-research', '/research-information', '/current-research'
+        ]
+        
+        for pattern in research_url_patterns:
+            if pattern in url_lower:
+                return False
+        
+        # Must contain position-related keywords to be valid
+        position_keywords = [
+            'position', 'stelle', 'job', 'arbeit', 'employment', 'beschäftigung',
+            'vacancy', 'vakanz', 'opening', 'offen', 'available', 'verfügbar',
+            'apply', 'bewerben', 'application', 'bewerbung', 'recruitment', 'rekrutierung',
+            'hiring', 'einstellung', 'staff', 'personal', 'mitarbeiter', 'mitarbeiterin',
+            'phd position', 'phd stelle', 'doctoral position', 'promotionsstelle',
+            'research position', 'forschungsstelle', 'academic position', 'akademische stelle',
+            'postdoc', 'postdoctoral', 'assistant', 'assistent', 'associate', 'assoziiert',
+            'professor', 'professur', 'lecturer', 'dozent', 'instructor', 'lehrer'
+        ]
+        
+        # Check if content contains position-related keywords
+        for keyword in position_keywords:
+            if keyword in text_lower:
+                return True
+        
+        return False
+    
+    @staticmethod
     def detect_language(text_content: str) -> str:
         """Detect language of text content"""
         text_lower = text_content.lower()
