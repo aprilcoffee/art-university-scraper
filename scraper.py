@@ -222,8 +222,8 @@ class ArtUniversityScraper:
         """Extract general job opportunities from the entire page"""
         positions = []
         
-        # Search through general job terms
-        general_job_terms = SEARCH_TERMS[language]['job_offers']['general_jobs']
+        # Search through general job terms - use mitarbeiter_stelle as the main category
+        general_job_terms = SEARCH_TERMS[language]['job_offers']['mitarbeiter_stelle']
         found_terms = self.search_for_terms(text_content, general_job_terms)
         
         if found_terms:
@@ -539,7 +539,7 @@ class ArtUniversityScraper:
                     
                     if job_title:
                         # Try to find the specific job URL
-                        job_url = self._find_specific_job_url(listing, url)
+                        job_url = self._find_specific_job_url(listing, current_url)
                         
                         positions.append({
                             'title': job_title,
