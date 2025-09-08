@@ -150,6 +150,13 @@ SEARCH_TERMS = {
                 'sound art mitarbeiter', 'visual art mitarbeiter',
                 'contemporary art mitarbeiter', 'experimental art mitarbeiter',
                 
+                # Design-specific mitarbeiter (important for design schools like KISD)
+                'design mitarbeiter', 'design mitarbeiterin', 'designer mitarbeiter',
+                'gestaltung mitarbeiter', 'gestaltung mitarbeiterin',
+                'product design mitarbeiter', 'communication design mitarbeiter',
+                'graphic design mitarbeiter', 'interaction design mitarbeiter',
+                'service design mitarbeiter', 'user experience mitarbeiter',
+                
                 # Wissenschaftliche mitarbeiter (scientific/academic staff)
                 'wissenschaftliche mitarbeiter', 'wissenschaftliche mitarbeiterin',
                 'wissenschaftlicher mitarbeiter', 'wissenschaftliche mitarbeiter/in',
@@ -354,6 +361,12 @@ SEARCH_TERMS = {
                 'interactive art staff', 'participatory art staff', 'visual art staff',
                 'contemporary art staff', 'experimental art staff', 'fine art staff',
                 
+                # Design-specific staff positions (important for design schools like KISD)
+                'design staff', 'designer staff', 'design assistant', 'design coordinator',
+                'product design staff', 'communication design staff', 'graphic design staff',
+                'interaction design staff', 'service design staff', 'user experience staff',
+                'industrial design staff', 'fashion design staff', 'interior design staff',
+                
                 # Scientific/academic staff (wissenschaftliche mitarbeiter)
                 'scientific staff', 'academic staff', 'research staff',
                 'scientific assistant', 'academic assistant', 'research assistant',
@@ -426,6 +439,7 @@ UNIVERSITIES_BY_COUNTRY = {
         'Hochschule für bildende Künste Hamburg',
         'Muthesius Kunsthochschule',
         'Kunsthochschule für Medien Köln',
+        'Köln International School of Design (KISD)',
         'Hochschule für Grafik und Buchkunst Leipzig',
         'Kunsthochschule Mainz',
         'Akademie der Bildenden Künste München',
@@ -440,6 +454,14 @@ UNIVERSITIES_BY_COUNTRY = {
         'Hochschule für Gestaltung Offenbach am Main',
         'Hochschule für Gestaltung Schwäbisch Gmünd',
         'Hochschule für Gestaltung Pforzheim',
+        
+        # Technical Universities with Strong Design Departments
+        'Technische Universität Berlin',
+        'Technische Universität München',
+        'RWTH Aachen',
+        'Technische Universität Darmstadt',
+        'Universität Stuttgart',
+        'Technische Universität Dresden',
         
         # Music/Theater Universities
         'Hochschule für Musik und Theater Hamburg',
@@ -682,6 +704,7 @@ UNIVERSITY_WEBSITES = {
     'Staatliche Hochschule für Gestaltung Karlsruhe': 'https://www.hfg-karlsruhe.de',
     'Muthesius Kunsthochschule': 'https://www.muthesius.de',  # SSL issue but accessible
     'Kunsthochschule für Medien Köln': 'https://www.khm.de',
+    'Köln International School of Design (KISD)': 'https://www.kisd.de',
     'Hochschule für Grafik und Buchkunst Leipzig': 'https://www.hgb-leipzig.de',
     'Kunsthochschule Mainz': 'https://www.kunsthochschule-mainz.de',
     'Akademie der Bildenden Künste München': 'https://www.adbk.de',
@@ -691,6 +714,14 @@ UNIVERSITY_WEBSITES = {
     'Hochschule der Bildenden Künste Saar': 'https://www.hbksaar.de',
     'Staatliche Akademie der Bildenden Künste Stuttgart': 'https://www.abk-stuttgart.de',
     'Bauhaus-Universität Weimar': 'https://www.uni-weimar.de',
+    
+    # Technical Universities with Design Departments (VERIFIED)
+    'Technische Universität Berlin': 'https://www.tu-berlin.de',
+    'Technische Universität München': 'https://www.tum.de',
+    'RWTH Aachen': 'https://www.rwth-aachen.de',
+    'Technische Universität Darmstadt': 'https://www.tu-darmstadt.de',
+    'Universität Stuttgart': 'https://www.uni-stuttgart.de',
+    'Technische Universität Dresden': 'https://www.tu-dresden.de',
     
     # Additional German Fachhochschule with Art/Design (VERIFIED)
     'Hochschule für Gestaltung Schwäbisch Gmünd': 'https://www.hfg-gmuend.de',

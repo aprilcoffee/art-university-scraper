@@ -167,7 +167,7 @@ class ArtUniversityScraper:
             found_terms = self.search_for_terms(text_content, terms)
             
             if found_terms:
-                position_info = self._extract_position_details(soup, found_terms, category, 'phd', url)
+                position_info = self._extract_position_details(soup, found_terms, 'phd', url)
                 
                 for info in position_info:
                     # Get the specific PhD program URL if available
@@ -197,7 +197,7 @@ class ArtUniversityScraper:
             found_terms = self.search_for_terms(text_content, terms)
             
             if found_terms:
-                position_info = self._extract_position_details(soup, found_terms, category, 'job', url)
+                position_info = self._extract_position_details(soup, found_terms, 'job', url)
                 
                 for info in position_info:
                     # Get the specific job posting URL if available
@@ -247,13 +247,13 @@ class ArtUniversityScraper:
         """Enhanced language detection"""
         return SearchHelper.detect_language(text_content)
     
-    def _extract_position_details(self, soup: BeautifulSoup, found_terms: List[str], category: str, position_type: str, url: str) -> List[Dict]:
+    def _extract_position_details(self, soup: BeautifulSoup, found_terms: List[str], category: str, url: str) -> List[Dict]:
         """Extract detailed position information with improved title extraction"""
         positions = []
         
-        if position_type == 'phd':
+        if category == 'phd':
             positions = self._extract_phd_details(soup, found_terms, category)
-        elif position_type == 'job':
+        elif category == 'job':
                 positions = self._extract_job_details(soup, found_terms, category, url)
         
         # If no specific positions found, create generic position

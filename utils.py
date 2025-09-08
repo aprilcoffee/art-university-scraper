@@ -24,10 +24,10 @@ class PositionBuilder:
             'status': 'active'
         }
     
-    def set_basic_info(self, position_type: str, title: str, description: str = '', url: str = None) -> 'PositionBuilder':
+    def set_basic_info(self, category: str, title: str, description: str = '', url: str = None) -> 'PositionBuilder':
         """Set basic position information"""
         self.position_data.update({
-            'position_type': position_type,
+            'category': category,
             'title': title,
             'description': description,
             'url': url or self.url
@@ -69,9 +69,9 @@ class PositionBuilder:
         text = f"{title} {description}".lower()
         positions = ACADEMIC_POSITIONS.get(self.language, {})
         
-        for position_type, keywords in positions.items():
+        for category, keywords in positions.items():
             if any(keyword.lower() in text for keyword in keywords):
-                return position_type
+                return category
         return 'unknown'
     
     def _extract_employment_details(self, text_content: str) -> Dict[str, str]:
@@ -389,8 +389,8 @@ class DatabaseHelper:
     def get_position_fields() -> List[str]:
         """Get list of position table fields"""
         return [
-            'university', 'position_type', 'title', 'description', 'url', 
-            'language', 'date_found', 'status', 'position_category', 
+            'university', 'title', 'description', 'url', 
+            'language', 'date_found', 'status', 'category', 
             'department', 'position_level', 'employment_details'
         ]
 
