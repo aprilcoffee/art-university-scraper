@@ -200,19 +200,31 @@ let filteredUniversities = [];
 let filteredPositions = [];
 
 // Initialize map when page loads
-document.addEventListener('DOMContentLoaded', function() {
+$(document).ready(function() {
+    console.log('Initializing map...');
     initializeMap();
     loadMapData();
 });
 
 function initializeMap() {
+    console.log('Initializing map...');
+    
+    // Check if map container exists
+    const mapContainer = document.getElementById('universityMap');
+    if (!mapContainer) {
+        console.error('Map container not found!');
+        return;
+    }
+    
     // Initialize the map centered on Europe
     map = L.map('universityMap').setView([50.0, 10.0], 4);
+    console.log('Map created successfully');
     
     // Add OpenStreetMap tiles
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '© OpenStreetMap contributors'
     }).addTo(map);
+    console.log('Tiles added successfully');
     
     // Initialize marker cluster group
     markerCluster = L.markerClusterGroup({
@@ -220,19 +232,23 @@ function initializeMap() {
         maxClusterRadius: 50
     });
     map.addLayer(markerCluster);
+    console.log('Marker cluster added successfully');
 }
 
 function loadMapData() {
+    console.log('Loading map data...');
+    
     // Load universities data
     $.get('/api/universities')
         .done(function(universities) {
+            console.log(`Loaded ${universities ? universities.length : 0} universities`);
             allUniversities = universities || [];
             filteredUniversities = [...allUniversities];
             addUniversitiesToMap();
             updateMapStatistics();
         })
-        .fail(function() {
-            console.error('Failed to load universities data');
+        .fail(function(xhr, status, error) {
+            console.error('Failed to load universities data:', error);
             allUniversities = [];
             filteredUniversities = [];
         });
@@ -240,12 +256,13 @@ function loadMapData() {
     // Load positions data
     $.get('/api/positions')
         .done(function(positions) {
+            console.log(`Loaded ${positions ? positions.length : 0} positions`);
             allPositions = positions || [];
             filteredPositions = [...allPositions];
             updateMapStatistics();
         })
-        .fail(function() {
-            console.error('Failed to load positions data');
+        .fail(function(xhr, status, error) {
+            console.error('Failed to load positions data:', error);
             allPositions = [];
             filteredPositions = [];
         });
