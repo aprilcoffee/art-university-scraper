@@ -1,0 +1,402 @@
+🔍 COMPLETE UNIVERSITY LINK VERIFICATION
+============================================================
+Checking: Alanus Hochschule für Kunst und Gesellschaft
+✅ 200 - WORKING
+Checking: Kunsthochschule Berlin-Weißensee
+✅ 200 - WORKING
+Checking: Universität der Künste Berlin
+✅ 200 - WORKING
+Checking: Hochschule für Bildende Künste Braunschweig
+✅ 200 - WORKING
+Checking: Hochschule für Künste Bremen
+✅ 200 - WORKING
+Checking: Hochschule für Bildende Künste Dresden
+✅ 200 - WORKING
+Checking: Kunstakademie Düsseldorf
+✅ 200 - WORKING
+Checking: Folkwang Universität der Künste
+✅ 200 - WORKING
+Checking: Hochschule der bildenden Künste Essen
+✅ 200 - WORKING
+Checking: Staatliche Hochschule für Bildende Künste – Städelschule
+✅ 200 - WORKING
+Checking: Burg Giebichenstein Kunsthochschule Halle
+✅ 200 - WORKING
+Checking: Hochschule für bildende Künste Hamburg
+✅ 200 - WORKING
+Checking: Staatliche Hochschule für Gestaltung Karlsruhe
+✅ 200 - WORKING
+Checking: Muthesius Kunsthochschule
+❌ BROKEN - HTTPSConnectionPool(host='www.muthesius.de', port=443): Max retries exceeded with url: / (Caused by SSLError(SSLCertVerificationError(1, '[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1028)')))
+Checking: Kunsthochschule für Medien Köln
+✅ 200 - WORKING
+Checking: Hochschule für Grafik und Buchkunst Leipzig
+✅ 200 - WORKING
+Checking: Kunsthochschule Mainz
+✅ 200 - WORKING
+Checking: Akademie der Bildenden Künste München
+✅ 200 - WORKING
+Checking: Kunstakademie Münster
+✅ 200 - WORKING
+Checking: Akademie der Bildenden Künste Nürnberg
+✅ 200 - WORKING
+Checking: Hochschule für Gestaltung Offenbach am Main
+✅ 200 - WORKING
+Checking: Hochschule der Bildenden Künste Saar
+✅ 200 - WORKING
+Checking: Staatliche Akademie der Bildenden Künste Stuttgart
+✅ 200 - WORKING
+Checking: Bauhaus-Universität Weimar
+✅ 200 - WORKING
+Checking: Universität für angewandte Kunst Wien
+✅ 200 - WORKING
+Checking: Kunstuniversität Linz
+✅ 200 - WORKING
+Checking: Kunstuniversität Graz
+✅ 200 - WORKING
+Checking: Universität Mozarteum Salzburg
+✅ 200 - WORKING
+Checking: Hochschule für Musik und Darstellende Kunst Wien
+✅ 200 - WORKING
+Checking: Hochschule für Gestaltung und Kunst Basel
+✅ 200 - WORKING
+Checking: Hochschule für Gestaltung und Kunst Bern
+✅ 200 - WORKING
+Checking: Royal College of Art
+✅ 200 - WORKING
+Checking: Goldsmiths University of London
+✅ 200 - WORKING
+Checking: Slade School of Fine Art
+✅ 200 - WORKING
+Checking: Glasgow School of Art
+✅ 200 - WORKING
+Checking: Edinburgh College of Art
+✅ 200 - WORKING
+Checking: Design Academy Eindhoven
+✅ 200 - WORKING
+Checking: Royal Academy of Art The Hague
+✅ 200 - WORKING
+Checking: Konstfack University of Arts, Crafts and Design
+✅ 200 - WORKING
+Checking: École Nationale Supérieure des Beaux-Arts
+✅ 200 - WORKING
+
+📊 RESULTS:
+✅ Working: 39
+❌ Broken: 1
+
+🔧 BROKEN LINKS:
+- Muthesius Kunsthochschule: https://www.muthesius.de
+
+🔍 CHECKING ADDITIONAL MAJOR ART SCHOOLS...
+============================================================
+Checking: Hochschule für Gestaltung Schwäbisch Gmünd
+✅ 200 - WORKING
+Checking: Hochschule für Technik und Wirtschaft Berlin
+✅ 200 - WORKING
+Checking: Hochschule für Technik, Wirtschaft und Kultur Leipzig
+✅ 200 - WORKING
+Checking: Hochschule für Technik und Wirtschaft Dresden
+✅ 200 - WORKING
+Checking: Hochschule für Technik und Wirtschaft Karlsruhe
+✅ 200 - WORKING
+Checking: Hochschule für Musik und Theater Hamburg
+✅ 200 - WORKING
+Checking: Hochschule für Musik und Theater München
+✅ 200 - WORKING
+Checking: Hochschule für Musik und Theater Leipzig
+✅ 200 - WORKING
+Checking: Hochschule für Musik und Theater Hannover
+✅ 200 - WORKING
+Checking: Hochschule für Musik und Theater Rostock
+✅ 200 - WORKING
+Checking: Hochschule für Musik und Theater Weimar
+✅ 200 - WORKING
+Checking: Hochschule für Gestaltung Pforzheim
+✅ 200 - WORKING
+Checking: Hochschule für Gestaltung und Kunst Zürich
+✅ 200 - WORKING
+Checking: Hochschule für Gestaltung und Kunst Luzern
+✅ 200 - WORKING
+Checking: Central Saint Martins
+❌ BROKEN - None
+Checking: Chelsea College of Arts
+❌ BROKEN - None
+Checking: Camberwell College of Arts
+❌ BROKEN - None
+Checking: Wimbledon College of Arts
+❌ BROKEN - None
+Checking: London College of Communication
+❌ BROKEN - None
+Checking: London College of Fashion
+❌ BROKEN - None
+Checking: Gerrit Rietveld Academie
+✅ 200 - WORKING
+Checking: ArtEZ University of the Arts
+✅ 200 - WORKING
+Checking: Royal Academy of Fine Arts Antwerp
+❌ BROKEN - HTTPSConnectionPool(host='www.antwerp.ac.be', port=443): Max retries exceeded with url: / (Caused by NameResolutionError("<urllib3.connection.HTTPSConnection object at 0x103943250>: Failed to resolve 'www.antwerp.ac.be' ([Errno 8] nodename nor servname provided, or not known)"))
+Checking: La Cambre
+✅ 200 - WORKING
+Checking: École Nationale Supérieure d'Architecture
+❌ BROKEN - HTTPSConnectionPool(host='www.archi.fr', port=443): Max retries exceeded with url: / (Caused by NameResolutionError("<urllib3.connection.HTTPSConnection object at 0x1039434d0>: Failed to resolve 'www.archi.fr' ([Errno 8] nodename nor servname provided, or not known)"))
+Checking: Rhode Island School of Design
+✅ 200 - WORKING
+Checking: School of the Art Institute of Chicago
+✅ 200 - WORKING
+Checking: California Institute of the Arts
+✅ 200 - WORKING
+Checking: Parsons School of Design
+✅ 200 - WORKING
+Checking: Pratt Institute
+✅ 200 - WORKING
+Checking: Cooper Union
+✅ 200 - WORKING
+Checking: Art Center College of Design
+✅ 200 - WORKING
+Checking: Savannah College of Art and Design
+❌ BROKEN - None
+Checking: Cranbrook Academy of Art
+✅ 200 - WORKING
+Checking: Yale School of Art
+✅ 200 - WORKING
+Checking: Columbia University School of the Arts
+❌ BROKEN - None
+Checking: New York University Tisch School of the Arts
+✅ 200 - WORKING
+Checking: UCLA School of the Arts and Architecture
+✅ 200 - WORKING
+Checking: Carnegie Mellon School of Art
+✅ 200 - WORKING
+Checking: Virginia Commonwealth University School of the Arts
+✅ 200 - WORKING
+Checking: Maryland Institute College of Art
+✅ 200 - WORKING
+Checking: Massachusetts College of Art and Design
+✅ 200 - WORKING
+Checking: San Francisco Art Institute
+❌ BROKEN - HTTPSConnectionPool(host='sfai.edu', port=443): Max retries exceeded with url: / (Caused by NameResolutionError("<urllib3.connection.HTTPSConnection object at 0x103942210>: Failed to resolve 'sfai.edu' ([Errno 8] nodename nor servname provided, or not known)"))
+Checking: Minneapolis College of Art and Design
+✅ 200 - WORKING
+Checking: Kansas City Art Institute
+✅ 200 - WORKING
+Checking: Ringling College of Art and Design
+✅ 200 - WORKING
+Checking: Otis College of Art and Design
+✅ 200 - WORKING
+Checking: Laguna College of Art and Design
+✅ 200 - WORKING
+Checking: Academy of Art University
+✅ 200 - WORKING
+Checking: Art Institute of Chicago
+✅ 200 - WORKING
+Checking: Cleveland Institute of Art
+❌ BROKEN - None
+Checking: Memphis College of Art
+❌ BROKEN - HTTPSConnectionPool(host='www.mca.edu', port=443): Max retries exceeded with url: / (Caused by NameResolutionError("<urllib3.connection.HTTPSConnection object at 0x103943610>: Failed to resolve 'www.mca.edu' ([Errno 8] nodename nor servname provided, or not known)"))
+Checking: Pacific Northwest College of Art
+❌ BROKEN - HTTPSConnectionPool(host='www.pnca.edu', port=443): Max retries exceeded with url: / (Caused by NameResolutionError("<urllib3.connection.HTTPSConnection object at 0x103943ed0>: Failed to resolve 'www.pnca.edu' ([Errno 8] nodename nor servname provided, or not known)"))
+Checking: School of Visual Arts
+✅ 200 - WORKING
+Checking: Fashion Institute of Technology
+✅ 200 - WORKING
+Checking: The New School Parsons
+✅ 200 - WORKING
+Checking: Emily Carr University of Art and Design
+✅ 200 - WORKING
+Checking: Nova Scotia College of Art and Design
+❌ BROKEN - None
+Checking: Ontario College of Art and Design University
+✅ 200 - WORKING
+Checking: Alberta College of Art and Design
+✅ 200 - WORKING
+Checking: Concordia University Faculty of Fine Arts
+✅ 200 - WORKING
+Checking: University of British Columbia Department of Art History
+❌ BROKEN - HTTPSConnectionPool(host='www.ahva.ubc.ca', port=443): Max retries exceeded with url: / (Caused by NameResolutionError("<urllib3.connection.HTTPSConnection object at 0x1039439d0>: Failed to resolve 'www.ahva.ubc.ca' ([Errno 8] nodename nor servname provided, or not known)"))
+Checking: York University School of the Arts
+❌ BROKEN - HTTPSConnectionPool(host='ampd.yorku.ca', port=443): Max retries exceeded with url: / (Caused by SSLError(SSLCertVerificationError(1, '[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1028)')))
+Checking: University of Toronto Faculty of Music
+✅ 200 - WORKING
+Checking: National Art School
+❌ BROKEN - None
+Checking: University of New South Wales Art & Design
+✅ 200 - WORKING
+Checking: University of Sydney Sydney College of the Arts
+✅ 200 - WORKING
+Checking: RMIT University School of Art
+✅ 200 - WORKING
+Checking: Monash University Faculty of Art, Design and Architecture
+❌ BROKEN - None
+Checking: Queensland College of Art
+✅ 200 - WORKING
+Checking: University of Melbourne Victorian College of the Arts
+❌ BROKEN - None
+Checking: Curtin University School of Design and Art
+❌ BROKEN - None
+Checking: Tokyo University of the Arts
+❌ BROKEN - None
+Checking: Tama Art University
+✅ 200 - WORKING
+Checking: Musashino Art University
+✅ 200 - WORKING
+Checking: Kyoto University of Art and Design
+✅ 200 - WORKING
+Checking: Osaka University of Arts
+✅ 200 - WORKING
+Checking: Hong Kong Academy for Performing Arts
+✅ 200 - WORKING
+Checking: Hong Kong Baptist University Academy of Visual Arts
+✅ 200 - WORKING
+Checking: City University of Hong Kong School of Creative Media
+✅ 200 - WORKING
+Checking: National Taiwan University of Arts
+❌ BROKEN - HTTPSConnectionPool(host='www.ntua.edu.tw', port=443): Max retries exceeded with url: / (Caused by SSLError(SSLCertVerificationError(1, '[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: Missing Subject Key Identifier (_ssl.c:1028)')))
+Checking: Taipei National University of the Arts
+❌ BROKEN - HTTPSConnectionPool(host='www.tnua.edu.tw', port=443): Max retries exceeded with url: / (Caused by SSLError(SSLCertVerificationError(1, '[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: Missing Subject Key Identifier (_ssl.c:1028)')))
+Checking: Korea National University of Arts
+✅ 200 - WORKING
+Checking: Hongik University College of Fine Arts
+✅ 200 - WORKING
+Checking: Seoul National University College of Fine Arts
+✅ 200 - WORKING
+Checking: Yonsei University College of Fine Arts
+❌ BROKEN - HTTPSConnectionPool(host='art.yonsei.ac.kr', port=443): Max retries exceeded with url: / (Caused by NameResolutionError("<urllib3.connection.HTTPSConnection object at 0x103942fd0>: Failed to resolve 'art.yonsei.ac.kr' ([Errno 8] nodename nor servname provided, or not known)"))
+Checking: Ewha Womans University College of Art & Design
+✅ 200 - WORKING
+Checking: Singapore LASALLE College of the Arts
+✅ 200 - WORKING
+Checking: Nanyang Academy of Fine Arts
+✅ 200 - WORKING
+Checking: National University of Singapore School of Design and Environment
+❌ BROKEN - HTTPSConnectionPool(host='www.sde.nus.edu.sg', port=443): Max retries exceeded with url: / (Caused by NameResolutionError("<urllib3.connection.HTTPSConnection object at 0x103ffc550>: Failed to resolve 'www.sde.nus.edu.sg' ([Errno 8] nodename nor servname provided, or not known)"))
+Checking: University of the Philippines College of Fine Arts
+✅ 200 - WORKING
+Checking: De La Salle College of Saint Benilde School of Design and Arts
+✅ 200 - WORKING
+Checking: Ateneo de Manila University Fine Arts Program
+❌ BROKEN - None
+Checking: University of Santo Tomas College of Fine Arts and Design
+✅ 200 - WORKING
+Checking: Chulalongkorn University Faculty of Fine and Applied Arts
+✅ 200 - WORKING
+Checking: Silpakorn University Faculty of Painting Sculpture and Graphic Arts
+✅ 200 - WORKING
+Checking: Thammasat University Faculty of Fine and Applied Arts
+✅ 200 - WORKING
+Checking: University of Indonesia Faculty of Fine Arts
+✅ 200 - WORKING
+Checking: Bandung Institute of Technology Faculty of Art and Design
+✅ 200 - WORKING
+Checking: Institut Seni Indonesia Yogyakarta
+✅ 200 - WORKING
+Checking: Institut Seni Indonesia Denpasar
+❌ BROKEN - None
+Checking: Institut Seni Indonesia Surakarta
+✅ 200 - WORKING
+Checking: Institut Seni Indonesia Padangpanjang
+✅ 200 - WORKING
+Checking: Institut Seni Indonesia Makassar
+❌ BROKEN - HTTPSConnectionPool(host='www.isi-makassar.ac.id', port=443): Max retries exceeded with url: / (Caused by NameResolutionError("<urllib3.connection.HTTPSConnection object at 0x103ffcb90>: Failed to resolve 'www.isi-makassar.ac.id' ([Errno 8] nodename nor servname provided, or not known)"))
+Checking: Institut Seni Indonesia Medan
+❌ BROKEN - HTTPSConnectionPool(host='www.isi-medan.ac.id', port=443): Max retries exceeded with url: / (Caused by NameResolutionError("<urllib3.connection.HTTPSConnection object at 0x103ffc910>: Failed to resolve 'www.isi-medan.ac.id' ([Errno 8] nodename nor servname provided, or not known)"))
+Checking: Institut Seni Indonesia Bandung
+❌ BROKEN - HTTPSConnectionPool(host='www.isbi.ac.id', port=443): Read timed out. (read timeout=10)
+Checking: Institut Seni Indonesia Jakarta
+❌ BROKEN - HTTPSConnectionPool(host='www.isi-jkt.ac.id', port=443): Max retries exceeded with url: / (Caused by NameResolutionError("<urllib3.connection.HTTPSConnection object at 0x103ffd310>: Failed to resolve 'www.isi-jkt.ac.id' ([Errno 8] nodename nor servname provided, or not known)"))
+Checking: Institut Seni Indonesia Pontianak
+❌ BROKEN - HTTPSConnectionPool(host='www.isi-pontianak.ac.id', port=443): Max retries exceeded with url: / (Caused by NameResolutionError("<urllib3.connection.HTTPSConnection object at 0x103ffd810>: Failed to resolve 'www.isi-pontianak.ac.id' ([Errno 8] nodename nor servname provided, or not known)"))
+Checking: Institut Seni Indonesia Palembang
+❌ BROKEN - HTTPSConnectionPool(host='www.isi-palembang.ac.id', port=443): Max retries exceeded with url: / (Caused by NameResolutionError("<urllib3.connection.HTTPSConnection object at 0x103ffdd10>: Failed to resolve 'www.isi-palembang.ac.id' ([Errno 8] nodename nor servname provided, or not known)"))
+Checking: Institut Seni Indonesia Banjarmasin
+❌ BROKEN - HTTPSConnectionPool(host='www.isi-banjarmasin.ac.id', port=443): Max retries exceeded with url: / (Caused by NameResolutionError("<urllib3.connection.HTTPSConnection object at 0x103942fd0>: Failed to resolve 'www.isi-banjarmasin.ac.id' ([Errno 8] nodename nor servname provided, or not known)"))
+Checking: Institut Seni Indonesia Manado
+❌ BROKEN - HTTPSConnectionPool(host='www.isi-manado.ac.id', port=443): Max retries exceeded with url: / (Caused by NameResolutionError("<urllib3.connection.HTTPSConnection object at 0x103942850>: Failed to resolve 'www.isi-manado.ac.id' ([Errno 8] nodename nor servname provided, or not known)"))
+Checking: Institut Seni Indonesia Jayapura
+❌ BROKEN - HTTPSConnectionPool(host='www.isi-jayapura.ac.id', port=443): Max retries exceeded with url: / (Caused by NameResolutionError("<urllib3.connection.HTTPSConnection object at 0x103942490>: Failed to resolve 'www.isi-jayapura.ac.id' ([Errno 8] nodename nor servname provided, or not known)"))
+Checking: Institut Seni Indonesia Ambon
+❌ BROKEN - HTTPSConnectionPool(host='www.isi-ambon.ac.id', port=443): Max retries exceeded with url: / (Caused by NameResolutionError("<urllib3.connection.HTTPSConnection object at 0x103942210>: Failed to resolve 'www.isi-ambon.ac.id' ([Errno 8] nodename nor servname provided, or not known)"))
+Checking: Institut Seni Indonesia Mataram
+❌ BROKEN - HTTPSConnectionPool(host='www.isi-mataram.ac.id', port=443): Max retries exceeded with url: / (Caused by NameResolutionError("<urllib3.connection.HTTPSConnection object at 0x103943610>: Failed to resolve 'www.isi-mataram.ac.id' ([Errno 8] nodename nor servname provided, or not known)"))
+Checking: Institut Seni Indonesia Kupang
+❌ BROKEN - HTTPSConnectionPool(host='www.isi-kupang.ac.id', port=443): Max retries exceeded with url: / (Caused by NameResolutionError("<urllib3.connection.HTTPSConnection object at 0x103942e90>: Failed to resolve 'www.isi-kupang.ac.id' ([Errno 8] nodename nor servname provided, or not known)"))
+Checking: Institut Seni Indonesia Kendari
+❌ BROKEN - HTTPSConnectionPool(host='www.isi-kendari.ac.id', port=443): Max retries exceeded with url: / (Caused by NameResolutionError("<urllib3.connection.HTTPSConnection object at 0x103943b10>: Failed to resolve 'www.isi-kendari.ac.id' ([Errno 8] nodename nor servname provided, or not known)"))
+Checking: Institut Seni Indonesia Palu
+❌ BROKEN - HTTPSConnectionPool(host='www.isi-palu.ac.id', port=443): Max retries exceeded with url: / (Caused by NameResolutionError("<urllib3.connection.HTTPSConnection object at 0x103ffdbd0>: Failed to resolve 'www.isi-palu.ac.id' ([Errno 8] nodename nor servname provided, or not known)"))
+Checking: Institut Seni Indonesia Gorontalo
+❌ BROKEN - HTTPSConnectionPool(host='www.isi-gorontalo.ac.id', port=443): Max retries exceeded with url: / (Caused by NameResolutionError("<urllib3.connection.HTTPSConnection object at 0x103ffd810>: Failed to resolve 'www.isi-gorontalo.ac.id' ([Errno 8] nodename nor servname provided, or not known)"))
+Checking: Institut Seni Indonesia Mamuju
+❌ BROKEN - HTTPSConnectionPool(host='www.isi-mamuju.ac.id', port=443): Max retries exceeded with url: / (Caused by NameResolutionError("<urllib3.connection.HTTPSConnection object at 0x103ffd310>: Failed to resolve 'www.isi-mamuju.ac.id' ([Errno 8] nodename nor servname provided, or not known)"))
+Checking: Institut Seni Indonesia Sorong
+❌ BROKEN - HTTPSConnectionPool(host='www.isi-sorong.ac.id', port=443): Max retries exceeded with url: / (Caused by NameResolutionError("<urllib3.connection.HTTPSConnection object at 0x103ffd090>: Failed to resolve 'www.isi-sorong.ac.id' ([Errno 8] nodename nor servname provided, or not known)"))
+Checking: Institut Seni Indonesia Merauke
+❌ BROKEN - HTTPSConnectionPool(host='www.isi-merauke.ac.id', port=443): Max retries exceeded with url: / (Caused by NameResolutionError("<urllib3.connection.HTTPSConnection object at 0x103ffccd0>: Failed to resolve 'www.isi-merauke.ac.id' ([Errno 8] nodename nor servname provided, or not known)"))
+Checking: Institut Seni Indonesia Fakfak
+❌ BROKEN - HTTPSConnectionPool(host='www.isi-fakfak.ac.id', port=443): Max retries exceeded with url: / (Caused by NameResolutionError("<urllib3.connection.HTTPSConnection object at 0x103ffca50>: Failed to resolve 'www.isi-fakfak.ac.id' ([Errno 8] nodename nor servname provided, or not known)"))
+Checking: Institut Seni Indonesia Kaimana
+❌ BROKEN - HTTPSConnectionPool(host='www.isi-kaimana.ac.id', port=443): Max retries exceeded with url: / (Caused by NameResolutionError("<urllib3.connection.HTTPSConnection object at 0x103ffc690>: Failed to resolve 'www.isi-kaimana.ac.id' ([Errno 8] nodename nor servname provided, or not known)"))
+Checking: Institut Seni Indonesia Raja Ampat
+❌ BROKEN - HTTPSConnectionPool(host='www.isi-rajaampat.ac.id', port=443): Max retries exceeded with url: / (Caused by NameResolutionError("<urllib3.connection.HTTPSConnection object at 0x103ffe210>: Failed to resolve 'www.isi-rajaampat.ac.id' ([Errno 8] nodename nor servname provided, or not known)"))
+Checking: Institut Seni Indonesia Biak
+❌ BROKEN - HTTPSConnectionPool(host='www.isi-biak.ac.id', port=443): Max retries exceeded with url: / (Caused by NameResolutionError("<urllib3.connection.HTTPSConnection object at 0x103ffe5d0>: Failed to resolve 'www.isi-biak.ac.id' ([Errno 8] nodename nor servname provided, or not known)"))
+Checking: Institut Seni Indonesia Serui
+❌ BROKEN - HTTPSConnectionPool(host='www.isi-serui.ac.id', port=443): Max retries exceeded with url: / (Caused by NameResolutionError("<urllib3.connection.HTTPSConnection object at 0x103ffe0d0>: Failed to resolve 'www.isi-serui.ac.id' ([Errno 8] nodename nor servname provided, or not known)"))
+Checking: Institut Seni Indonesia Wamena
+❌ BROKEN - HTTPSConnectionPool(host='www.isi-wamena.ac.id', port=443): Max retries exceeded with url: / (Caused by NameResolutionError("<urllib3.connection.HTTPSConnection object at 0x103943b10>: Failed to resolve 'www.isi-wamena.ac.id' ([Errno 8] nodename nor servname provided, or not known)"))
+Checking: Institut Seni Indonesia Timika
+❌ BROKEN - HTTPSConnectionPool(host='www.isi-timika.ac.id', port=443): Max retries exceeded with url: / (Caused by NameResolutionError("<urllib3.connection.HTTPSConnection object at 0x1039434d0>: Failed to resolve 'www.isi-timika.ac.id' ([Errno 8] nodename nor servname provided, or not known)"))
+Checking: Institut Seni Indonesia Nabire
+❌ BROKEN - HTTPSConnectionPool(host='www.isi-nabire.ac.id', port=443): Max retries exceeded with url: / (Caused by NameResolutionError("<urllib3.connection.HTTPSConnection object at 0x1039439d0>: Failed to resolve 'www.isi-nabire.ac.id' ([Errno 8] nodename nor servname provided, or not known)"))
+Checking: Institut Seni Indonesia Dogiyai
+❌ BROKEN - HTTPSConnectionPool(host='www.isi-dogiyai.ac.id', port=443): Max retries exceeded with url: / (Caused by NameResolutionError("<urllib3.connection.HTTPSConnection object at 0x103943890>: Failed to resolve 'www.isi-dogiyai.ac.id' ([Errno 8] nodename nor servname provided, or not known)"))
+Checking: Institut Seni Indonesia Deiyai
+❌ BROKEN - HTTPSConnectionPool(host='www.isi-deiyai.ac.id', port=443): Max retries exceeded with url: / (Caused by NameResolutionError("<urllib3.connection.HTTPSConnection object at 0x103943250>: Failed to resolve 'www.isi-deiyai.ac.id' ([Errno 8] nodename nor servname provided, or not known)"))
+Checking: Institut Seni Indonesia Intan Jaya
+❌ BROKEN - HTTPSConnectionPool(host='www.isi-intanjaya.ac.id', port=443): Max retries exceeded with url: / (Caused by NameResolutionError("<urllib3.connection.HTTPSConnection object at 0x103941e50>: Failed to resolve 'www.isi-intanjaya.ac.id' ([Errno 8] nodename nor servname provided, or not known)"))
+Checking: Institut Seni Indonesia Puncak
+❌ BROKEN - HTTPSConnectionPool(host='www.isi-puncak.ac.id', port=443): Max retries exceeded with url: / (Caused by NameResolutionError("<urllib3.connection.HTTPSConnection object at 0x103942710>: Failed to resolve 'www.isi-puncak.ac.id' ([Errno 8] nodename nor servname provided, or not known)"))
+Checking: Institut Seni Indonesia Puncak Jaya
+❌ BROKEN - HTTPSConnectionPool(host='www.isi-puncakjaya.ac.id', port=443): Max retries exceeded with url: / (Caused by NameResolutionError("<urllib3.connection.HTTPSConnection object at 0x103ffe710>: Failed to resolve 'www.isi-puncakjaya.ac.id' ([Errno 8] nodename nor servname provided, or not known)"))
+Checking: Institut Seni Indonesia Lanny Jaya
+❌ BROKEN - HTTPSConnectionPool(host='www.isi-lannyjaya.ac.id', port=443): Max retries exceeded with url: / (Caused by NameResolutionError("<urllib3.connection.HTTPSConnection object at 0x103ffe350>: Failed to resolve 'www.isi-lannyjaya.ac.id' ([Errno 8] nodename nor servname provided, or not known)"))
+Checking: Institut Seni Indonesia Nduga
+❌ BROKEN - HTTPSConnectionPool(host='www.isi-nduga.ac.id', port=443): Max retries exceeded with url: / (Caused by NameResolutionError("<urllib3.connection.HTTPSConnection object at 0x103ffc050>: Failed to resolve 'www.isi-nduga.ac.id' ([Errno 8] nodename nor servname provided, or not known)"))
+Checking: Institut Seni Indonesia Pegunungan Bintang
+❌ BROKEN - HTTPSConnectionPool(host='www.isi-pegununganbintang.ac.id', port=443): Max retries exceeded with url: / (Caused by NameResolutionError("<urllib3.connection.HTTPSConnection object at 0x103ffc7d0>: Failed to resolve 'www.isi-pegununganbintang.ac.id' ([Errno 8] nodename nor servname provided, or not known)"))
+Checking: Institut Seni Indonesia Yahukimo
+❌ BROKEN - HTTPSConnectionPool(host='www.isi-yahukimo.ac.id', port=443): Max retries exceeded with url: / (Caused by NameResolutionError("<urllib3.connection.HTTPSConnection object at 0x103ffce10>: Failed to resolve 'www.isi-yahukimo.ac.id' ([Errno 8] nodename nor servname provided, or not known)"))
+Checking: Institut Seni Indonesia Tolikara
+❌ BROKEN - HTTPSConnectionPool(host='www.isi-tolikara.ac.id', port=443): Max retries exceeded with url: / (Caused by NameResolutionError("<urllib3.connection.HTTPSConnection object at 0x103ffcf50>: Failed to resolve 'www.isi-tolikara.ac.id' ([Errno 8] nodename nor servname provided, or not known)"))
+Checking: Institut Seni Indonesia Sarmi
+❌ BROKEN - HTTPSConnectionPool(host='www.isi-sarmi.ac.id', port=443): Max retries exceeded with url: / (Caused by NameResolutionError("<urllib3.connection.HTTPSConnection object at 0x103ffd450>: Failed to resolve 'www.isi-sarmi.ac.id' ([Errno 8] nodename nor servname provided, or not known)"))
+Checking: Institut Seni Indonesia Keerom
+❌ BROKEN - HTTPSConnectionPool(host='www.isi-keerom.ac.id', port=443): Max retries exceeded with url: / (Caused by NameResolutionError("<urllib3.connection.HTTPSConnection object at 0x103ffd950>: Failed to resolve 'www.isi-keerom.ac.id' ([Errno 8] nodename nor servname provided, or not known)"))
+Checking: Institut Seni Indonesia Waropen
+❌ BROKEN - HTTPSConnectionPool(host='www.isi-waropen.ac.id', port=443): Max retries exceeded with url: / (Caused by NameResolutionError("<urllib3.connection.HTTPSConnection object at 0x103ffde50>: Failed to resolve 'www.isi-waropen.ac.id' ([Errno 8] nodename nor servname provided, or not known)"))
+Checking: Institut Seni Indonesia Supiori
+❌ BROKEN - HTTPSConnectionPool(host='www.isi-supiori.ac.id', port=443): Max retries exceeded with url: / (Caused by NameResolutionError("<urllib3.connection.HTTPSConnection object at 0x103ffec10>: Failed to resolve 'www.isi-supiori.ac.id' ([Errno 8] nodename nor servname provided, or not known)"))
+Checking: Institut Seni Indonesia Mamberamo Raya
+❌ BROKEN - HTTPSConnectionPool(host='www.isi-mamberamoraya.ac.id', port=443): Max retries exceeded with url: / (Caused by NameResolutionError("<urllib3.connection.HTTPSConnection object at 0x103942fd0>: Failed to resolve 'www.isi-mamberamoraya.ac.id' ([Errno 8] nodename nor servname provided, or not known)"))
+Checking: Institut Seni Indonesia Mamberamo Tengah
+❌ BROKEN - HTTPSConnectionPool(host='www.isi-mamberamotengah.ac.id', port=443): Max retries exceeded with url: / (Caused by NameResolutionError("<urllib3.connection.HTTPSConnection object at 0x103942850>: Failed to resolve 'www.isi-mamberamotengah.ac.id' ([Errno 8] nodename nor servname provided, or not known)"))
+Checking: Institut Seni Indonesia Yalimo
+❌ BROKEN - HTTPSConnectionPool(host='www.isi-yalimo.ac.id', port=443): Max retries exceeded with url: / (Caused by NameResolutionError("<urllib3.connection.HTTPSConnection object at 0x103942490>: Failed to resolve 'www.isi-yalimo.ac.id' ([Errno 8] nodename nor servname provided, or not known)"))
+Checking: Institut Seni Indonesia Lembah Baliem
+❌ BROKEN - HTTPSConnectionPool(host='www.isi-lembahbaliem.ac.id', port=443): Max retries exceeded with url: / (Caused by NameResolutionError("<urllib3.connection.HTTPSConnection object at 0x103942210>: Failed to resolve 'www.isi-lembahbaliem.ac.id' ([Errno 8] nodename nor servname provided, or not known)"))
+Checking: Institut Seni Indonesia Boven Digoel
+❌ BROKEN - HTTPSConnectionPool(host='www.isi-bovendigoel.ac.id', port=443): Max retries exceeded with url: / (Caused by NameResolutionError("<urllib3.connection.HTTPSConnection object at 0x1039434d0>: Failed to resolve 'www.isi-bovendigoel.ac.id' ([Errno 8] nodename nor servname provided, or not known)"))
+Checking: Institut Seni Indonesia Mappi
+❌ BROKEN - HTTPSConnectionPool(host='www.isi-mappi.ac.id', port=443): Max retries exceeded with url: / (Caused by NameResolutionError("<urllib3.connection.HTTPSConnection object at 0x103943b10>: Failed to resolve 'www.isi-mappi.ac.id' ([Errno 8] nodename nor servname provided, or not known)"))
+Checking: Institut Seni Indonesia Asmat
+❌ BROKEN - HTTPSConnectionPool(host='www.isi-asmat.ac.id', port=443): Max retries exceeded with url: / (Caused by NameResolutionError("<urllib3.connection.HTTPSConnection object at 0x103943610>: Failed to resolve 'www.isi-asmat.ac.id' ([Errno 8] nodename nor servname provided, or not known)"))
+Checking: Institut Seni Indonesia Mimika
+❌ BROKEN - HTTPSConnectionPool(host='www.isi-mimika.ac.id', port=443): Max retries exceeded with url: / (Caused by NameResolutionError("<urllib3.connection.HTTPSConnection object at 0x103ffdbd0>: Failed to resolve 'www.isi-mimika.ac.id' ([Errno 8] nodename nor servname provided, or not known)"))
+Checking: Institut Seni Indonesia Paniai
+❌ BROKEN - HTTPSConnectionPool(host='www.isi-paniai.ac.id', port=443): Max retries exceeded with url: / (Caused by NameResolutionError("<urllib3.connection.HTTPSConnection object at 0x103ffd810>: Failed to resolve 'www.isi-paniai.ac.id' ([Errno 8] nodename nor servname provided, or not known)"))
+
+📊 ADDITIONAL SCHOOLS RESULTS:
+✅ Working: 75
+❌ Broken: 77
+
+📄 Complete results saved to: complete_verification_results.txt

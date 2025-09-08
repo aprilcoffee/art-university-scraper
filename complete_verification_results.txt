@@ -1,0 +1,211 @@
+COMPLETE UNIVERSITY VERIFICATION RESULTS
+==================================================
+
+CURRENT UNIVERSITIES:
+Working: 39
+Broken: 1
+
+WORKING CURRENT LINKS:
+✅ Alanus Hochschule für Kunst und Gesellschaft: https://www.alanus.edu
+✅ Kunsthochschule Berlin-Weißensee: https://www.kh-berlin.de
+✅ Universität der Künste Berlin: https://www.udk-berlin.de
+✅ Hochschule für Bildende Künste Braunschweig: https://www.hbk-bs.de
+✅ Hochschule für Künste Bremen: https://www.hfk-bremen.de
+✅ Hochschule für Bildende Künste Dresden: https://www.hfbk-dresden.de
+✅ Kunstakademie Düsseldorf: https://www.kunstakademie-duesseldorf.de
+✅ Folkwang Universität der Künste: https://www.folkwang-uni.de
+✅ Hochschule der bildenden Künste Essen: https://www.hbk-essen.de
+✅ Staatliche Hochschule für Bildende Künste – Städelschule: https://www.staedelschule.de
+✅ Burg Giebichenstein Kunsthochschule Halle: https://www.burg-halle.de
+✅ Hochschule für bildende Künste Hamburg: https://www.hfbk-hamburg.de
+✅ Staatliche Hochschule für Gestaltung Karlsruhe: https://www.hfg-karlsruhe.de
+✅ Kunsthochschule für Medien Köln: https://www.khm.de
+✅ Hochschule für Grafik und Buchkunst Leipzig: https://www.hgb-leipzig.de
+✅ Kunsthochschule Mainz: https://www.kunsthochschule-mainz.de
+✅ Akademie der Bildenden Künste München: https://www.adbk.de
+✅ Kunstakademie Münster: https://www.kunstakademie-muenster.de
+✅ Akademie der Bildenden Künste Nürnberg: https://www.adbk-nuernberg.de
+✅ Hochschule für Gestaltung Offenbach am Main: https://www.hfg-offenbach.de
+✅ Hochschule der Bildenden Künste Saar: https://www.hbksaar.de
+✅ Staatliche Akademie der Bildenden Künste Stuttgart: https://www.abk-stuttgart.de
+✅ Bauhaus-Universität Weimar: https://www.uni-weimar.de
+✅ Universität für angewandte Kunst Wien: https://www.dieangewandte.at
+✅ Kunstuniversität Linz: https://www.ufg.at
+✅ Kunstuniversität Graz: https://www.kug.ac.at
+✅ Universität Mozarteum Salzburg: https://www.moz.ac.at
+✅ Hochschule für Musik und Darstellende Kunst Wien: https://www.mdw.ac.at
+✅ Hochschule für Gestaltung und Kunst Basel: https://www.fhnw.ch/de/hochschule-fur-gestaltung-und-kunst
+✅ Hochschule für Gestaltung und Kunst Bern: https://www.hkb.bfh.ch
+✅ Royal College of Art: https://www.rca.ac.uk
+✅ Goldsmiths University of London: https://www.gold.ac.uk
+✅ Slade School of Fine Art: https://www.ucl.ac.uk/slade
+✅ Glasgow School of Art: https://www.gsa.ac.uk
+✅ Edinburgh College of Art: https://www.eca.ed.ac.uk
+✅ Design Academy Eindhoven: https://www.designacademy.nl
+✅ Royal Academy of Art The Hague: https://www.kabk.nl
+✅ Konstfack University of Arts, Crafts and Design: https://www.konstfack.se
+✅ École Nationale Supérieure des Beaux-Arts: https://www.beauxartsparis.fr
+
+BROKEN CURRENT LINKS:
+❌ Muthesius Kunsthochschule: https://www.muthesius.de (HTTPSConnectionPool(host='www.muthesius.de', port=443): Max retries exceeded with url: / (Caused by SSLError(SSLCertVerificationError(1, '[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1028)'))))
+
+
+ADDITIONAL MAJOR ART SCHOOLS:
+Working: 75
+Broken: 77
+
+WORKING ADDITIONAL LINKS:
+✅ Hochschule für Gestaltung Schwäbisch Gmünd: https://www.hfg-gmuend.de
+✅ Hochschule für Technik und Wirtschaft Berlin: https://www.htw-berlin.de
+✅ Hochschule für Technik, Wirtschaft und Kultur Leipzig: https://www.htwk-leipzig.de
+✅ Hochschule für Technik und Wirtschaft Dresden: https://www.htw-dresden.de
+✅ Hochschule für Technik und Wirtschaft Karlsruhe: https://www.hs-karlsruhe.de
+✅ Hochschule für Musik und Theater Hamburg: https://www.hfmt-hamburg.de
+✅ Hochschule für Musik und Theater München: https://www.musikhochschule-muenchen.de
+✅ Hochschule für Musik und Theater Leipzig: https://www.hmt-leipzig.de
+✅ Hochschule für Musik und Theater Hannover: https://www.hmtm-hannover.de
+✅ Hochschule für Musik und Theater Rostock: https://www.hmt-rostock.de
+✅ Hochschule für Musik und Theater Weimar: https://www.hfm-weimar.de
+✅ Hochschule für Gestaltung Pforzheim: https://www.hs-pforzheim.de
+✅ Hochschule für Gestaltung und Kunst Zürich: https://www.zhdk.ch
+✅ Hochschule für Gestaltung und Kunst Luzern: https://www.hslu.ch
+✅ Gerrit Rietveld Academie: https://www.rietveldacademie.nl
+✅ ArtEZ University of the Arts: https://www.artez.nl
+✅ La Cambre: https://www.lacambre.be
+✅ Rhode Island School of Design: https://www.risd.edu
+✅ School of the Art Institute of Chicago: https://www.saic.edu
+✅ California Institute of the Arts: https://www.calarts.edu
+✅ Parsons School of Design: https://www.newschool.edu/parsons
+✅ Pratt Institute: https://www.pratt.edu
+✅ Cooper Union: https://cooper.edu
+✅ Art Center College of Design: https://www.artcenter.edu
+✅ Cranbrook Academy of Art: https://cranbrookart.edu
+✅ Yale School of Art: https://www.art.yale.edu
+✅ New York University Tisch School of the Arts: https://tisch.nyu.edu
+✅ UCLA School of the Arts and Architecture: https://www.arts.ucla.edu
+✅ Carnegie Mellon School of Art: https://www.cmu.edu/art
+✅ Virginia Commonwealth University School of the Arts: https://arts.vcu.edu
+✅ Maryland Institute College of Art: https://www.mica.edu
+✅ Massachusetts College of Art and Design: https://www.massart.edu
+✅ Minneapolis College of Art and Design: https://mcad.edu
+✅ Kansas City Art Institute: https://www.kcai.edu
+✅ Ringling College of Art and Design: https://www.ringling.edu
+✅ Otis College of Art and Design: https://www.otis.edu
+✅ Laguna College of Art and Design: https://www.lcad.edu
+✅ Academy of Art University: https://www.academyart.edu
+✅ Art Institute of Chicago: https://www.artic.edu
+✅ School of Visual Arts: https://www.sva.edu
+✅ Fashion Institute of Technology: https://www.fitnyc.edu
+✅ The New School Parsons: https://www.newschool.edu/parsons
+✅ Emily Carr University of Art and Design: https://www.ecuad.ca
+✅ Ontario College of Art and Design University: https://www.ocadu.ca
+✅ Alberta College of Art and Design: https://www.acad.ca
+✅ Concordia University Faculty of Fine Arts: https://www.concordia.ca/finearts
+✅ University of Toronto Faculty of Music: https://www.music.utoronto.ca
+✅ University of New South Wales Art & Design: https://www.artdesign.unsw.edu.au
+✅ University of Sydney Sydney College of the Arts: https://www.sydney.edu.au/sca
+✅ RMIT University School of Art: https://www.rmit.edu.au/art
+✅ Queensland College of Art: https://www.griffith.edu.au/qca
+✅ Tama Art University: https://www.tamabi.ac.jp
+✅ Musashino Art University: https://www.musabi.ac.jp
+✅ Kyoto University of Art and Design: https://www.kyoto-art.ac.jp
+✅ Osaka University of Arts: https://www.osaka-geidai.ac.jp
+✅ Hong Kong Academy for Performing Arts: https://www.hkapa.edu
+✅ Hong Kong Baptist University Academy of Visual Arts: https://ava.hkbu.edu.hk
+✅ City University of Hong Kong School of Creative Media: https://www.scm.cityu.edu.hk
+✅ Korea National University of Arts: https://www.karts.ac.kr
+✅ Hongik University College of Fine Arts: https://www.hongik.ac.kr
+✅ Seoul National University College of Fine Arts: https://art.snu.ac.kr
+✅ Ewha Womans University College of Art & Design: https://www.ewha.ac.kr
+✅ Singapore LASALLE College of the Arts: https://www.lasalle.edu.sg
+✅ Nanyang Academy of Fine Arts: https://www.nafa.edu.sg
+✅ University of the Philippines College of Fine Arts: https://www.upd.edu.ph/cfa
+✅ De La Salle College of Saint Benilde School of Design and Arts: https://www.benilde.edu.ph
+✅ University of Santo Tomas College of Fine Arts and Design: https://www.ust.edu.ph
+✅ Chulalongkorn University Faculty of Fine and Applied Arts: https://www.chula.ac.th
+✅ Silpakorn University Faculty of Painting Sculpture and Graphic Arts: https://www.su.ac.th
+✅ Thammasat University Faculty of Fine and Applied Arts: https://www.tu.ac.th
+✅ University of Indonesia Faculty of Fine Arts: https://www.ui.ac.id
+✅ Bandung Institute of Technology Faculty of Art and Design: https://www.itb.ac.id
+✅ Institut Seni Indonesia Yogyakarta: https://www.isi.ac.id
+✅ Institut Seni Indonesia Surakarta: https://www.isi-ska.ac.id
+✅ Institut Seni Indonesia Padangpanjang: https://www.isi-padangpanjang.ac.id
+
+BROKEN ADDITIONAL LINKS:
+❌ Central Saint Martins: https://www.arts.ac.uk/csm (None)
+❌ Chelsea College of Arts: https://www.arts.ac.uk/chelsea (None)
+❌ Camberwell College of Arts: https://www.arts.ac.uk/camberwell (None)
+❌ Wimbledon College of Arts: https://www.arts.ac.uk/wimbledon (None)
+❌ London College of Communication: https://www.arts.ac.uk/lcc (None)
+❌ London College of Fashion: https://www.arts.ac.uk/fashion (None)
+❌ Royal Academy of Fine Arts Antwerp: https://www.antwerp.ac.be (HTTPSConnectionPool(host='www.antwerp.ac.be', port=443): Max retries exceeded with url: / (Caused by NameResolutionError("<urllib3.connection.HTTPSConnection object at 0x103943250>: Failed to resolve 'www.antwerp.ac.be' ([Errno 8] nodename nor servname provided, or not known)")))
+❌ École Nationale Supérieure d'Architecture: https://www.archi.fr (HTTPSConnectionPool(host='www.archi.fr', port=443): Max retries exceeded with url: / (Caused by NameResolutionError("<urllib3.connection.HTTPSConnection object at 0x1039434d0>: Failed to resolve 'www.archi.fr' ([Errno 8] nodename nor servname provided, or not known)")))
+❌ Savannah College of Art and Design: https://www.scad.edu (None)
+❌ Columbia University School of the Arts: https://arts.columbia.edu (None)
+❌ San Francisco Art Institute: https://sfai.edu (HTTPSConnectionPool(host='sfai.edu', port=443): Max retries exceeded with url: / (Caused by NameResolutionError("<urllib3.connection.HTTPSConnection object at 0x103942210>: Failed to resolve 'sfai.edu' ([Errno 8] nodename nor servname provided, or not known)")))
+❌ Cleveland Institute of Art: https://www.cia.edu (None)
+❌ Memphis College of Art: https://www.mca.edu (HTTPSConnectionPool(host='www.mca.edu', port=443): Max retries exceeded with url: / (Caused by NameResolutionError("<urllib3.connection.HTTPSConnection object at 0x103943610>: Failed to resolve 'www.mca.edu' ([Errno 8] nodename nor servname provided, or not known)")))
+❌ Pacific Northwest College of Art: https://www.pnca.edu (HTTPSConnectionPool(host='www.pnca.edu', port=443): Max retries exceeded with url: / (Caused by NameResolutionError("<urllib3.connection.HTTPSConnection object at 0x103943ed0>: Failed to resolve 'www.pnca.edu' ([Errno 8] nodename nor servname provided, or not known)")))
+❌ Nova Scotia College of Art and Design: https://www.nscad.ca (None)
+❌ University of British Columbia Department of Art History: https://www.ahva.ubc.ca (HTTPSConnectionPool(host='www.ahva.ubc.ca', port=443): Max retries exceeded with url: / (Caused by NameResolutionError("<urllib3.connection.HTTPSConnection object at 0x1039439d0>: Failed to resolve 'www.ahva.ubc.ca' ([Errno 8] nodename nor servname provided, or not known)")))
+❌ York University School of the Arts: https://www.yorku.ca/ampd (HTTPSConnectionPool(host='ampd.yorku.ca', port=443): Max retries exceeded with url: / (Caused by SSLError(SSLCertVerificationError(1, '[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1028)'))))
+❌ National Art School: https://www.nas.edu.au (None)
+❌ Monash University Faculty of Art, Design and Architecture: https://www.monash.edu/mada (None)
+❌ University of Melbourne Victorian College of the Arts: https://www.vca.unimelb.edu.au (None)
+❌ Curtin University School of Design and Art: https://www.curtin.edu.au/design (None)
+❌ Tokyo University of the Arts: https://www.geidai.ac.jp (None)
+❌ National Taiwan University of Arts: https://www.ntua.edu.tw (HTTPSConnectionPool(host='www.ntua.edu.tw', port=443): Max retries exceeded with url: / (Caused by SSLError(SSLCertVerificationError(1, '[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: Missing Subject Key Identifier (_ssl.c:1028)'))))
+❌ Taipei National University of the Arts: https://www.tnua.edu.tw (HTTPSConnectionPool(host='www.tnua.edu.tw', port=443): Max retries exceeded with url: / (Caused by SSLError(SSLCertVerificationError(1, '[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: Missing Subject Key Identifier (_ssl.c:1028)'))))
+❌ Yonsei University College of Fine Arts: https://art.yonsei.ac.kr (HTTPSConnectionPool(host='art.yonsei.ac.kr', port=443): Max retries exceeded with url: / (Caused by NameResolutionError("<urllib3.connection.HTTPSConnection object at 0x103942fd0>: Failed to resolve 'art.yonsei.ac.kr' ([Errno 8] nodename nor servname provided, or not known)")))
+❌ National University of Singapore School of Design and Environment: https://www.sde.nus.edu.sg (HTTPSConnectionPool(host='www.sde.nus.edu.sg', port=443): Max retries exceeded with url: / (Caused by NameResolutionError("<urllib3.connection.HTTPSConnection object at 0x103ffc550>: Failed to resolve 'www.sde.nus.edu.sg' ([Errno 8] nodename nor servname provided, or not known)")))
+❌ Ateneo de Manila University Fine Arts Program: https://www.ateneo.edu (None)
+❌ Institut Seni Indonesia Denpasar: https://www.isi-dps.ac.id (None)
+❌ Institut Seni Indonesia Makassar: https://www.isi-makassar.ac.id (HTTPSConnectionPool(host='www.isi-makassar.ac.id', port=443): Max retries exceeded with url: / (Caused by NameResolutionError("<urllib3.connection.HTTPSConnection object at 0x103ffcb90>: Failed to resolve 'www.isi-makassar.ac.id' ([Errno 8] nodename nor servname provided, or not known)")))
+❌ Institut Seni Indonesia Medan: https://www.isi-medan.ac.id (HTTPSConnectionPool(host='www.isi-medan.ac.id', port=443): Max retries exceeded with url: / (Caused by NameResolutionError("<urllib3.connection.HTTPSConnection object at 0x103ffc910>: Failed to resolve 'www.isi-medan.ac.id' ([Errno 8] nodename nor servname provided, or not known)")))
+❌ Institut Seni Indonesia Bandung: https://www.isbi.ac.id (HTTPSConnectionPool(host='www.isbi.ac.id', port=443): Read timed out. (read timeout=10))
+❌ Institut Seni Indonesia Jakarta: https://www.isi-jkt.ac.id (HTTPSConnectionPool(host='www.isi-jkt.ac.id', port=443): Max retries exceeded with url: / (Caused by NameResolutionError("<urllib3.connection.HTTPSConnection object at 0x103ffd310>: Failed to resolve 'www.isi-jkt.ac.id' ([Errno 8] nodename nor servname provided, or not known)")))
+❌ Institut Seni Indonesia Pontianak: https://www.isi-pontianak.ac.id (HTTPSConnectionPool(host='www.isi-pontianak.ac.id', port=443): Max retries exceeded with url: / (Caused by NameResolutionError("<urllib3.connection.HTTPSConnection object at 0x103ffd810>: Failed to resolve 'www.isi-pontianak.ac.id' ([Errno 8] nodename nor servname provided, or not known)")))
+❌ Institut Seni Indonesia Palembang: https://www.isi-palembang.ac.id (HTTPSConnectionPool(host='www.isi-palembang.ac.id', port=443): Max retries exceeded with url: / (Caused by NameResolutionError("<urllib3.connection.HTTPSConnection object at 0x103ffdd10>: Failed to resolve 'www.isi-palembang.ac.id' ([Errno 8] nodename nor servname provided, or not known)")))
+❌ Institut Seni Indonesia Banjarmasin: https://www.isi-banjarmasin.ac.id (HTTPSConnectionPool(host='www.isi-banjarmasin.ac.id', port=443): Max retries exceeded with url: / (Caused by NameResolutionError("<urllib3.connection.HTTPSConnection object at 0x103942fd0>: Failed to resolve 'www.isi-banjarmasin.ac.id' ([Errno 8] nodename nor servname provided, or not known)")))
+❌ Institut Seni Indonesia Manado: https://www.isi-manado.ac.id (HTTPSConnectionPool(host='www.isi-manado.ac.id', port=443): Max retries exceeded with url: / (Caused by NameResolutionError("<urllib3.connection.HTTPSConnection object at 0x103942850>: Failed to resolve 'www.isi-manado.ac.id' ([Errno 8] nodename nor servname provided, or not known)")))
+❌ Institut Seni Indonesia Jayapura: https://www.isi-jayapura.ac.id (HTTPSConnectionPool(host='www.isi-jayapura.ac.id', port=443): Max retries exceeded with url: / (Caused by NameResolutionError("<urllib3.connection.HTTPSConnection object at 0x103942490>: Failed to resolve 'www.isi-jayapura.ac.id' ([Errno 8] nodename nor servname provided, or not known)")))
+❌ Institut Seni Indonesia Ambon: https://www.isi-ambon.ac.id (HTTPSConnectionPool(host='www.isi-ambon.ac.id', port=443): Max retries exceeded with url: / (Caused by NameResolutionError("<urllib3.connection.HTTPSConnection object at 0x103942210>: Failed to resolve 'www.isi-ambon.ac.id' ([Errno 8] nodename nor servname provided, or not known)")))
+❌ Institut Seni Indonesia Mataram: https://www.isi-mataram.ac.id (HTTPSConnectionPool(host='www.isi-mataram.ac.id', port=443): Max retries exceeded with url: / (Caused by NameResolutionError("<urllib3.connection.HTTPSConnection object at 0x103943610>: Failed to resolve 'www.isi-mataram.ac.id' ([Errno 8] nodename nor servname provided, or not known)")))
+❌ Institut Seni Indonesia Kupang: https://www.isi-kupang.ac.id (HTTPSConnectionPool(host='www.isi-kupang.ac.id', port=443): Max retries exceeded with url: / (Caused by NameResolutionError("<urllib3.connection.HTTPSConnection object at 0x103942e90>: Failed to resolve 'www.isi-kupang.ac.id' ([Errno 8] nodename nor servname provided, or not known)")))
+❌ Institut Seni Indonesia Kendari: https://www.isi-kendari.ac.id (HTTPSConnectionPool(host='www.isi-kendari.ac.id', port=443): Max retries exceeded with url: / (Caused by NameResolutionError("<urllib3.connection.HTTPSConnection object at 0x103943b10>: Failed to resolve 'www.isi-kendari.ac.id' ([Errno 8] nodename nor servname provided, or not known)")))
+❌ Institut Seni Indonesia Palu: https://www.isi-palu.ac.id (HTTPSConnectionPool(host='www.isi-palu.ac.id', port=443): Max retries exceeded with url: / (Caused by NameResolutionError("<urllib3.connection.HTTPSConnection object at 0x103ffdbd0>: Failed to resolve 'www.isi-palu.ac.id' ([Errno 8] nodename nor servname provided, or not known)")))
+❌ Institut Seni Indonesia Gorontalo: https://www.isi-gorontalo.ac.id (HTTPSConnectionPool(host='www.isi-gorontalo.ac.id', port=443): Max retries exceeded with url: / (Caused by NameResolutionError("<urllib3.connection.HTTPSConnection object at 0x103ffd810>: Failed to resolve 'www.isi-gorontalo.ac.id' ([Errno 8] nodename nor servname provided, or not known)")))
+❌ Institut Seni Indonesia Mamuju: https://www.isi-mamuju.ac.id (HTTPSConnectionPool(host='www.isi-mamuju.ac.id', port=443): Max retries exceeded with url: / (Caused by NameResolutionError("<urllib3.connection.HTTPSConnection object at 0x103ffd310>: Failed to resolve 'www.isi-mamuju.ac.id' ([Errno 8] nodename nor servname provided, or not known)")))
+❌ Institut Seni Indonesia Sorong: https://www.isi-sorong.ac.id (HTTPSConnectionPool(host='www.isi-sorong.ac.id', port=443): Max retries exceeded with url: / (Caused by NameResolutionError("<urllib3.connection.HTTPSConnection object at 0x103ffd090>: Failed to resolve 'www.isi-sorong.ac.id' ([Errno 8] nodename nor servname provided, or not known)")))
+❌ Institut Seni Indonesia Merauke: https://www.isi-merauke.ac.id (HTTPSConnectionPool(host='www.isi-merauke.ac.id', port=443): Max retries exceeded with url: / (Caused by NameResolutionError("<urllib3.connection.HTTPSConnection object at 0x103ffccd0>: Failed to resolve 'www.isi-merauke.ac.id' ([Errno 8] nodename nor servname provided, or not known)")))
+❌ Institut Seni Indonesia Fakfak: https://www.isi-fakfak.ac.id (HTTPSConnectionPool(host='www.isi-fakfak.ac.id', port=443): Max retries exceeded with url: / (Caused by NameResolutionError("<urllib3.connection.HTTPSConnection object at 0x103ffca50>: Failed to resolve 'www.isi-fakfak.ac.id' ([Errno 8] nodename nor servname provided, or not known)")))
+❌ Institut Seni Indonesia Kaimana: https://www.isi-kaimana.ac.id (HTTPSConnectionPool(host='www.isi-kaimana.ac.id', port=443): Max retries exceeded with url: / (Caused by NameResolutionError("<urllib3.connection.HTTPSConnection object at 0x103ffc690>: Failed to resolve 'www.isi-kaimana.ac.id' ([Errno 8] nodename nor servname provided, or not known)")))
+❌ Institut Seni Indonesia Raja Ampat: https://www.isi-rajaampat.ac.id (HTTPSConnectionPool(host='www.isi-rajaampat.ac.id', port=443): Max retries exceeded with url: / (Caused by NameResolutionError("<urllib3.connection.HTTPSConnection object at 0x103ffe210>: Failed to resolve 'www.isi-rajaampat.ac.id' ([Errno 8] nodename nor servname provided, or not known)")))
+❌ Institut Seni Indonesia Biak: https://www.isi-biak.ac.id (HTTPSConnectionPool(host='www.isi-biak.ac.id', port=443): Max retries exceeded with url: / (Caused by NameResolutionError("<urllib3.connection.HTTPSConnection object at 0x103ffe5d0>: Failed to resolve 'www.isi-biak.ac.id' ([Errno 8] nodename nor servname provided, or not known)")))
+❌ Institut Seni Indonesia Serui: https://www.isi-serui.ac.id (HTTPSConnectionPool(host='www.isi-serui.ac.id', port=443): Max retries exceeded with url: / (Caused by NameResolutionError("<urllib3.connection.HTTPSConnection object at 0x103ffe0d0>: Failed to resolve 'www.isi-serui.ac.id' ([Errno 8] nodename nor servname provided, or not known)")))
+❌ Institut Seni Indonesia Wamena: https://www.isi-wamena.ac.id (HTTPSConnectionPool(host='www.isi-wamena.ac.id', port=443): Max retries exceeded with url: / (Caused by NameResolutionError("<urllib3.connection.HTTPSConnection object at 0x103943b10>: Failed to resolve 'www.isi-wamena.ac.id' ([Errno 8] nodename nor servname provided, or not known)")))
+❌ Institut Seni Indonesia Timika: https://www.isi-timika.ac.id (HTTPSConnectionPool(host='www.isi-timika.ac.id', port=443): Max retries exceeded with url: / (Caused by NameResolutionError("<urllib3.connection.HTTPSConnection object at 0x1039434d0>: Failed to resolve 'www.isi-timika.ac.id' ([Errno 8] nodename nor servname provided, or not known)")))
+❌ Institut Seni Indonesia Nabire: https://www.isi-nabire.ac.id (HTTPSConnectionPool(host='www.isi-nabire.ac.id', port=443): Max retries exceeded with url: / (Caused by NameResolutionError("<urllib3.connection.HTTPSConnection object at 0x1039439d0>: Failed to resolve 'www.isi-nabire.ac.id' ([Errno 8] nodename nor servname provided, or not known)")))
+❌ Institut Seni Indonesia Dogiyai: https://www.isi-dogiyai.ac.id (HTTPSConnectionPool(host='www.isi-dogiyai.ac.id', port=443): Max retries exceeded with url: / (Caused by NameResolutionError("<urllib3.connection.HTTPSConnection object at 0x103943890>: Failed to resolve 'www.isi-dogiyai.ac.id' ([Errno 8] nodename nor servname provided, or not known)")))
+❌ Institut Seni Indonesia Deiyai: https://www.isi-deiyai.ac.id (HTTPSConnectionPool(host='www.isi-deiyai.ac.id', port=443): Max retries exceeded with url: / (Caused by NameResolutionError("<urllib3.connection.HTTPSConnection object at 0x103943250>: Failed to resolve 'www.isi-deiyai.ac.id' ([Errno 8] nodename nor servname provided, or not known)")))
+❌ Institut Seni Indonesia Intan Jaya: https://www.isi-intanjaya.ac.id (HTTPSConnectionPool(host='www.isi-intanjaya.ac.id', port=443): Max retries exceeded with url: / (Caused by NameResolutionError("<urllib3.connection.HTTPSConnection object at 0x103941e50>: Failed to resolve 'www.isi-intanjaya.ac.id' ([Errno 8] nodename nor servname provided, or not known)")))
+❌ Institut Seni Indonesia Puncak: https://www.isi-puncak.ac.id (HTTPSConnectionPool(host='www.isi-puncak.ac.id', port=443): Max retries exceeded with url: / (Caused by NameResolutionError("<urllib3.connection.HTTPSConnection object at 0x103942710>: Failed to resolve 'www.isi-puncak.ac.id' ([Errno 8] nodename nor servname provided, or not known)")))
+❌ Institut Seni Indonesia Puncak Jaya: https://www.isi-puncakjaya.ac.id (HTTPSConnectionPool(host='www.isi-puncakjaya.ac.id', port=443): Max retries exceeded with url: / (Caused by NameResolutionError("<urllib3.connection.HTTPSConnection object at 0x103ffe710>: Failed to resolve 'www.isi-puncakjaya.ac.id' ([Errno 8] nodename nor servname provided, or not known)")))
+❌ Institut Seni Indonesia Lanny Jaya: https://www.isi-lannyjaya.ac.id (HTTPSConnectionPool(host='www.isi-lannyjaya.ac.id', port=443): Max retries exceeded with url: / (Caused by NameResolutionError("<urllib3.connection.HTTPSConnection object at 0x103ffe350>: Failed to resolve 'www.isi-lannyjaya.ac.id' ([Errno 8] nodename nor servname provided, or not known)")))
+❌ Institut Seni Indonesia Nduga: https://www.isi-nduga.ac.id (HTTPSConnectionPool(host='www.isi-nduga.ac.id', port=443): Max retries exceeded with url: / (Caused by NameResolutionError("<urllib3.connection.HTTPSConnection object at 0x103ffc050>: Failed to resolve 'www.isi-nduga.ac.id' ([Errno 8] nodename nor servname provided, or not known)")))
+❌ Institut Seni Indonesia Pegunungan Bintang: https://www.isi-pegununganbintang.ac.id (HTTPSConnectionPool(host='www.isi-pegununganbintang.ac.id', port=443): Max retries exceeded with url: / (Caused by NameResolutionError("<urllib3.connection.HTTPSConnection object at 0x103ffc7d0>: Failed to resolve 'www.isi-pegununganbintang.ac.id' ([Errno 8] nodename nor servname provided, or not known)")))
+❌ Institut Seni Indonesia Yahukimo: https://www.isi-yahukimo.ac.id (HTTPSConnectionPool(host='www.isi-yahukimo.ac.id', port=443): Max retries exceeded with url: / (Caused by NameResolutionError("<urllib3.connection.HTTPSConnection object at 0x103ffce10>: Failed to resolve 'www.isi-yahukimo.ac.id' ([Errno 8] nodename nor servname provided, or not known)")))
+❌ Institut Seni Indonesia Tolikara: https://www.isi-tolikara.ac.id (HTTPSConnectionPool(host='www.isi-tolikara.ac.id', port=443): Max retries exceeded with url: / (Caused by NameResolutionError("<urllib3.connection.HTTPSConnection object at 0x103ffcf50>: Failed to resolve 'www.isi-tolikara.ac.id' ([Errno 8] nodename nor servname provided, or not known)")))
+❌ Institut Seni Indonesia Sarmi: https://www.isi-sarmi.ac.id (HTTPSConnectionPool(host='www.isi-sarmi.ac.id', port=443): Max retries exceeded with url: / (Caused by NameResolutionError("<urllib3.connection.HTTPSConnection object at 0x103ffd450>: Failed to resolve 'www.isi-sarmi.ac.id' ([Errno 8] nodename nor servname provided, or not known)")))
+❌ Institut Seni Indonesia Keerom: https://www.isi-keerom.ac.id (HTTPSConnectionPool(host='www.isi-keerom.ac.id', port=443): Max retries exceeded with url: / (Caused by NameResolutionError("<urllib3.connection.HTTPSConnection object at 0x103ffd950>: Failed to resolve 'www.isi-keerom.ac.id' ([Errno 8] nodename nor servname provided, or not known)")))
+❌ Institut Seni Indonesia Waropen: https://www.isi-waropen.ac.id (HTTPSConnectionPool(host='www.isi-waropen.ac.id', port=443): Max retries exceeded with url: / (Caused by NameResolutionError("<urllib3.connection.HTTPSConnection object at 0x103ffde50>: Failed to resolve 'www.isi-waropen.ac.id' ([Errno 8] nodename nor servname provided, or not known)")))
+❌ Institut Seni Indonesia Supiori: https://www.isi-supiori.ac.id (HTTPSConnectionPool(host='www.isi-supiori.ac.id', port=443): Max retries exceeded with url: / (Caused by NameResolutionError("<urllib3.connection.HTTPSConnection object at 0x103ffec10>: Failed to resolve 'www.isi-supiori.ac.id' ([Errno 8] nodename nor servname provided, or not known)")))
+❌ Institut Seni Indonesia Mamberamo Raya: https://www.isi-mamberamoraya.ac.id (HTTPSConnectionPool(host='www.isi-mamberamoraya.ac.id', port=443): Max retries exceeded with url: / (Caused by NameResolutionError("<urllib3.connection.HTTPSConnection object at 0x103942fd0>: Failed to resolve 'www.isi-mamberamoraya.ac.id' ([Errno 8] nodename nor servname provided, or not known)")))
+❌ Institut Seni Indonesia Mamberamo Tengah: https://www.isi-mamberamotengah.ac.id (HTTPSConnectionPool(host='www.isi-mamberamotengah.ac.id', port=443): Max retries exceeded with url: / (Caused by NameResolutionError("<urllib3.connection.HTTPSConnection object at 0x103942850>: Failed to resolve 'www.isi-mamberamotengah.ac.id' ([Errno 8] nodename nor servname provided, or not known)")))
+❌ Institut Seni Indonesia Yalimo: https://www.isi-yalimo.ac.id (HTTPSConnectionPool(host='www.isi-yalimo.ac.id', port=443): Max retries exceeded with url: / (Caused by NameResolutionError("<urllib3.connection.HTTPSConnection object at 0x103942490>: Failed to resolve 'www.isi-yalimo.ac.id' ([Errno 8] nodename nor servname provided, or not known)")))
+❌ Institut Seni Indonesia Lembah Baliem: https://www.isi-lembahbaliem.ac.id (HTTPSConnectionPool(host='www.isi-lembahbaliem.ac.id', port=443): Max retries exceeded with url: / (Caused by NameResolutionError("<urllib3.connection.HTTPSConnection object at 0x103942210>: Failed to resolve 'www.isi-lembahbaliem.ac.id' ([Errno 8] nodename nor servname provided, or not known)")))
+❌ Institut Seni Indonesia Boven Digoel: https://www.isi-bovendigoel.ac.id (HTTPSConnectionPool(host='www.isi-bovendigoel.ac.id', port=443): Max retries exceeded with url: / (Caused by NameResolutionError("<urllib3.connection.HTTPSConnection object at 0x1039434d0>: Failed to resolve 'www.isi-bovendigoel.ac.id' ([Errno 8] nodename nor servname provided, or not known)")))
+❌ Institut Seni Indonesia Mappi: https://www.isi-mappi.ac.id (HTTPSConnectionPool(host='www.isi-mappi.ac.id', port=443): Max retries exceeded with url: / (Caused by NameResolutionError("<urllib3.connection.HTTPSConnection object at 0x103943b10>: Failed to resolve 'www.isi-mappi.ac.id' ([Errno 8] nodename nor servname provided, or not known)")))
+❌ Institut Seni Indonesia Asmat: https://www.isi-asmat.ac.id (HTTPSConnectionPool(host='www.isi-asmat.ac.id', port=443): Max retries exceeded with url: / (Caused by NameResolutionError("<urllib3.connection.HTTPSConnection object at 0x103943610>: Failed to resolve 'www.isi-asmat.ac.id' ([Errno 8] nodename nor servname provided, or not known)")))
+❌ Institut Seni Indonesia Mimika: https://www.isi-mimika.ac.id (HTTPSConnectionPool(host='www.isi-mimika.ac.id', port=443): Max retries exceeded with url: / (Caused by NameResolutionError("<urllib3.connection.HTTPSConnection object at 0x103ffdbd0>: Failed to resolve 'www.isi-mimika.ac.id' ([Errno 8] nodename nor servname provided, or not known)")))
+❌ Institut Seni Indonesia Paniai: https://www.isi-paniai.ac.id (HTTPSConnectionPool(host='www.isi-paniai.ac.id', port=443): Max retries exceeded with url: / (Caused by NameResolutionError("<urllib3.connection.HTTPSConnection object at 0x103ffd810>: Failed to resolve 'www.isi-paniai.ac.id' ([Errno 8] nodename nor servname provided, or not known)")))
