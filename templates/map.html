@@ -267,6 +267,51 @@ function getUniversityCoordinates(university) {
         return university.coordinates;
     }
     
+    // Extract city from university name or use a mapping
+    const cityMapping = {
+        'Universität der Künste Berlin': 'Berlin',
+        'Kunsthochschule Berlin-Weißensee': 'Berlin',
+        'Hochschule für Bildende Künste Braunschweig': 'Braunschweig',
+        'Hochschule für Künste Bremen': 'Bremen',
+        'Hochschule für Bildende Künste Dresden': 'Dresden',
+        'Kunstakademie Düsseldorf': 'Düsseldorf',
+        'Folkwang Universität der Künste': 'Essen',
+        'Hochschule der bildenden Künste Essen': 'Essen',
+        'Staatliche Hochschule für Bildende Künste – Städelschule': 'Frankfurt',
+        'Burg Giebichenstein Kunsthochschule Halle': 'Halle',
+        'Hochschule für bildende Künste Hamburg': 'Hamburg',
+        'Staatliche Hochschule für Gestaltung Karlsruhe': 'Karlsruhe',
+        'Muthesius Kunsthochschule': 'Kiel',
+        'Kunsthochschule für Medien Köln': 'Cologne',
+        'Hochschule für Grafik und Buchkunst Leipzig': 'Leipzig',
+        'Kunsthochschule Mainz': 'Mainz',
+        'Akademie der Bildenden Künste München': 'Munich',
+        'Kunstakademie Münster': 'Münster',
+        'Akademie der Bildenden Künste Nürnberg': 'Nuremberg',
+        'Hochschule für Gestaltung Offenbach am Main': 'Offenbach',
+        'Hochschule der Bildenden Künste Saar': 'Saarbrücken',
+        'Staatliche Akademie der Bildenden Künste Stuttgart': 'Stuttgart',
+        'Bauhaus-Universität Weimar': 'Weimar',
+        'Universität für angewandte Kunst Wien': 'Vienna',
+        'Kunstuniversität Linz': 'Linz',
+        'Kunstuniversität Graz': 'Graz',
+        'Universität Mozarteum Salzburg': 'Salzburg',
+        'Hochschule für Musik und Darstellende Kunst Wien': 'Vienna',
+        'Hochschule für Gestaltung und Kunst Basel': 'Basel',
+        'Hochschule für Gestaltung und Kunst Bern': 'Bern',
+        'Royal College of Art': 'London',
+        'Goldsmiths University of London': 'London',
+        'Slade School of Fine Art': 'London',
+        'Glasgow School of Art': 'Glasgow',
+        'Edinburgh College of Art': 'Edinburgh',
+        'Design Academy Eindhoven': 'Eindhoven',
+        'Royal Academy of Art The Hague': 'The Hague',
+        'Konstfack University of Arts, Crafts and Design': 'Stockholm',
+        'École Nationale Supérieure des Beaux-Arts': 'Paris'
+    };
+    
+    const city = cityMapping[university.name] || university.city || 'Berlin';
+    
     // Fallback to city-based coordinates
     const coordinates = {
         'Berlin': [52.5200, 13.4050],
@@ -430,7 +475,7 @@ function getUniversityCoordinates(university) {
         'Vancouver': [49.2827, -123.1207]
     };
     
-    return coordinates[university.city] || null;
+    return coordinates[city] || null;
 }
 
 function getUniversityIcon(university) {
@@ -461,10 +506,13 @@ function createUniversityPopup(university) {
     const phdCount = positions.filter(p => p.position_category === 'phd_program').length;
     const jobCount = positions.filter(p => p.position_category === 'job_offer').length;
     
+    const city = university.city || 'Unknown';
+    const country = university.country || 'Unknown';
+    
     return `
         <div class="university-popup">
             <h6>${university.name}</h6>
-            <p class="mb-1"><strong>${university.city}, ${university.country}</strong></p>
+            <p class="mb-1"><strong>${city}, ${country}</strong></p>
             <div class="mb-2">
                 ${phdCount > 0 ? `<span class="badge bg-danger me-1">${phdCount} PhD</span>` : ''}
                 ${jobCount > 0 ? `<span class="badge bg-info me-1">${jobCount} Jobs</span>` : ''}
@@ -481,14 +529,18 @@ function showUniversityDetails(university) {
     
     $('#universityModalTitle').text(university.name);
     
+    const city = university.city || 'Unknown';
+    const country = university.country || 'Unknown';
+    const website = university.website || '#';
+    
     const modalBody = `
         <div class="row">
             <div class="col-md-6">
                 <h6><i class="fas fa-map-marker-alt me-2"></i>Location</h6>
-                <p>${university.city}, ${university.country}</p>
+                <p>${city}, ${country}</p>
                 
                 <h6><i class="fas fa-globe me-2"></i>Website</h6>
-                <p><a href="${university.website}" target="_blank">${university.website}</a></p>
+                <p><a href="${website}" target="_blank">${website}</a></p>
                 
                 <h6><i class="fas fa-graduation-cap me-2"></i>PhD Programs</h6>
                 <p>${university.has_phd ? 'Available' : 'Not Available'}</p>
