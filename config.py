@@ -639,48 +639,6 @@ UNIVERSITY_WEBSITES = {
     'Institut Seni Indonesia Padangpanjang': 'https://www.isi-padangpanjang.ac.id'
 }
 
-# Flatten the universities list with real websites and metadata
-UNIVERSITIES = []
-for country_key, unis in UNIVERSITIES_BY_COUNTRY.items():
-    for uni in unis:
-        website = UNIVERSITY_WEBSITES.get(uni, f'https://www.{uni.lower().replace(" ", "").replace("ä", "ae").replace("ö", "oe").replace("ü", "ue")}.de')
-        
-        # Determine country name for display
-        country_display = {
-            'germany': 'Germany',
-            'austria': 'Austria', 
-            'switzerland': 'Switzerland',
-            'uk': 'UK',
-            'netherlands': 'Netherlands',
-            'belgium': 'Belgium',
-            'sweden': 'Sweden',
-            'france': 'France',
-            'usa': 'USA',
-            'canada': 'Canada',
-            'australia': 'Australia',
-            'japan': 'Japan',
-            'hong_kong': 'Hong Kong',
-            'south_korea': 'South Korea',
-            'singapore': 'Singapore',
-            'philippines': 'Philippines',
-            'thailand': 'Thailand',
-            'indonesia': 'Indonesia'
-        }.get(country_key, country_key.title())
-        
-        # Extract city from university name
-        city = extract_city_from_name(uni)
-        
-        UNIVERSITIES.append({
-            'name': uni,
-            'country': country_display,
-            'country_key': country_key,
-            'website': website,
-            'city': city,
-            'has_phd': True,  # Assume most art universities have PhD programs
-            'alternative': None,
-            'phd_url': None
-        })
-
 def extract_city_from_name(university_name):
     """Extract city name from university name"""
     city_mapping = {
@@ -745,6 +703,48 @@ def extract_city_from_name(university_name):
     
     # Default fallback
     return 'Unknown'
+
+# Flatten the universities list with real websites and metadata
+UNIVERSITIES = []
+for country_key, unis in UNIVERSITIES_BY_COUNTRY.items():
+    for uni in unis:
+        website = UNIVERSITY_WEBSITES.get(uni, f'https://www.{uni.lower().replace(" ", "").replace("ä", "ae").replace("ö", "oe").replace("ü", "ue")}.de')
+        
+        # Determine country name for display
+        country_display = {
+            'germany': 'Germany',
+            'austria': 'Austria', 
+            'switzerland': 'Switzerland',
+            'uk': 'UK',
+            'netherlands': 'Netherlands',
+            'belgium': 'Belgium',
+            'sweden': 'Sweden',
+            'france': 'France',
+            'usa': 'USA',
+            'canada': 'Canada',
+            'australia': 'Australia',
+            'japan': 'Japan',
+            'hong_kong': 'Hong Kong',
+            'south_korea': 'South Korea',
+            'singapore': 'Singapore',
+            'philippines': 'Philippines',
+            'thailand': 'Thailand',
+            'indonesia': 'Indonesia'
+        }.get(country_key, country_key.title())
+        
+        # Extract city from university name
+        city = extract_city_from_name(uni)
+        
+        UNIVERSITIES.append({
+            'name': uni,
+            'country': country_display,
+            'country_key': country_key,
+            'website': website,
+            'city': city,
+            'has_phd': True,  # Assume most art universities have PhD programs
+            'alternative': None,
+            'phd_url': None
+        })
 
 # Department names for extraction
 DEPARTMENTS = {

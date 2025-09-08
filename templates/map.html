@@ -177,16 +177,18 @@
 
 {% endblock %}
 
-{% block scripts %}
+{% block extra_css %}
 <!-- Leaflet CSS -->
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-
-<!-- Leaflet JavaScript -->
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
 <!-- Leaflet MarkerCluster -->
 <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.4.1/dist/MarkerCluster.css" />
 <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.4.1/dist/MarkerCluster.Default.css" />
+{% endblock %}
+
+{% block extra_js %}
+<!-- Leaflet JavaScript -->
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="https://unpkg.com/leaflet.markercluster@1.4.1/dist/leaflet.markercluster.js"></script>
 
 <script>
@@ -224,18 +226,28 @@ function loadMapData() {
     // Load universities data
     $.get('/api/universities')
         .done(function(universities) {
-            allUniversities = universities;
-            filteredUniversities = [...universities];
+            allUniversities = universities || [];
+            filteredUniversities = [...allUniversities];
             addUniversitiesToMap();
             updateMapStatistics();
+        })
+        .fail(function() {
+            console.error('Failed to load universities data');
+            allUniversities = [];
+            filteredUniversities = [];
         });
     
     // Load positions data
     $.get('/api/positions')
         .done(function(positions) {
-            allPositions = positions;
-            filteredPositions = [...positions];
+            allPositions = positions || [];
+            filteredPositions = [...allPositions];
             updateMapStatistics();
+        })
+        .fail(function() {
+            console.error('Failed to load positions data');
+            allPositions = [];
+            filteredPositions = [];
         });
 }
 
@@ -243,10 +255,15 @@ function addUniversitiesToMap() {
     // Clear existing markers
     markerCluster.clearLayers();
     
+    if (!filteredUniversities || filteredUniversities.length === 0) {
+        console.log('No universities to display on map');
+        return;
+    }
+    
     filteredUniversities.forEach(function(university) {
-        // Get coordinates for the university (you'll need to add these to your data)
+        // Get coordinates for the university
         const coords = getUniversityCoordinates(university);
-        if (coords) {
+        if (coords && coords.length === 2 && !isNaN(coords[0]) && !isNaN(coords[1])) {
             const marker = L.marker(coords, {
                 icon: getUniversityIcon(university)
             });
@@ -257,6 +274,8 @@ function addUniversitiesToMap() {
             });
             
             markerCluster.addLayer(marker);
+        } else {
+            console.log(`No valid coordinates for ${university.name}: ${coords}`);
         }
     });
 }
