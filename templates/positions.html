@@ -44,37 +44,11 @@
             </select>
         </div>
         <div class="col-md-3 mb-3">
-            <label for="positionTypeFilter" class="form-label">Position Type</label>
-            <select class="form-select" id="positionTypeFilter">
-                <option value="">All Types</option>
-                <optgroup label="PhD Programs">
-                    <option value="media_art_phd">Media Art PhD</option>
-                    <option value="ai_art_phd">AI Art PhD</option>
-                    <option value="sound_art_phd">Sound Art PhD</option>
-                    <option value="performance_art_phd">Performance Art PhD</option>
-                    <option value="interactive_art_phd">Interactive Art PhD</option>
-                    <option value="artistic_research_phd">Artistic Research PhD</option>
-                    <option value="general_phd">General PhD Programs</option>
-                </optgroup>
-                <optgroup label="Job Offers">
-                    <option value="media_art_jobs">Media Art Jobs</option>
-                    <option value="ai_art_jobs">AI Art Jobs</option>
-                    <option value="sound_art_jobs">Sound Art Jobs</option>
-                    <option value="performance_art_jobs">Performance Art Jobs</option>
-                    <option value="interactive_art_jobs">Interactive Art Jobs</option>
-                    <option value="artistic_research_jobs">Artistic Research Jobs</option>
-                    <option value="academic_jobs">Academic Jobs</option>
-                    <option value="general_jobs">General Jobs</option>
-                </optgroup>
-                <option value="specific_search">Specific Search</option>
-            </select>
-        </div>
-        <div class="col-md-3 mb-3">
             <label for="categoryFilter" class="form-label">Category</label>
             <select class="form-select" id="categoryFilter">
                 <option value="">All Categories</option>
-                <option value="phd_program">PhD Programs</option>
-                <option value="job_offer">Job Offers</option>
+                <option value="phd">PhD Programs</option>
+                <option value="job">Job Positions</option>
             </select>
         </div>
         <div class="col-md-3 mb-3">
@@ -240,7 +214,6 @@ function loadPositions() {
 function applyFilters() {
     const country = $('#countryFilter').val();
     const university = $('#universityFilter').val();
-    const positionType = $('#positionTypeFilter').val();
     const category = $('#categoryFilter').val();
     const language = $('#languageFilter').val();
     const status = $('#statusFilter').val();
@@ -261,11 +234,7 @@ function applyFilters() {
             matches = false;
         }
         
-        if (positionType && position.position_type !== positionType) {
-            matches = false;
-        }
-        
-        if (category && position.position_category !== category) {
+        if (category && position.category !== category) {
             matches = false;
         }
         
@@ -306,7 +275,6 @@ function belongsToCountry(country, region) {
 function clearFilters() {
     $('#countryFilter').val('');
     $('#universityFilter').val('');
-    $('#positionTypeFilter').val('');
     $('#categoryFilter').val('');
     $('#languageFilter').val('');
     $('#statusFilter').val('');
@@ -338,7 +306,7 @@ function displayPositions() {
     
     let html = '';
     pagePositions.forEach(function(position) {
-        const badgeClass = getBadgeClass(position.position_type);
+        const badgeClass = getBadgeClass(position.category);
         const languageFlag = getLanguageFlag(position.language);
         
         html += `
@@ -352,7 +320,7 @@ function displayPositions() {
                             </p>
                             <p class="card-text">${truncateText(position.description, 200)}</p>
                             <div class="mt-2">
-                                <span class="badge ${badgeClass} me-2">${position.position_type.replace('_', ' ').toUpperCase()}</span>
+                                <span class="badge ${badgeClass} me-2">${position.category.toUpperCase()}</span>
                                 <span class="badge bg-secondary me-2">${languageFlag}</span>
                                 <small class="text-muted">
                                     <i class="fas fa-calendar me-1"></i>${formatDate(position.date_found)}
@@ -381,38 +349,12 @@ function displayPositions() {
     generatePagination();
 }
 
-function getBadgeClass(positionType) {
+function getBadgeClass(category) {
     const classes = {
-        // PhD Programs
-        'media_art_phd': 'bg-primary',
-        'ai_art_phd': 'bg-warning',
-        'sound_art_phd': 'bg-info',
-        'performance_art_phd': 'bg-success',
-        'interactive_art_phd': 'bg-primary text-white',
-        'artistic_research_phd': 'bg-success',
-        'general_phd': 'bg-info',
-        
-        // Job Offers
-        'media_art_jobs': 'bg-primary text-white',
-        'ai_art_jobs': 'bg-warning text-white',
-        'sound_art_jobs': 'bg-info text-white',
-        'performance_art_jobs': 'bg-success text-white',
-        'interactive_art_jobs': 'bg-primary text-white',
-        'artistic_research_jobs': 'bg-success text-white',
-        'academic_jobs': 'bg-danger text-white',
-        'general_jobs': 'bg-secondary text-white',
-        
-        // Legacy types for backward compatibility
-        'specific_search': 'bg-dark',
-        'media_art': 'bg-primary',
-        'digital_art': 'bg-success',
-        'ai_art': 'bg-warning',
-        'artistic_research_phd': 'bg-info',
-        'academic_positions': 'bg-danger',
         'phd': 'bg-info',
-        'jobs': 'bg-secondary'
+        'job': 'bg-success'
     };
-    return classes[positionType] || 'bg-secondary';
+    return classes[category] || 'bg-secondary';
 }
 
 function getLanguageFlag(language) {
@@ -437,8 +379,8 @@ function showPositionDetails(positionId) {
                 <h6><i class="fas fa-university me-2"></i>University</h6>
                 <p>${position.university}</p>
                 
-                <h6><i class="fas fa-tag me-2"></i>Position Type</h6>
-                <p><span class="badge ${getBadgeClass(position.position_type)}">${position.position_type.replace('_', ' ').toUpperCase()}</span></p>
+                <h6><i class="fas fa-tag me-2"></i>Category</h6>
+                <p><span class="badge ${getBadgeClass(position.category)}">${position.category.toUpperCase()}</span></p>
                 
                 <h6><i class="fas fa-language me-2"></i>Language</h6>
                 <p>${getLanguageFlag(position.language)}</p>
@@ -548,13 +490,13 @@ function exportResults() {
 }
 
 function generateCSV(positions) {
-    const headers = ['University', 'Position Type', 'Title', 'Description', 'URL', 'Language', 'Date Found', 'Status'];
+    const headers = ['University', 'Category', 'Title', 'Description', 'URL', 'Language', 'Date Found', 'Status'];
     const csvRows = [headers.join(',')];
     
     positions.forEach(function(position) {
         const row = [
             `"${position.university}"`,
-            `"${position.position_type}"`,
+            `"${position.category}"`,
             `"${position.title}"`,
             `"${position.description.replace(/"/g, '""')}"`,
             `"${position.url}"`,

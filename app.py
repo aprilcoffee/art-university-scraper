@@ -35,8 +35,8 @@ def get_positions():
     if request.args.get('university'):
         filters['university'] = request.args.get('university')
     
-    if request.args.get('position_type'):
-        filters['position_type'] = request.args.get('position_type')
+    if request.args.get('category'):
+        filters['category'] = request.args.get('category')
     
     if request.args.get('language'):
         filters['language'] = request.args.get('language')
@@ -44,7 +44,41 @@ def get_positions():
     if request.args.get('status'):
         filters['status'] = request.args.get('status')
     
+    if request.args.get('search_term'):
+        filters['search_term'] = request.args.get('search_term')
+    
     positions = db.get_positions(filters)
+    return jsonify(positions)
+
+@app.route('/api/phd-positions')
+def get_phd_positions():
+    """API endpoint to get PhD positions with optional filters"""
+    university = request.args.get('university')
+    search_term = request.args.get('search_term')
+    
+    positions = db.get_phd_positions(university, search_term)
+    return jsonify(positions)
+
+@app.route('/api/job-positions')
+def get_job_positions():
+    """API endpoint to get job positions with optional filters"""
+    university = request.args.get('university')
+    search_term = request.args.get('search_term')
+    
+    positions = db.get_job_positions(university, search_term)
+    return jsonify(positions)
+
+@app.route('/api/search-positions')
+def search_positions():
+    """API endpoint to search for positions with specific terms"""
+    search_term = request.args.get('search_term')
+    category = request.args.get('category')
+    university = request.args.get('university')
+    
+    if not search_term:
+        return jsonify({'error': 'search_term parameter is required'}), 400
+    
+    positions = db.search_positions(search_term, category, university)
     return jsonify(positions)
 
 @app.route('/api/universities')
@@ -117,6 +151,64 @@ def search_specific():
     
     try:
         results = scraper.search_specific_terms(universities, terms)
+        return jsonify({'results': results})
+        
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/search-phd-specific', methods=['POST'])
+def search_phd_specific():
+    """Search specifically for PhD programs"""
+    global scraper
+    
+    data = request.get_json()
+    universities = data.get('universities', [])
+    
+    # Focus on PhD-specific terms
+    phd_terms = [
+        'media art phd', 'ai art phd', 'artistic research phd',
+        'medienkunst promotion', 'ki-kunst promotion', 'klangkunst promotion',
+        'practice-based phd', 'künstlerische forschung', 'praxis-basierte forschung',
+        'practice-led research', 'artistic practice phd', 'creative research phd',
+        'dfa', 'doctor of fine arts', 'studio-based research', 
+        'research through practice', 'practice as research',
+        'creative practice phd', 'interdisciplinary research'
+    ]
+    
+    if not scraper:
+        scraper = ArtUniversityScraper()
+    
+    try:
+        results = scraper.search_specific_terms(universities, phd_terms)
+        return jsonify({'results': results})
+        
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/search-jobs-specific', methods=['POST'])
+def search_jobs_specific():
+    """Search specifically for job positions"""
+    global scraper
+    
+    data = request.get_json()
+    universities = data.get('universities', [])
+    
+    # Focus on job-specific terms
+    job_terms = [
+        'künstlerische mitarbeiter', 'wissenschaftliche mitarbeiter',
+        'media art mitarbeiter', 'ai art mitarbeiter', 'artistic research mitarbeiter',
+        'medienkunst mitarbeiter', 'ki-kunst mitarbeiter', 'klangkunst mitarbeiter',
+        'performance art mitarbeiter', 'interactive art mitarbeiter',
+        'artistic staff', 'research staff', 'academic staff',
+        'media art staff', 'ai art staff', 'artistic research staff',
+        'sound art staff', 'performance art staff', 'interactive art staff'
+    ]
+    
+    if not scraper:
+        scraper = ArtUniversityScraper()
+    
+    try:
+        results = scraper.search_specific_terms(universities, job_terms)
         return jsonify({'results': results})
         
     except Exception as e:

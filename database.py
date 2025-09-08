@@ -28,14 +28,13 @@ class DatabaseManager:
                     CREATE TABLE IF NOT EXISTS positions (
                         id INTEGER PRIMARY KEY AUTOINCREMENT,
                         university TEXT NOT NULL,
-                        position_type TEXT NOT NULL,
                         title TEXT NOT NULL,
                         description TEXT,
                         url TEXT NOT NULL,
                         language TEXT NOT NULL,
                         date_found TEXT NOT NULL,
                         status TEXT DEFAULT 'active',
-                        position_category TEXT,
+                        category TEXT NOT NULL,
                         department TEXT,
                         position_level TEXT,
                         employment_details TEXT,
@@ -127,9 +126,9 @@ class DatabaseManager:
                         query += " AND university LIKE ?"
                         params.append(f"%{filters['university']}%")
                     
-                    if 'position_type' in filters:
-                        query += " AND position_type = ?"
-                        params.append(filters['position_type'])
+                    if 'category' in filters:
+                        query += " AND category = ?"
+                        params.append(filters['category'])
                     
                     if 'language' in filters:
                         query += " AND language = ?"
@@ -138,6 +137,12 @@ class DatabaseManager:
                     if 'status' in filters:
                         query += " AND status = ?"
                         params.append(filters['status'])
+                    
+                    if 'search_term' in filters:
+                        query += " AND (title LIKE ? OR description LIKE ?)"
+                        search_term = f"%{filters['search_term']}%"
+                        params.extend([search_term, search_term])
+                    
                 
                 query += " ORDER BY created_at DESC"
                 
@@ -149,6 +154,56 @@ class DatabaseManager:
         except Exception as e:
             logger.error(f"Error retrieving positions: {e}")
             return []
+    
+    def search_positions(self, search_term: str, position_type: str = None, university: str = None) -> List[Dict]:
+        """Search for positions with specific terms"""
+        try:
+            with sqlite3.connect(self.db_path) as conn:
+                conn.row_factory = sqlite3.Row
+                cursor = conn.cursor()
+                
+                query = """
+                    SELECT * FROM positions 
+                    WHERE (title LIKE ? OR description LIKE ?)
+                """
+                params = [f"%{search_term}%", f"%{search_term}%"]
+                
+                if position_type:
+                    query += " AND category = ?"
+                    params.append(position_type)
+                
+                if university:
+                    query += " AND university LIKE ?"
+                    params.append(f"%{university}%")
+                
+                query += " ORDER BY created_at DESC"
+                
+                cursor.execute(query, params)
+                rows = cursor.fetchall()
+                
+                return [dict(row) for row in rows]
+                
+        except Exception as e:
+            logger.error(f"Error searching positions: {e}")
+            return []
+    
+    def get_phd_positions(self, university: str = None, search_term: str = None) -> List[Dict]:
+        """Get PhD positions with optional filters"""
+        filters = {'category': 'phd'}
+        if university:
+            filters['university'] = university
+        if search_term:
+            filters['search_term'] = search_term
+        return self.get_positions(filters)
+    
+    def get_job_positions(self, university: str = None, search_term: str = None) -> List[Dict]:
+        """Get job positions with optional filters"""
+        filters = {'category': 'job'}
+        if university:
+            filters['university'] = university
+        if search_term:
+            filters['search_term'] = search_term
+        return self.get_positions(filters)
     
     def update_university_scrape_time(self, university_name: str):
         """Update the last scraped time for a university"""
@@ -189,8 +244,8 @@ class DatabaseManager:
             with sqlite3.connect(self.db_path) as conn:
                 cursor = conn.cursor()
                 
-                # Count positions by type
-                cursor.execute('SELECT position_type, COUNT(*) FROM positions GROUP BY position_type')
+                # Count positions by category
+                cursor.execute('SELECT category, COUNT(*) FROM positions GROUP BY category')
                 position_types = dict(cursor.fetchall())
                 
                 # Count positions by language

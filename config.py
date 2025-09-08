@@ -2,18 +2,31 @@
 Configuration for Art University Job Scraper - Focused on Mitarbeiter Positions Only
 """
 
-# Simplified search terms focusing only on mitarbeiter positions
+# Optimized search terms focusing on mitarbeiter stelle and PhD/promotion positions
 SEARCH_TERMS = {
     'german': {
-        # PhD PROGRAMS - Academic Research Programs (Flexible Language Support)
+        # PhD PROGRAMS - Academic Research Programs
         'phd_programs': {
+            'artistic_research_phd': [
+                # Core PhD terms
+                'PhD', 'Promotion', 'Doktorand', 'Doktorat', 'Doctorate', 'Doctoral',
+                'Doktorandenprogramm', 'Promotionsprogramm', 'Graduiertenschule',
+                'Doctor of Fine Arts', 'DFA', 'Doktor der Bildenden Künste',
+                
+                # Artistic research specific
+                'Artistic Research', 'Künstlerische Forschung', 'Practice-based PhD', 'Praxis-basierte Promotion',
+                'Artistic PhD', 'Künstlerische Promotion', 'Forschung in der Kunst', 'Kunst als Forschung',
+                'Practice-based Research', 'Praxis-basierte Forschung', 'Practice-led Research', 'Praxisgeleitete Forschung',
+                'Artistic Practice PhD', 'Künstlerische Praxis PhD', 'Creative Research PhD', 'Kreative Forschung PhD',
+                'Studio-based Research', 'Atelier-basierte Forschung', 'Research through Practice', 'Forschung durch Praxis',
+                'Interdisciplinary Research', 'Interdisziplinäre Forschung', 'Transdisciplinary Research'
+            ],
             'media_art_phd': [
                 'Medienkunst Promotion', 'Digitale Kunst Promotion', 'Neue Medien Promotion',
                 'Medienkunst Doktorand', 'Digitale Kunst Doktorand', 'Neue Medien Doktorand',
                 'Medienkunst PhD', 'Digitale Kunst PhD', 'Neue Medien PhD',
                 'Media Art PhD', 'Digital Art PhD', 'New Media PhD',
-                'Doktorandenprogramm Medienkunst', 'Promotionsprogramm Digitale Kunst',
-                'Media Art Doctoral', 'Digital Art Doctoral', 'New Media Doctoral'
+                'Doktorandenprogramm Medienkunst', 'Promotionsprogramm Digitale Kunst'
             ],
             'ai_art_phd': [
                 'KI-Kunst Promotion', 'Künstliche Intelligenz Kunst Promotion', 'AI Art Promotion',
@@ -115,21 +128,52 @@ SEARCH_TERMS = {
             ]
         },
         
-        # JOB OFFERS - Flexible Language Support for Staff Positions
+        # JOB OFFERS - Optimized for mitarbeiter stelle positions
         'job_offers': {
-            'general_jobs': [
-                # Focus on mitarbeiter positions specifically
+            'mitarbeiter_stelle': [
+                # Core mitarbeiter terms
                 'mitarbeiter gesucht', 'mitarbeiterin gesucht', 'mitarbeiter/in gesucht',
-                'wissenschaftliche mitarbeiter gesucht', 'künstlerische mitarbeiter gesucht',
-                'akademische mitarbeiter gesucht', 'research staff gesucht',
-                'artistic staff gesucht', 'academic staff gesucht',
+                'mitarbeiter stelle', 'mitarbeiterstelle', 'mitarbeiter stellen',
+                'mitarbeiter position', 'mitarbeiter positionen', 'mitarbeiter jobs',
                 
-                # Job posting pages
+                # Artistic mitarbeiter (most important for art schools)
+                'künstlerische mitarbeiter', 'künstlerische mitarbeiterin',
+                'künstlerischer mitarbeiter', 'künstlerische mitarbeiter/in',
+                'artistic mitarbeiter', 'artistic mitarbeiterin',
+                'kunst mitarbeiter', 'kunst mitarbeiterin',
+                'art mitarbeiter', 'art mitarbeiterin',
+                
+                # Specific artistic mitarbeiter types
+                'medienkunst mitarbeiter', 'digitale kunst mitarbeiter',
+                'ki-kunst mitarbeiter', 'klangkunst mitarbeiter',
+                'performance art mitarbeiter', 'interactive art mitarbeiter',
+                'sound art mitarbeiter', 'visual art mitarbeiter',
+                'contemporary art mitarbeiter', 'experimental art mitarbeiter',
+                
+                # Wissenschaftliche mitarbeiter (scientific/academic staff)
+                'wissenschaftliche mitarbeiter', 'wissenschaftliche mitarbeiterin',
+                'wissenschaftlicher mitarbeiter', 'wissenschaftliche mitarbeiter/in',
+                'wiss mitarbeiter', 'wiss mitarbeiterin',
+                
+                # Mixed artistic-scientific positions (common in art schools)
+                'künstlerische wissenschaftliche mitarbeiter', 'künstlerische wissenschaftliche mitarbeiterin',
+                'artistic scientific mitarbeiter', 'kunst wissenschaftliche mitarbeiter',
+                'art wissenschaftliche mitarbeiter', 'medienkunst wissenschaftliche mitarbeiter',
+                
+                # Other mitarbeiter types
+                'akademische mitarbeiter', 'akademische mitarbeiterin',
+                'forschungs mitarbeiter', 'forschungs mitarbeiterin',
+                'projekt mitarbeiter', 'projekt mitarbeiterin',
+                
+                # Job posting terms
                 'stellenausschreibung', 'stellenangebot', 'stellenausschreibungen',
-                'job posting', 'job postings', 'position available', 'positions available',
+                'stelle gesucht', 'stellen gesucht', 'offene stelle', 'offene stellen',
+                'bewerbung', 'bewerbungen', 'karriere', 'career',
                 
-                # Career pages
-                'karriere', 'career', 'bewerbung', 'application', 'recruitment'
+                # Staff positions
+                'staff position', 'staff positions', 'academic staff', 'research staff',
+                'artistic staff', 'artistic assistant', 'research assistant',
+                'project staff', 'studio staff', 'technical staff'
             ],
             'academic_staff': [
                 # German terms
@@ -297,11 +341,37 @@ SEARCH_TERMS = {
         
         # JOB OFFERS - Staff Positions (English Focus)
         'job_offers': {
-            'general_jobs': [
-                # Focus on staff positions specifically
+            'artistic_staff': [
+                # Artistic staff positions (most important for art schools)
+                'artistic staff', 'artistic staff wanted', 'artistic staff position',
+                'artistic assistant', 'artistic associate', 'artistic coordinator',
+                'artistic technician', 'artistic collaborator', 'artistic fellow',
+                
+                # Art-specific staff positions
+                'media art staff', 'digital art staff', 'new media staff',
+                'ai art staff', 'artificial intelligence art staff', 'machine learning art staff',
+                'sound art staff', 'audio art staff', 'performance art staff',
+                'interactive art staff', 'participatory art staff', 'visual art staff',
+                'contemporary art staff', 'experimental art staff', 'fine art staff',
+                
+                # Scientific/academic staff (wissenschaftliche mitarbeiter)
+                'scientific staff', 'academic staff', 'research staff',
+                'scientific assistant', 'academic assistant', 'research assistant',
+                'scientific associate', 'academic associate', 'research associate',
+                
+                # Mixed artistic-scientific positions (common in art schools)
+                'artistic scientific staff', 'artistic academic staff', 'artistic research staff',
+                'art scientific staff', 'art academic staff', 'art research staff',
+                'media art scientific staff', 'digital art academic staff',
+                'sound art research staff', 'performance art scientific staff',
+                
+                # Studio and project staff
+                'studio staff', 'studio assistant', 'studio technician',
+                'project staff', 'project assistant', 'project coordinator',
+                
+                # General staff terms
                 'staff wanted', 'staff position', 'staff positions', 'staff vacancy', 'staff vacancies',
-                'academic staff wanted', 'research staff wanted', 'artistic staff wanted',
-                'academic position', 'research position', 'artistic position',
+                'academic position', 'research position', 'scientific position',
                 
                 # Job posting pages
                 'job posting', 'job postings', 'position available', 'positions available',
@@ -338,9 +408,10 @@ SEARCH_TERMS = {
     }
 }
 
-# Universities configuration - EXPANDED WITH MAJOR ART SCHOOLS
+# Universities configuration - ART SCHOOLS AND DESIGN SCHOOLS ONLY
 UNIVERSITIES_BY_COUNTRY = {
     'germany': [
+        # Art Schools (Kunsthochschulen)
         'Alanus Hochschule für Kunst und Gesellschaft',
         'Kunsthochschule Berlin-Weißensee',
         'Universität der Künste Berlin',
@@ -353,7 +424,6 @@ UNIVERSITIES_BY_COUNTRY = {
         'Staatliche Hochschule für Bildende Künste – Städelschule',
         'Burg Giebichenstein Kunsthochschule Halle',
         'Hochschule für bildende Künste Hamburg',
-        'Staatliche Hochschule für Gestaltung Karlsruhe',
         'Muthesius Kunsthochschule',
         'Kunsthochschule für Medien Köln',
         'Hochschule für Grafik und Buchkunst Leipzig',
@@ -361,18 +431,17 @@ UNIVERSITIES_BY_COUNTRY = {
         'Akademie der Bildenden Künste München',
         'Kunstakademie Münster',
         'Akademie der Bildenden Künste Nürnberg',
-        'Hochschule für Gestaltung Offenbach am Main',
         'Hochschule der Bildenden Künste Saar',
         'Staatliche Akademie der Bildenden Künste Stuttgart',
         'Bauhaus-Universität Weimar',
-        # Additional German Fachhochschule with Art/Design
+        
+        # Design Schools (Gestaltungshochschulen)
+        'Staatliche Hochschule für Gestaltung Karlsruhe',
+        'Hochschule für Gestaltung Offenbach am Main',
         'Hochschule für Gestaltung Schwäbisch Gmünd',
-        'Hochschule für Technik und Wirtschaft Berlin',
-        'Hochschule für Technik, Wirtschaft und Kultur Leipzig',
-        'Hochschule für Technik und Wirtschaft Dresden',
-        'Hochschule für Technik und Wirtschaft Karlsruhe',
         'Hochschule für Gestaltung Pforzheim',
-        # German Music/Theater Universities
+        
+        # Music/Theater Universities
         'Hochschule für Musik und Theater Hamburg',
         'Hochschule für Musik und Theater München',
         'Hochschule für Musik und Theater Leipzig',

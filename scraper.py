@@ -941,30 +941,61 @@ class ArtUniversityScraper:
         """Search for specific terms across universities"""
         if not terms:
             terms = [
-                # Mitarbeiter positions (German)
-                'künstlerische mitarbeiter', 'wissenschaftliche mitarbeiter',
-                'media art mitarbeiter', 'ai art mitarbeiter', 'artistic research mitarbeiter',
-                'medienkunst mitarbeiter', 'ki-kunst mitarbeiter', 'klangkunst mitarbeiter',
-                'performance art mitarbeiter', 'interactive art mitarbeiter',
-                
                 # PhD programs (German)
                 'media art phd', 'ai art phd', 'artistic research phd',
                 'medienkunst promotion', 'ki-kunst promotion', 'klangkunst promotion',
                 'practice-based phd', 'künstlerische forschung', 'praxis-basierte forschung',
                 'practice-led research', 'artistic practice phd', 'creative research phd',
-                'dfa', 'doctor of fine arts',
-                'studio-based research', 'research through practice', 'practice as research',
-                
-                # Staff positions (English)
-                'artistic staff', 'research staff', 'academic staff',
-                'media art staff', 'ai art staff', 'artistic research staff',
+                'dfa', 'doctor of fine arts', 'studio-based research', 
+                'research through practice', 'practice as research',
                 
                 # PhD programs (English)
                 'media art phd', 'ai art phd', 'artistic research phd',
                 'practice-based phd', 'creative research phd', 'practice-led research',
                 'artistic practice phd', 'research through practice', 'practice as research',
-                'dfa', 'doctor of fine arts',
-                'studio-based research', 'creative practice phd', 'interdisciplinary research'
+                'dfa', 'doctor of fine arts', 'studio-based research', 
+                'creative practice phd', 'interdisciplinary research',
+                
+                # Artistic mitarbeiter positions (German) - Most important for art schools
+                'künstlerische mitarbeiter', 'künstlerische mitarbeiterin',
+                'artistic mitarbeiter', 'kunst mitarbeiter', 'art mitarbeiter',
+                'medienkunst mitarbeiter', 'digitale kunst mitarbeiter',
+                'ki-kunst mitarbeiter', 'klangkunst mitarbeiter',
+                'performance art mitarbeiter', 'interactive art mitarbeiter',
+                'sound art mitarbeiter', 'visual art mitarbeiter',
+                'contemporary art mitarbeiter', 'experimental art mitarbeiter',
+                
+                # Wissenschaftliche mitarbeiter positions
+                'wissenschaftliche mitarbeiter', 'wissenschaftliche mitarbeiterin',
+                'wissenschaftlicher mitarbeiter', 'wiss mitarbeiter',
+                'scientific mitarbeiter', 'academic mitarbeiter',
+                
+                # Mixed artistic-scientific positions (common in art schools)
+                'künstlerische wissenschaftliche mitarbeiter', 'artistic scientific mitarbeiter',
+                'kunst wissenschaftliche mitarbeiter', 'art wissenschaftliche mitarbeiter',
+                'medienkunst wissenschaftliche mitarbeiter', 'digital art wissenschaftliche mitarbeiter',
+                
+                # Other mitarbeiter positions
+                'akademische mitarbeiter', 'forschungs mitarbeiter', 'project mitarbeiter',
+                
+                # Artistic staff positions (English)
+                'artistic staff', 'artistic assistant', 'artistic associate',
+                'artistic coordinator', 'artistic technician', 'artistic collaborator',
+                'media art staff', 'digital art staff', 'ai art staff',
+                'sound art staff', 'performance art staff', 'interactive art staff',
+                'visual art staff', 'contemporary art staff', 'experimental art staff',
+                'studio staff', 'studio assistant', 'project staff', 'research staff',
+                
+                # Scientific/academic staff positions (English)
+                'scientific staff', 'academic staff', 'research staff',
+                'scientific assistant', 'academic assistant', 'research assistant',
+                'scientific associate', 'academic associate', 'research associate',
+                
+                # Mixed artistic-scientific staff positions
+                'artistic scientific staff', 'artistic academic staff', 'artistic research staff',
+                'art scientific staff', 'art academic staff', 'art research staff',
+                'media art scientific staff', 'digital art academic staff',
+                'sound art research staff', 'performance art scientific staff'
             ]
         
         if not universities:
@@ -1003,94 +1034,43 @@ class ArtUniversityScraper:
                         if self._is_non_position_content(term_context):
                             continue
                             
-                        # Determine position type based on term
-                        position_type = 'specific_search'
+                        # Determine category based on term
+                        category = 'job'  # Default to job
                         
-                        # Media Art positions
-                        if 'media art' in term.lower():
-                            if 'mitarbeiter' in term.lower() or 'assistant' in term.lower():
-                                position_type = 'media_art_jobs'
-                            elif 'phd' in term.lower() or 'promotion' in term.lower():
-                                position_type = 'media_art_phd'
-                            else:
-                                position_type = 'media_art_jobs'
+                        # Check if it's a PhD/promotion position
+                        phd_indicators = ['phd', 'promotion', 'doktorand', 'doctorate', 'doctoral', 'dfa', 'doctor of fine arts']
+                        if any(indicator in term.lower() for indicator in phd_indicators):
+                            category = 'phd'
                         
-                        # AI Art positions
-                        elif 'ai art' in term.lower():
-                            if 'mitarbeiter' in term.lower() or 'assistant' in term.lower():
-                                position_type = 'ai_art_jobs'
-                            elif 'phd' in term.lower() or 'promotion' in term.lower():
-                                position_type = 'ai_art_phd'
-                            else:
-                                position_type = 'ai_art_jobs'
+                        # Check for mitarbeiter stelle indicators
+                        mitarbeiter_indicators = ['mitarbeiter', 'assistant', 'assistent', 'staff', 'stelle', 'position', 'job']
+                        artistic_indicators = ['künstlerische', 'artistic', 'kunst', 'art', 'medienkunst', 'digital art', 'sound art', 'performance art', 'interactive art']
+                        scientific_indicators = ['wissenschaftliche', 'scientific', 'academic', 'research', 'wiss']
                         
-                        # Sound Art positions
-                        elif 'sound art' in term.lower() or 'klangkunst' in term.lower():
-                            if 'mitarbeiter' in term.lower() or 'assistant' in term.lower():
-                                position_type = 'sound_art_jobs'
-                            elif 'phd' in term.lower() or 'promotion' in term.lower():
-                                position_type = 'sound_art_phd'
-                            else:
-                                position_type = 'sound_art_jobs'
-                        
-                        # Performance Art positions
-                        elif 'performance art' in term.lower() or 'aufführungskunst' in term.lower():
-                            if 'mitarbeiter' in term.lower() or 'assistant' in term.lower():
-                                position_type = 'performance_art_jobs'
-                            elif 'phd' in term.lower() or 'promotion' in term.lower():
-                                position_type = 'performance_art_phd'
-                            else:
-                                position_type = 'performance_art_jobs'
-                        
-                        # Interactive Art positions
-                        elif 'interactive art' in term.lower() or 'interaktive kunst' in term.lower():
-                            if 'mitarbeiter' in term.lower() or 'assistant' in term.lower():
-                                position_type = 'interactive_art_jobs'
-                            elif 'phd' in term.lower() or 'promotion' in term.lower():
-                                position_type = 'interactive_art_phd'
-                            else:
-                                position_type = 'interactive_art_jobs'
-                        
-                        # Artistic Research positions
-                        elif 'artistic research' in term.lower() or 'künstlerische forschung' in term.lower():
-                            if 'mitarbeiter' in term.lower() or 'assistant' in term.lower():
-                                position_type = 'artistic_research_jobs'
-                            elif 'phd' in term.lower() or 'promotion' in term.lower():
-                                position_type = 'artistic_research_phd'
-                            else:
-                                position_type = 'artistic_research_jobs'
-                        
-                        # General academic positions
-                        elif 'mitarbeiter' in term.lower() or 'assistant' in term.lower():
-                            position_type = 'academic_jobs'
-                        elif 'phd' in term.lower() or 'promotion' in term.lower():
-                            position_type = 'general_phd'
-                        else:
-                            # Check if it's a general job term (focused on mitarbeiter positions)
-                            general_job_indicators = [
-                                'stelle', 'position', 'job', 'vacancy', 'employment', 'career',
-                                'mitarbeiter', 'assistant', 'assistent', 'coordinator', 'manager',
-                                'curator', 'educator', 'freelance', 'contract', 'temporary',
-                                'part-time', 'full-time', 'kunst', 'art', 'forschung', 'research'
-                            ]
-                            if any(indicator in term.lower() for indicator in general_job_indicators):
-                                position_type = 'general_jobs'
-                            else:
-                                position_type = 'general_jobs'  # Default to general jobs for unmatched terms
-                        
-                        # Determine position category based on position type
-                        position_category = 'job_offer' if '_jobs' in position_type else 'phd_program'
+                        if any(indicator in term.lower() for indicator in mitarbeiter_indicators):
+                            category = 'job'
+                            # Check if it's artistic mitarbeiter
+                            if any(artistic in term.lower() for artistic in artistic_indicators):
+                                # This is an artistic mitarbeiter position
+                                pass
+                            # Check if it's wissenschaftliche mitarbeiter
+                            elif any(scientific in term.lower() for scientific in scientific_indicators):
+                                # This is a wissenschaftliche mitarbeiter position
+                                pass
+                            # Check if it's mixed artistic-scientific
+                            elif any(artistic in term.lower() for artistic in artistic_indicators) and any(scientific in term.lower() for scientific in scientific_indicators):
+                                # This is a mixed artistic-scientific mitarbeiter position
+                                pass
                         
                         position = {
                             'university': university_name,
-                            'position_type': position_type,
                             'title': f"Position related to: {term}",
                             'description': f"Found content related to {term}",
                             'url': university_data['website'],
                             'language': self._detect_language(text_content),
                             'date_found': time.strftime('%Y-%m-%d'),
                             'status': 'active',
-                            'position_category': position_category,
+                            'category': category,
                             'department': None,
                             'position_level': None,
                             'employment_details': None
