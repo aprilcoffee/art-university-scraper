@@ -1,0 +1,118 @@
+{% extends "base_v2.html" %}
+
+{% block title %}Positions - Art University Job Scraper{% endblock %}
+
+{% block content %}
+<div class="card">
+    <h2>📋 Job Positions</h2>
+    <p style="margin-top: 10px; color: #7f8c8d;">Browse wissenschaftliche and künstlerische Mitarbeiter positions</p>
+</div>
+
+<div class="card">
+    <div class="filter-bar">
+        <select id="positionType" style="min-width: 200px;">
+            <option value="">All Position Types</option>
+            <option value="wissenschaftliche">Wissenschaftliche Mitarbeiter</option>
+            <option value="kuenstlerische">Künstlerische Mitarbeiter</option>
+        </select>
+        <select id="universityFilter" style="min-width: 250px;">
+            <option value="">All Universities</option>
+        </select>
+        <select id="languageFilter">
+            <option value="">All Languages</option>
+            <option value="de">German</option>
+            <option value="en">English</option>
+        </select>
+        <button class="btn" onclick="loadPositions()">Filter</button>
+        <button class="btn" onclick="exportCSV()">Export CSV</button>
+    </div>
+</div>
+
+<div class="card">
+    <div id="loading" style="text-align: center; padding: 20px; display: none;">
+        <p>Loading positions...</p>
+    </div>
+    <table id="positionsTable">
+        <thead>
+            <tr>
+                <th>University</th>
+                <th>Title</th>
+                <th>Type</th>
+                <th>Language</th>
+                <th>Deadline</th>
+                <th>Found Date</th>
+                <th>Link</th>
+            </tr>
+        </thead>
+        <tbody id="positionsBody">
+        </tbody>
+    </table>
+    <div id="noResults" style="text-align: center; padding: 40px; color: #7f8c8d; display: none;">
+        <h3>No positions found</h3>
+        <p>Try adjusting your filters or run a scrape to find new positions.</p>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+async function loadPositions() {
+    const posType = document.getElementById('positionType').value;
+    const uni = document.getElementById('universityFilter').value;
+    const lang = document.getElementById('languageFilter').value;
+
+    document.getElementById('loading').style.display = 'block';
+    document.getElementById('positionsTable').style.display = 'none';
+    document.getElementById('noResults').style.display = 'none';
+
+    const params = new URLSearchParams();
+    if (posType) params.append('position_type', posType);
+    if (uni) params.append('university', uni);
+    if (lang) params.append('language', lang);
+
+    const response = await fetch(`/api/positions?${params}`);
+    const positions = await response.json();
+
+    document.getElementById('loading').style.display = 'none';
+
+    if (positions.length === 0) {
+        document.getElementById('noResults').style.display = 'block';
+        return;
+    }
+
+    document.getElementById('positionsTable').style.display = 'table';
+    const tbody = document.getElementById('positionsBody');
+    tbody.innerHTML = positions.map(pos => `
+        <tr>
+            <td><strong>${pos.university_name}</strong></td>
+            <td>${pos.title}</td>
+            <td><span class="badge badge-${pos.position_type}">${pos.position_type}</span></td>
+            <td><span class="badge badge-${pos.language}">${pos.language}</span></td>
+            <td>${pos.deadline || '-'}</td>
+            <td>${new Date(pos.found_date).toLocaleDateString()}</td>
+            <td><a href="${pos.url}" target="_blank" class="btn" style="padding: 4px 8px; font-size: 12px;">View</a></td>
+        </tr>
+    `).join('');
+}
+
+async function loadUniversities() {
+    const response = await fetch('/api/universities');
+    const universities = await response.json();
+    const select = document.getElementById('universityFilter');
+    universities.forEach(uni => {
+        const option = document.createElement('option');
+        option.value = uni.name;
+        option.textContent = uni.name;
+        select.appendChild(option);
+    });
+}
+
+function exportCSV() {
+    window.location.href = '/api/positions?format=csv';
+}
+
+// Load on page load
+loadUniversities();
+loadPositions();
+</script>
+{% endblock %}

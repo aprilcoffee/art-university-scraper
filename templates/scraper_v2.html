@@ -1,0 +1,144 @@
+{% extends "base_v2.html" %}
+
+{% block title %}Scraper - Art University Job Scraper{% endblock %}
+
+{% block content %}
+<div class="card">
+    <h2>🤖 Scraper Control</h2>
+    <p style="margin-top: 10px; color: #7f8c8d;">Run incremental or full scrapes</p>
+</div>
+
+<div class="card">
+    <h3>Quick Start</h3>
+    <div style="display: flex; gap: 10px; margin-top: 15px;">
+        <button class="btn btn-success" onclick="startScrape(false)">
+            ⚡ Incremental Scrape
+        </button>
+        <button class="btn" onclick="startScrape(true)">
+            🔄 Full Scrape (Force)
+        </button>
+    </div>
+    <p style="margin-top: 10px; color: #7f8c8d; font-size: 14px;">
+        <strong>Incremental:</strong> Only scrapes pages that have changed (fast)<br>
+        <strong>Full:</strong> Force scrape all universities (slower, but thorough)
+    </p>
+</div>
+
+<div id="statusCard" class="card" style="display: none;">
+    <h3>Status</h3>
+    <div id="progressContainer" style="margin-top: 15px;">
+        <div style="background: #ecf0f1; height: 30px; border-radius: 4px; overflow: hidden;">
+            <div id="progressBar" style="background: #3498db; height: 100%; width: 0%; transition: width 0.3s;"></div>
+        </div>
+        <p id="progressText" style="margin-top: 10px; font-size: 14px;"></p>
+        <p id="currentUniversity" style="color: #7f8c8d; font-size: 13px; margin-top: 5px;"></p>
+    </div>
+    <div id="results" style="margin-top: 15px; display: none;">
+        <h4>Results</h4>
+        <div class="stats" style="margin-top: 10px;">
+            <div class="stat-box" style="background: #27ae60;">
+                <h3 id="changedCount">0</h3>
+                <p>Changed</p>
+            </div>
+            <div class="stat-box" style="background: #95a5a6;">
+                <h3 id="unchangedCount">0</h3>
+                <p>Unchanged</p>
+            </div>
+            <div class="stat-box" style="background: #e74c3c;">
+                <h3 id="failedCount">0</h3>
+                <p>Failed</p>
+            </div>
+            <div class="stat-box" style="background: #3498db;">
+                <h3 id="newPositionsCount">0</h3>
+                <p>New Positions</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card">
+    <h3>📜 Recent Logs</h3>
+    <button class="btn" onclick="loadLogs()" style="margin-top: 10px;">Refresh Logs</button>
+    <table style="margin-top: 15px;">
+        <thead>
+            <tr>
+                <th>Time</th>
+                <th>University</th>
+                <th>Status</th>
+                <th>Message</th>
+                <th>Positions</th>
+            </tr>
+        </thead>
+        <tbody id="logsTable">
+        </tbody>
+    </table>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+let statusInterval;
+
+async function startScrape(force) {
+    const response = await fetch('/api/scraping/start', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({force: force})
+    });
+
+    if (response.ok) {
+        document.getElementById('statusCard').style.display = 'block';
+        document.getElementById('results').style.display = 'none';
+        statusInterval = setInterval(checkStatus, 1000);
+    } else {
+        const error = await response.json();
+        alert('Error: ' + error.error);
+    }
+}
+
+async function checkStatus() {
+    const response = await fetch('/api/scraping/status');
+    const status = await response.json();
+
+    const progress = status.total > 0 ? (status.progress / status.total * 100) : 0;
+    document.getElementById('progressBar').style.width = progress + '%';
+    document.getElementById('progressText').textContent = `${status.progress} / ${status.total} universities`;
+    document.getElementById('currentUniversity').textContent = status.current ? `Currently: ${status.current}` : '';
+
+    document.getElementById('changedCount').textContent = status.changed;
+    document.getElementById('unchangedCount').textContent = status.unchanged;
+    document.getElementById('failedCount').textContent = status.failed;
+    document.getElementById('newPositionsCount').textContent = status.new_positions;
+
+    if (!status.running && status.progress > 0) {
+        clearInterval(statusInterval);
+        document.getElementById('results').style.display = 'block';
+        document.getElementById('progressText').textContent = 'Complete!';
+        loadLogs();
+    }
+}
+
+async function loadLogs() {
+    const response = await fetch('/api/logs?limit=20');
+    const logs = await response.json();
+
+    const tbody = document.getElementById('logsTable');
+    tbody.innerHTML = logs.map(log => {
+        const symbol = {success: '✓', failed: '✗', unchanged: '○'}[log.status] || '?';
+        const color = {success: '#27ae60', failed: '#e74c3c', unchanged: '#95a5a6'}[log.status] || '#555';
+        return `
+            <tr>
+                <td>${new Date(log.timestamp).toLocaleString()}</td>
+                <td>${log.university_name}</td>
+                <td><span style="color: ${color}; font-weight: bold;">${symbol} ${log.status}</span></td>
+                <td>${log.message}</td>
+                <td>${log.positions_found}</td>
+            </tr>
+        `;
+    }).join('');
+}
+
+// Load logs on page load
+loadLogs();
+</script>
+{% endblock %}

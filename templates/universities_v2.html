@@ -1,0 +1,76 @@
+{% extends "base_v2.html" %}
+
+{% block title %}Universities - Art University Job Scraper{% endblock %}
+
+{% block content %}
+<div class="card">
+    <h2>🏛️ Universities</h2>
+    <p style="margin-top: 10px; color: #7f8c8d;">Configured art universities and Fachhochschulen ({{ universities|length }} total)</p>
+</div>
+
+<div class="card">
+    <div class="filter-bar">
+        <select id="countryFilter" onchange="filterCountry()">
+            <option value="">All Countries</option>
+            <option value="DE">Germany (DE)</option>
+            <option value="AT">Austria (AT)</option>
+            <option value="CH">Switzerland (CH)</option>
+        </select>
+    </div>
+</div>
+
+<div class="card">
+    <table>
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>City</th>
+                <th>Country</th>
+                <th>Job Page</th>
+                <th>Website</th>
+            </tr>
+        </thead>
+        <tbody id="universitiesTable">
+            {% for uni in universities %}
+            <tr data-country="{{ uni.country }}">
+                <td><strong>{{ uni.name }}</strong></td>
+                <td>{{ uni.city }}</td>
+                <td>{{ uni.country }}</td>
+                <td>
+                    {% if uni.job_page_url %}
+                    <span class="badge" style="background: #27ae60; color: white;">✓ Configured</span>
+                    {% else %}
+                    <span class="badge" style="background: #95a5a6; color: white;">○ Auto-discover</span>
+                    {% endif %}
+                </td>
+                <td><a href="{{ uni.website }}" target="_blank" class="btn" style="padding: 4px 8px; font-size: 12px;">Visit</a></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<div class="card" style="background: #ecf0f1;">
+    <h4>Legend</h4>
+    <p style="margin-top: 10px;">
+        <span class="badge" style="background: #27ae60; color: white;">✓ Configured</span> = Job page URL is pre-configured<br>
+        <span class="badge" style="background: #95a5a6; color: white;">○ Auto-discover</span> = System will automatically find job page
+    </p>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function filterCountry() {
+    const country = document.getElementById('countryFilter').value;
+    const rows = document.querySelectorAll('#universitiesTable tr');
+    rows.forEach(row => {
+        if (!country || row.dataset.country === country) {
+            row.style.display = '';
+        } else {
+            row.style.display = 'none';
+        }
+    });
+}
+</script>
+{% endblock %}
