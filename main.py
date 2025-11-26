@@ -1,133 +1,155 @@
 #!/usr/bin/env python3
 """
-Main script for the Art University Job Scraper
+Art University Job Scraper - Main CLI.
+Uses Selenium by default for JavaScript support.
 """
 
 import argparse
-import sys
-import time
-from datetime import datetime
+from scraper import ArtScraper
+from config.universities import (
+    get_all_universities,
+    get_high_priority_universities,
+    get_media_art_universities,
+    get_university_by_name
+)
 
-from scraper import ArtUniversityScraper
-from database import DatabaseManager
-from config import UNIVERSITIES_BY_COUNTRY, UNIVERSITIES
 
 def main():
-    parser = argparse.ArgumentParser(description='Art University Job Scraper')
-    parser.add_argument('--mode', choices=['scrape', 'web', 'test'], default='web',
-                       help='Mode to run: scrape (command line), web (web interface), test (test run)')
-    parser.add_argument('--universities', nargs='+', help='Specific universities to scrape')
-    parser.add_argument('--terms', nargs='+', help='Specific terms to search for')
-    parser.add_argument('--output', help='Output file for results')
-    parser.add_argument('--verbose', '-v', action='store_true', help='Verbose output')
-    
+    """Main CLI entry point."""
+    parser = argparse.ArgumentParser(
+        description='Art University Job Scraper (with Selenium support)',
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        epilog="""
+Examples:
+  %(prog)s                          # Scrape all universities
+  %(prog)s --priority media         # Scrape only 8 media art schools
+  %(prog)s --priority high          # Scrape 26 high-priority schools
+  %(prog)s --full                   # Force full scrape (ignore change detection)
+  %(prog)s --test                   # Test on 3 sample universities
+  %(prog)s --university "UdK Berlin"# Scrape specific university
+        """
+    )
+
+    parser.add_argument(
+        '--full',
+        action='store_true',
+        help='Force full scrape (ignore change detection)'
+    )
+
+    parser.add_argument(
+        '--priority',
+        choices=['media', 'high', 'all'],
+        default='all',
+        help='Priority level: media (8 schools), high (26 schools), all (51 schools)'
+    )
+
+    parser.add_argument(
+        '--test',
+        action='store_true',
+        help='Test mode: scrape only 3 sample universities'
+    )
+
+    parser.add_argument(
+        '--university',
+        type=str,
+        help='Scrape a specific university by name (partial match supported)'
+    )
+
+    parser.add_argument(
+        '--delay',
+        type=float,
+        default=2.0,
+        help='Delay in seconds between requests (default: 2.0)'
+    )
+
+    parser.add_argument(
+        '--database',
+        default='art_positions.db',
+        help='Path to SQLite database (default: art_positions.db)'
+    )
+
     args = parser.parse_args()
-    
-    if args.mode == 'web':
-        print("Starting web interface...")
-        print("Open your browser and go to: http://localhost:5002")
-        print("Press Ctrl+C to stop the server")
-        
-        from app import app
-        app.run(debug=True, host='0.0.0.0', port=5002)
-        
-    elif args.mode == 'scrape':
-        print("Starting command line scraping...")
-        scraper = ArtUniversityScraper()
-        
-        try:
-            if args.universities:
-                # Scrape specific universities
-                universities_to_scrape = []
-                all_universities = UNIVERSITIES
-                
-                for uni_name in args.universities:
-                    for uni in all_universities:
-                        if uni_name.lower() in uni['name'].lower():
-                            universities_to_scrape.append(uni)
-                            break
-                
-                if not universities_to_scrape:
-                    print(f"No universities found matching: {args.universities}")
-                    return
-                
-                print(f"Scraping {len(universities_to_scrape)} specific universities...")
-                results = {}
-                
-                for university in universities_to_scrape:
-                    print(f"Scraping {university['name']}...")
-                    positions_found = scraper.scrape_university(university)
-                    results[university['name']] = positions_found
-                    print(f"Found {positions_found} positions")
-                    time.sleep(2)
-                
-            elif args.terms:
-                # Search for specific terms
-                print(f"Searching for terms: {args.terms}")
-                results = scraper.search_specific_terms(terms=args.terms)
-                
+
+    # Select universities
+    if args.test:
+        print("TEST MODE: Scraping 3 sample universities")
+        test_universities = [
+            'Universität der Künste Berlin',
+            'Kunsthochschule für Medien Köln',
+            'Hochschule für Fernsehen und Film München',
+        ]
+        universities = [get_university_by_name(name) for name in test_universities]
+        universities = [u for u in universities if u]  # Remove None values
+    elif args.university:
+        # Find university by partial name match
+        all_unis = get_all_universities()
+        matches = [u for u in all_unis if args.university.lower() in u['name'].lower()]
+
+        if not matches:
+            print(f"Error: No university found matching '{args.university}'")
+            print("\nAvailable universities:")
+            for u in all_unis[:10]:
+                print(f"  - {u['name']}")
+            print(f"  ... and {len(all_unis) - 10} more")
+            return
+
+        if len(matches) > 1:
+            print(f"Multiple universities found matching '{args.university}':")
+            for u in matches:
+                print(f"  - {u['name']}")
+            print("\nPlease be more specific.")
+            return
+
+        universities = matches
+    elif args.priority == 'media':
+        universities = get_media_art_universities()
+        print(f"Scraping {len(universities)} MEDIA ART focused universities")
+    elif args.priority == 'high':
+        universities = get_high_priority_universities()
+        print(f"Scraping {len(universities)} HIGH PRIORITY universities")
+    else:
+        universities = get_all_universities()
+        print(f"Scraping ALL {len(universities)} universities")
+
+    # Create scraper
+    scraper = ArtScraper(db_path=args.database, delay=args.delay)
+
+    try:
+        if len(universities) == 1:
+            # Single university mode
+            university = universities[0]
+            print(f"\nScraping: {university['name']}")
+            print(f"Website: {university['website']}")
+            if university.get('job_page_url'):
+                print(f"Job page: {university['job_page_url']}")
+            print()
+
+            result = scraper.scrape_university(university, force_scrape=args.full)
+
+            print(f"\nStatus: {result['status']}")
+            if result['status'] == 'success':
+                print(f"Positions found: {result['positions_found']}")
+
+                if result['positions_found'] > 0:
+                    # Show positions
+                    positions = scraper.db.get_positions(university_name=university['name'])
+                    print(f"\nPositions:")
+                    for i, pos in enumerate(positions[:10], 1):
+                        print(f"\n  {i}. {pos['title'][:70]}")
+                        print(f"     Type: {pos['position_type']}")
+                        print(f"     URL: {pos['url'][:80]}")
             else:
-                # Scrape all universities
-                print("Scraping all universities...")
-                results = scraper.scrape_all_universities()
-            
-            # Display results
-            print("\n" + "="*50)
-            print("SCRAPING RESULTS")
-            print("="*50)
-            
-            total_positions = 0
-            for university, count in results.items():
-                print(f"{university}: {count} positions")
-                total_positions += count
-            
-            print(f"\nTotal positions found: {total_positions}")
-            
-            # Save results if output file specified
-            if args.output:
-                with open(args.output, 'w') as f:
-                    f.write(f"Art University Scraping Results - {datetime.now()}\n")
-                    f.write("="*50 + "\n")
-                    for university, count in results.items():
-                        f.write(f"{university}: {count} positions\n")
-                    f.write(f"\nTotal positions found: {total_positions}\n")
-                print(f"Results saved to: {args.output}")
-            
-        except KeyboardInterrupt:
-            print("\nScraping interrupted by user")
-        except Exception as e:
-            print(f"Error during scraping: {e}")
-            if args.verbose:
-                import traceback
-                traceback.print_exc()
-        finally:
-            scraper.close_selenium()
-    
-    elif args.mode == 'test':
-        print("Running test mode...")
-        scraper = ArtUniversityScraper()
-        
-        # Test with a few universities
-        test_universities = UNIVERSITIES[:3]  # Test first 3 universities
-        
-        print(f"Testing with {len(test_universities)} universities...")
-        results = {}
-        
-        for university in test_universities:
-            print(f"Testing {university['name']}...")
-            try:
-                positions_found = scraper.scrape_university(university)
-                results[university['name']] = positions_found
-                print(f"✓ Found {positions_found} positions")
-            except Exception as e:
-                print(f"✗ Error: {e}")
-                results[university['name']] = 0
-        
-        print("\nTest Results:")
-        for university, count in results.items():
-            print(f"  {university}: {count} positions")
-        
-        scraper.close_selenium()
+                print(f"Error: {result['error']}")
+        else:
+            # Multiple universities mode
+            scraper.scrape_all(force_full_scrape=args.full)
+
+    except KeyboardInterrupt:
+        print("\n\nScraping interrupted by user.")
+        scraper._print_summary()
+    finally:
+        scraper.close()
+
 
 if __name__ == '__main__':
     main()

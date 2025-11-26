@@ -4,7 +4,16 @@
       "Bash(mkdir:*)",
       "Bash(python -m py_compile:*)",
       "Bash(python main_v2.py:*)",
-      "Bash(python test_scraper.py:*)"
+      "Bash(python test_scraper.py:*)",
+      "Bash(python diagnose_pages.py:*)",
+      "Bash(python test_selenium.py:*)",
+      "Bash(python analyze_full_page.py:*)",
+      "Bash(python inspect_html.py:*)",
+      "Bash(python deep_inspect.py:*)",
+      "Bash(python:*)",
+      "Bash(tree:*)",
+      "Bash(rm:*)",
+      "Bash(mv:*)"
     ],
     "deny": [],
     "ask": []
