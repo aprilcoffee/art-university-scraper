@@ -1,165 +1,96 @@
-# Art University Job Scraper
+# Art Position Finder
 
-Scrapes job postings (Stellenausschreibungen) from 51 German-speaking art universities. Focuses on **wissenschaftliche Mitarbeiter** and **künstlerische Mitarbeiter** positions.
+Automated weekly search for **PhD**, **Künstlerische Mitarbeit**, and **Wissenschaftliche Mitarbeit** positions in artistic research, art theory, aesthetics, media art, AI in art, media philosophy, and related fields.
 
-## Quick Start
+**Primary focus:** Germany · Austria · Switzerland · Netherlands · Belgium
 
-```bash
-# Install dependencies
-pip install -r requirements.txt
+---
 
-# Run scraper
-python main.py
+## How it works
 
-# Test mode (3 universities)
-python main.py --test
-```
+This is a **Claude-native system** — no web scraping scripts, no fragile HTML parsers.
 
-## Features
+Every **Monday at 08:06 AM**, a scheduled task runs Claude directly. Claude executes 20 targeted search queries across:
 
-- ✅ **51 art universities** across Germany, Austria, Switzerland
-- ✅ **Selenium support** for JavaScript-loaded Stellenausschreibung pages
-- ✅ **Smart extraction** from various page structures (lists, tables, PDFs, links)
-- ✅ **Flexible keywords** - wissenschaftliche, künstlerische, mitarbeiter, stelle, etc.
-- ✅ **Incremental scraping** - only updates when pages change
-- ✅ **SQLite database** with full export capabilities
+- arthist.net, academics.de (via ZEIT), kultweet.de, hochschul-job.de, kimeta.de
+- Direct university Stellenausschreibungen pages (UdK, HFBK, HGB, Bauhaus Weimar, Kunstakademie Düsseldorf, AdBK München, HfBK Dresden, Weißensee, etc.)
+- Normal university departments (Medienwissenschaft, Kunstgeschichte, Medienphilosophie)
+- NWO / FWO / SNSF / DFG-funded PhD project calls
+- National job portals: academictransfer.com (NL/BE), academicpositions.com
 
-## Installation
+Results are deduplicated, classified, and compiled into a **standalone HTML report** with filterable cards.
 
-```bash
-# Install dependencies (requires Chrome browser)
-pip install -r requirements.txt
+---
 
-# Run the scraper
-python main.py
-```
+## Position types tracked
 
-## Usage
+| Type | Description |
+|---|---|
+| **PhD / Promotion** | Doctoral positions, Promotionsstellen, prae-doc, funded PhD projects, practice-based doctoral programmes |
+| **Künstlerische Mitarbeit** | Practice-based artistic staff positions at Kunsthochschulen (EG 13 TV-L/H) |
+| **Wissenschaftliche Mitarbeit** | Research/academic staff positions in art theory, aesthetics, media studies, art history |
 
-**Scrape all universities:**
-```bash
-python main.py
-```
+---
 
-**Scrape media art schools (8 universities):**
-```bash
-python main.py --priority media
-```
+## Subject priorities
 
-**Scrape high-priority schools (26 universities):**
-```bash
-python main.py --priority high
-```
+- Media art · Medienkunst
+- AI in art · computational art · code-based art
+- Media philosophy · Medienphilosophie · philosophy of technology
+- Media art history · digital art history
+- Interface cultures · time-based media
+- Artistic research · art theory · visual studies · Bildwissenschaft
 
-**Force full re-scrape:**
-```bash
-python main.py --full
-```
+---
 
-**Scrape specific university:**
-```bash
-python main.py --university "UdK Berlin"
-```
+## Reports
 
-**Test mode (3 universities):**
-```bash
-python main.py --test
-```
+All reports are saved in `reports/`:
 
-## Universities (51 total)
+| File | Description |
+|---|---|
+| `index.html` | Archive of all weekly reports |
+| `report_YYYY-MM-DD.html` | Weekly report — open in any browser |
+| `report_template.html` | Template used to generate each report (do not delete) |
 
-**Germany (39):** UdK Berlin, Bauhaus Weimar, KHM Köln, HfG Karlsruhe, Filmuni Babelsberg, HFF München, and more
+Open any `.html` file in a browser. Reports are fully self-contained — no server needed.
 
-**Austria (7):** Angewandte Wien, Kunstuni Linz, Mozarteum Salzburg, and more
+**Filter options in each report:** All · PhD/Promotion · Künstlerische Mitarbeit · Wissenschaftliche Mitarbeit · Berlin · Hamburg · Other Cities
 
-**Switzerland (5):** ZHdK, HKB Bern, HGK Basel, and more
+---
 
-Full list in `config/universities.py`
+## Email delivery
 
-## How It Works
+Each Monday run sends a digest email to **8765498@gmail.com** via Gmail (Chrome automation).
+Subject format: `🎨 Art Positions — [date] — [N] positions`
 
-1. **Finds job pages** - Automatically discovers Stellenausschreibung pages
-2. **Renders with Selenium** - Handles JavaScript-loaded content
-3. **Extracts positions** - Uses 4 strategies:
-   - Structured listings (divs, articles, lists)
-   - Job links with keywords
-   - PDF job postings
-   - Table-based listings
-4. **Flexible matching** - Finds variations:
-   - German: wissenschaftliche, künstlerische, mitarbeiter, stelle, ausschreibung, position
-   - English: research assistant, artistic staff, etc.
-   - Abbreviations: wiss., künst.
-5. **Classifies positions** - wissenschaftliche, kuenstlerische, or other
-6. **Stores in database** - SQLite with full metadata
+If Chrome/Gmail is unavailable at run time, the email is saved as `reports/email_draft_YYYY-MM-DD.txt`.
 
-## Project Structure
+---
 
-```
-art-university-scraper/
-├── main.py                  # Main CLI entry point
-├── scraper.py              # Scraper logic
-├── config/
-│   ├── universities.py     # 51 universities
-│   └── search_terms.py     # Job keywords
-├── core/
-│   ├── database.py         # SQLite operations
-│   ├── fetcher.py          # HTTP + Selenium
-│   ├── extractor.py        # Position extraction
-│   ├── detector.py         # Content detection
-│   └── models.py           # Data models
-└── art_positions.db        # Results database
-```
+## Institutions monitored
 
-## Configuration
+### Germany
+UdK Berlin · HFBK Hamburg · HfK Bremen · HGB Leipzig · Bauhaus-Universität Weimar · Kunstakademie Düsseldorf · AdBK München · HfBK Dresden · HBK Braunschweig · Kunsthochschule Kassel · Weißensee Kunsthochschule Berlin · Burg Giebichenstein Halle · Folkwang Universität der Künste · Muthesius Kunsthochschule · KHM Köln · Merz Akademie Stuttgart · HfG Offenbach · Städelschule Frankfurt · ZKM Karlsruhe · External institutions (museums, Kunsthallen, foundations)
 
-**Adjust scraping speed:**
-```bash
-python main.py --delay 3.0
-```
+### Austria
+Akademie der Bildenden Künste Wien · Universität für angewandte Kunst Wien · Kunstuniversität Linz (Interface Cultures)
 
-**Custom database:**
-```bash
-python main.py --database my_jobs.db
-```
+### Switzerland
+ZHdK / IFCAR Zürich · HGK/FHNW Basel · HEAD Geneva · ECAL Lausanne
 
-## Performance
+### Netherlands
+Gerrit Rietveld Academie / Sandberg Instituut (Creator Doctus) · ArtEZ · HKU Utrecht · University of Amsterdam · NWO-funded art research projects
 
-- ~3-5 seconds per university (Selenium)
-- ~3-4 minutes for all 51 universities
+### Belgium
+KASK & Conservatorium Ghent · LUCA School of Arts · ARIA (University of Antwerp) · ERG Brussels · FWO-funded positions
 
-## Recent Results
+---
 
-Real scraping results:
-- **Bauhaus-Universität Weimar**: 16 positions
-- **Universität für angewandte Kunst Wien**: 16 positions
-- **Filmuniversität Babelsberg**: 4 positions
-- **Hochschule für Gestaltung und Kunst Basel**: 4 positions
-- **HTWK Leipzig**: 3 positions
-- **Hochschule der Künste Bern**: 2 positions
-- **HTW Berlin**: 1 position
+## Scheduled task
 
-## Troubleshooting
+Managed via Claude Cowork → Scheduled section.
+Task ID: `art-positions-weekly`
+Schedule: Every Monday 08:06 AM (local time)
 
-**ChromeDriver not found:**
-```bash
-brew install chromedriver  # macOS
-```
-
-**Selenium timeout:**
-- Increase delay: `--delay 5.0`
-- Check internet connection
-
-**No positions found:**
-- Normal if university has no open positions currently
-- Try `--full` to force re-scrape
-
-## Recent Improvements
-
-1. ✅ **Selenium by default** - Handles JavaScript-loaded Stellenausschreibung pages
-2. ✅ **Improved extraction** - 4 strategies for different page structures
-3. ✅ **Flexible keywords** - Catches more position variations
-4. ✅ **Better results** - Successfully extracts from universities that previously returned 0 results
-
-## License
-
-MIT - For educational and research purposes
+To run manually: open the Scheduled section in the sidebar and click **Run now**.

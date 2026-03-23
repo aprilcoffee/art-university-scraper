@@ -1,0 +1,858 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Art Positions Report — 23 March 2026</title>
+<style>
+  :root {
+    --bg: #f5f4f0;
+    --surface: #ffffff;
+    --border: #e8e5e0;
+    --text: #1a1a18;
+    --muted: #6b6860;
+    --accent: #2d2d2a;
+    --phd: #5b4fcf;
+    --phd-bg: #ede9ff;
+    --mitarbeiter: #1a6b4a;
+    --mitarbeiter-bg: #d8f5ea;
+    --kuenstlerisch: #c0392b;
+    --kuenstlerisch-bg: #fdecea;
+    --open-call: #b45309;
+    --open-call-bg: #fef3c7;
+    --deadline-urgent: #c0392b;
+    --deadline-soon: #d97706;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+  }
+
+  /* ── Header ── */
+  .header {
+    background: var(--accent);
+    color: #fff;
+    padding: 36px 40px 28px;
+  }
+  .header-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 24px;
+    flex-wrap: wrap;
+  }
+  .header h1 {
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: -0.3px;
+    line-height: 1.2;
+  }
+  .header p {
+    font-size: 13px;
+    color: rgba(255,255,255,0.6);
+    margin-top: 5px;
+  }
+  .header-meta {
+    text-align: right;
+  }
+  .header-meta .count {
+    font-size: 42px;
+    font-weight: 800;
+    line-height: 1;
+  }
+  .header-meta .count-label {
+    font-size: 12px;
+    color: rgba(255,255,255,0.55);
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    margin-top: 3px;
+  }
+
+  /* ── Filters ── */
+  .filters {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 14px 40px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .filters-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+  .filter-label {
+    font-size: 12px;
+    color: var(--muted);
+    font-weight: 500;
+    margin-right: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .filter-btn {
+    border: 1.5px solid var(--border);
+    background: transparent;
+    color: var(--muted);
+    padding: 5px 14px;
+    border-radius: 20px;
+    font-size: 13px;
+    cursor: pointer;
+    font-family: inherit;
+    transition: all 0.15s;
+    white-space: nowrap;
+  }
+  .filter-btn:hover { border-color: var(--accent); color: var(--accent); }
+  .filter-btn.active {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #fff;
+  }
+
+  /* ── Grid ── */
+  .main {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 28px 40px 60px;
+  }
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 20px;
+    margin-top: 4px;
+  }
+  .no-results {
+    text-align: center;
+    color: var(--muted);
+    padding: 60px 20px;
+    font-size: 15px;
+    display: none;
+  }
+
+  /* ── Card ── */
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 22px 24px 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    transition: box-shadow 0.15s, transform 0.15s;
+  }
+  .card:hover {
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    transform: translateY(-2px);
+  }
+  .card.hidden { display: none; }
+
+  .card-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 10px;
+    margin-bottom: 12px;
+  }
+  .type-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    padding: 3px 10px;
+    border-radius: 20px;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  .type-badge.phd { background: var(--phd-bg); color: var(--phd); }
+  .type-badge.mitarbeiter { background: var(--mitarbeiter-bg); color: var(--mitarbeiter); }
+  .type-badge.kuenstlerisch { background: var(--kuenstlerisch-bg); color: var(--kuenstlerisch); }
+  .type-badge.open-call { background: var(--open-call-bg); color: var(--open-call); }
+
+  .source-tag {
+    font-size: 10px;
+    color: var(--muted);
+    background: var(--bg);
+    padding: 3px 8px;
+    border-radius: 4px;
+    white-space: nowrap;
+  }
+
+  .card h2 {
+    font-size: 15px;
+    font-weight: 600;
+    line-height: 1.4;
+    color: var(--text);
+    margin-bottom: 6px;
+  }
+  .card .institution {
+    font-size: 13px;
+    color: var(--muted);
+    font-weight: 500;
+  }
+  .card .institution span.city {
+    color: var(--text);
+    font-weight: 600;
+  }
+
+  .card-desc {
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.55;
+    margin-top: 12px;
+    flex: 1;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .card-footer {
+    margin-top: 16px;
+    padding-top: 14px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+  }
+  .deadline {
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--muted);
+  }
+  .deadline.urgent { color: var(--deadline-urgent); font-weight: 700; }
+  .deadline.soon   { color: var(--deadline-soon); font-weight: 600; }
+  .deadline span { font-size: 11px; opacity: 0.7; margin-right: 3px; }
+
+  .view-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    background: var(--accent);
+    color: #fff;
+    padding: 7px 14px;
+    border-radius: 7px;
+    font-size: 12px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: opacity 0.15s;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  .view-btn:hover { opacity: 0.82; }
+  .view-btn svg { flex-shrink: 0; }
+
+  /* ── Footer ── */
+  .footer {
+    text-align: center;
+    padding: 24px 40px;
+    font-size: 12px;
+    color: var(--muted);
+    border-top: 1px solid var(--border);
+    background: var(--surface);
+  }
+
+  @media (max-width: 600px) {
+    .header, .filters, .main { padding-left: 18px; padding-right: 18px; }
+    .grid { grid-template-columns: 1fr; }
+    .header-inner { flex-direction: column; align-items: flex-start; }
+    .header-meta { text-align: left; }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-inner">
+    <div>
+      <h1>Art Positions — Germany &amp; Western EU</h1>
+      <p>PhD &amp; Künstlerische/Wissenschaftliche Mitarbeiter · Report generated 23 March 2026</p>
+    </div>
+    <div class="header-meta">
+      <div class="count" id="visible-count">45</div>
+      <div class="count-label">positions found</div>
+    </div>
+  </div>
+</div>
+
+<div class="filters">
+  <div class="filters-inner">
+    <span class="filter-label">Filter:</span>
+    <button class="filter-btn active" data-filter="all">All</button>
+    <button class="filter-btn" data-filter="phd">PhD / Promotion</button>
+    <button class="filter-btn" data-filter="kuenstlerisch">Künstlerische Mitarbeit</button>
+    <button class="filter-btn" data-filter="mitarbeiter">Wissenschaftliche Mitarbeit</button>
+    <button class="filter-btn" data-filter="Berlin">Berlin</button>
+    <button class="filter-btn" data-filter="Hamburg">Hamburg</button>
+    <button class="filter-btn" data-filter="Other Cities">Other Cities</button>
+  </div>
+</div>
+
+<div class="main">
+  <div class="grid" id="card-grid">
+    <!-- CARDS_PLACEHOLDER -->
+  </div>
+  <p class="no-results" id="no-results">No positions match this filter.</p>
+</div>
+
+<div class="footer">
+  Positions sourced from academics.de (via arthist.net), hochschul-job.de, kultweet.de, indeed.de, EURAXESS, and direct university listings. Links open original postings. ·
+  Generated by Art Position Finder
+</div>
+
+<script>
+// ── Position Data ──
+const POSITIONS = [
+  {
+    "title": "Wissenschaftliche*r Mitarbeiter*in Philosophie / Ästhetik",
+    "institution": "HBK Braunschweig",
+    "city": "Braunschweig",
+    "type": "Wissenschaftliche Mitarbeit",
+    "deadline": "Rolling",
+    "description": "Wissenschaftliche Mitarbeit in Philosophie und Ästhetik an der HBK Braunschweig. Lehre und Forschung im Bereich Kunsttheorie und Bildwissenschaften.",
+    "source": "hbk-bs.de",
+    "url": "https://www.hbk-bs.de/hochschule/stellenangebote/"
+  },
+  {
+    "title": "Wissenschaftliche*r Mitarbeiter*in Designtheorie (Struktur & Orientierung)",
+    "institution": "Burg Giebichenstein Kunsthochschule",
+    "city": "Halle",
+    "type": "Wissenschaftliche Mitarbeit",
+    "deadline": "Rolling",
+    "description": "Wissenschaftliche oder künstlerische Mitarbeit in Struktur und Orientierung / Designtheorie. Forschung zu Gestaltungsgrundlagen, Vermittlung und transdisziplinärer Praxis.",
+    "source": "burg-halle.de",
+    "url": "https://www.burg-halle.de/artikel/a/wissenschaftliche-oder-kuenstlerischer-mitarbeiterin-struktur-und-orientierung-w-m-d"
+  },
+  {
+    "title": "Wissenschaftliche*r Mitarbeiter*in EU-Netzwerkprojekt (Architektur/Kunst)",
+    "institution": "Burg Giebichenstein Kunsthochschule",
+    "city": "Halle",
+    "type": "Wissenschaftliche Mitarbeit",
+    "deadline": "Rolling",
+    "description": "Koordination und wissenschaftliche Begleitung eines EU-geförderten Netzwerkprojekts an der Schnittstelle von Architektur, Kunst und Stadtforschung.",
+    "source": "burg-halle.de",
+    "url": "https://www.burg-halle.de/hochschule/information/stellenausschreibungen/"
+  },
+  {
+    "title": "Wissenschaftliche*r Mitarbeiter*in Medienphilosophie",
+    "institution": "Folkwang Universität der Künste",
+    "city": "Essen",
+    "type": "Wissenschaftliche Mitarbeit",
+    "deadline": "Rolling",
+    "description": "Forschung und Lehre im Bereich Medienphilosophie und Medientheorie. Mitarbeit in kunst- und medienwissenschaftlichen Projekten an der Folkwang Universität.",
+    "source": "folkwang-uni.de",
+    "url": "https://www.folkwang-uni.de/en/home/hochschule/news/job-opportunities"
+  },
+  {
+    "title": "Wissenschaftliche*r Mitarbeiter*in Kunstgeschichte",
+    "institution": "Bauhaus-Universität Weimar",
+    "city": "Weimar",
+    "type": "Wissenschaftliche Mitarbeit",
+    "deadline": "Rolling",
+    "description": "Wissenschaftliche Mitarbeit am Lehrstuhl Kunstgeschichte. Forschung zu Moderne, Nachmoderne und digitaler Ästhetik. Mitarbeit in Drittmittelprojekten.",
+    "source": "uni-weimar.de",
+    "url": "https://www.uni-weimar.de/de/universitaet/jobs-und-karriere/stellenangebote/"
+  },
+  {
+    "title": "Wissenschaftliche*r Mitarbeiter*in Medienwissenschaft",
+    "institution": "Humboldt-Universität zu Berlin",
+    "city": "Berlin",
+    "type": "Wissenschaftliche Mitarbeit",
+    "deadline": "Rolling",
+    "description": "Mitarbeit am Institut für Kulturwissenschaft / Medienwissenschaft. Forschung zu digitalen Medien, Mediengeschichte und Medientheorie. TV-L E13.",
+    "source": "hu-berlin.de",
+    "url": "https://www.hu-berlin.de/de/stellen"
+  },
+  {
+    "title": "Akademische Mitarbeit Medienkunst 50% (BPOC Women at Art Academies)",
+    "institution": "HfG Karlsruhe",
+    "city": "Karlsruhe",
+    "type": "Wissenschaftliche Mitarbeit",
+    "deadline": "Rolling",
+    "description": "Drittmittelfinanzierte Stelle im Forschungsprojekt 'BPOC Women at Art Academies'. Medienwissenschaftliche und kunstvermittelnde Arbeit. 50%, TV-L bis E11, Laufzeit bis 31.12.2027.",
+    "source": "hfg-karlsruhe.de",
+    "url": "https://hfg-karlsruhe.de/aktuelles/stellenausschreibung-akademische-mitarbeit-medienkunst-50/"
+  },
+  {
+    "title": "Wissenschaftliche*r Mitarbeiter*in Kunstwissenschaft (LETTER Stiftung)",
+    "institution": "LETTER Stiftung",
+    "city": "Köln",
+    "type": "Wissenschaftliche Mitarbeit",
+    "deadline": "01.04.2026",
+    "description": "Mitarbeit im Forschungsprogramm der LETTER Stiftung für Kunst und Kunstwissenschaft. Kuratierung, Vermittlung und wissenschaftliche Publikationstätigkeit.",
+    "source": "arthist.net",
+    "url": "https://arthist.net/archive/51402"
+  },
+  {
+    "title": "Wissenschaftliche*r Volontär*in Kunstwissenschaft / Sammlungen",
+    "institution": "Staatliche Museen zu Berlin / SPK",
+    "city": "Berlin",
+    "type": "Wissenschaftliche Mitarbeit",
+    "deadline": "08.04.2026",
+    "description": "Volontariat an den Staatlichen Museen zu Berlin. Einführung in kuratorische und wissenschaftliche Arbeit mit Sammlungsbeständen moderner und zeitgenössischer Kunst.",
+    "source": "preussischer-kulturbesitz.de",
+    "url": "https://www.preussischer-kulturbesitz.de/en/karriere/ausbildung-und-qualifizierung/volontariat-1.html"
+  },
+  {
+    "title": "Wissenschaftliches Volontariat Kunstvermittlung",
+    "institution": "Schirn Kunsthalle Frankfurt",
+    "city": "Frankfurt",
+    "type": "Wissenschaftliche Mitarbeit",
+    "deadline": "Deadline Passed",
+    "description": "Volontariat Bildung / Vermittlung / Kunstpädagogik an der Schirn Kunsthalle. Start Juli 2026. Deadline Feb 2026 abgelaufen — nächste Ausschreibung beobachten.",
+    "source": "arthist.net",
+    "url": "https://arthist.net/archive/51324"
+  },
+  {
+    "title": "Wissenschaftliche*r Mitarbeiter*in Tiny Design School",
+    "institution": "Muthesius Kunsthochschule",
+    "city": "Kiel",
+    "type": "Wissenschaftliche Mitarbeit",
+    "deadline": "Rolling",
+    "description": "Mitarbeit im Lehr- und Forschungsprojekt Tiny Design School. Forschung zu nachhaltigen und experimentellen Designpraktiken an der Muthesius Kunsthochschule.",
+    "source": "muthesius-kunsthochschule.de",
+    "url": "https://karriere.muthesius-kunsthochschule.de/jobposting/f9a8e943b7401e9b97a7290f793fe73bac136e1b0"
+  },
+  {
+    "title": "Wissenschaftliche*r Mitarbeiter*in Kunstwissenschaft / Forschung",
+    "institution": "Akademie der Bildenden Künste Wien",
+    "city": "Wien",
+    "type": "Wissenschaftliche Mitarbeit",
+    "deadline": "06.04.2026",
+    "description": "Mitarbeit in Forschung und Lehre an der AdBK Wien. Schwerpunkt Kunsttheorie, Bildwissenschaften und künstlerische Forschungsmethoden. TV-L analog.",
+    "source": "akbild.ac.at",
+    "url": "https://www.akbild.ac.at/de/universitaet/offene-stellen/aktuelle-jobs"
+  },
+  {
+    "title": "Künstlerische*r Mitarbeiter*in Medienkunst (ab Oktober 2026)",
+    "institution": "HGB Leipzig",
+    "city": "Leipzig",
+    "type": "Künstlerische Mitarbeit",
+    "deadline": "Rolling",
+    "description": "Künstlerische Mitarbeit im Bereich Medienkunst und Neue Medien. Betreuung Ateliers und technischer Studios, Lehre in medienkünstlerischen Grundlagenfächern. Start Oktober 2026.",
+    "source": "hgb-leipzig.de",
+    "url": "https://www.hgb-leipzig.de/hochschule/stellenangebote"
+  },
+  {
+    "title": "Künstlerische*r Mitarbeiter*in Experimentelle Malerei / Mixed Media",
+    "institution": "Bauhaus-Universität Weimar",
+    "city": "Weimar",
+    "type": "Künstlerische Mitarbeit",
+    "deadline": "31.03.2026",
+    "description": "Künstlerische Mitarbeit in der Klasse Experimentelle Malerei und Mixed Media. Atelierbetreuung, Werkstattarbeit und Unterstützung der künstlerischen Lehre. Bewerbungsschluss 31.03.2026.",
+    "source": "uni-weimar.de",
+    "url": "https://www.uni-weimar.de/de/kg-kwp-03-26/"
+  },
+  {
+    "title": "Künstlerische*r Mitarbeiter*in Klasse Zeitbasierte Kunst",
+    "institution": "Kunsthochschule Kassel",
+    "city": "Kassel",
+    "type": "Künstlerische Mitarbeit",
+    "deadline": "Deadline Passed",
+    "description": "Künstlerische Mitarbeit in der Klasse für zeitbasierte Kunst / Video und Performance. Deadline abgelaufen — relevant für nächsten Jahrgangsaufruf.",
+    "source": "kunsthochschule-kassel.de",
+    "url": "https://kunsthochschulekassel.de/willkommen/ausschreibungen.html"
+  },
+  {
+    "title": "Künstlerische*r Mitarbeiter*in Neue Medien / Digitale Kommunikation",
+    "institution": "Weißensee Kunsthochschule Berlin",
+    "city": "Berlin",
+    "type": "Künstlerische Mitarbeit",
+    "deadline": "Rolling",
+    "description": "Künstlerische Mitarbeit in den Bereichen Neue Medien und Digitale Kommunikation. Atelierbetreuung, Werkstattunterstützung und Lehrassistenz.",
+    "source": "kh-berlin.de",
+    "url": "https://kh-berlin.de/bewerbung/stellenangebote"
+  },
+  {
+    "title": "Künstlerisch-Wissenschaftliche*r Mitarbeiter*in Curatorial Practice",
+    "institution": "HFBK Hamburg",
+    "city": "Hamburg",
+    "type": "Künstlerische Mitarbeit",
+    "deadline": "Rolling",
+    "description": "Künstlerisch-wissenschaftliche Stelle im Bereich Curatorial Practice. 30h/Woche, 3 Jahre befristet, TV-L 13. Forschungsorientierte Mitarbeit in Ausstellungs- und Lehrprojekten.",
+    "source": "hfbk-hamburg.de",
+    "url": "https://hfbk-hamburg.de/en/information/news/current-job-offers"
+  },
+  {
+    "title": "Künstlerische*r Mitarbeiter*in Film II",
+    "institution": "HfG Offenbach",
+    "city": "Offenbach",
+    "type": "Künstlerische Mitarbeit",
+    "deadline": "Rolling",
+    "description": "Künstlerische Mitarbeit in der Abteilung Film II an der HfG Offenbach. Betreuung von Filmproduktionen, Werkstattarbeit und Lehre im Bereich Bewegtbild.",
+    "source": "hfg-offenbach.de",
+    "url": "https://www.hfg-offenbach.de/de/pages/jobboerse"
+  },
+  {
+    "title": "Künstlerische*r Mitarbeiter*in Bühnenbild / Kostümgestaltung (ab Oktober 2026)",
+    "institution": "HfBK Dresden",
+    "city": "Dresden",
+    "type": "Künstlerische Mitarbeit",
+    "deadline": "Rolling",
+    "description": "Künstlerische Mitarbeit im Studiengang Bühnenbild und Kostümgestaltung. Profil: Künstler*in mit nationaler/internationaler Reputation. Start Oktober 2026.",
+    "source": "hfbk-dresden.de",
+    "url": "https://www.hfbk-dresden.de/en/academy/organisation/jobs/"
+  },
+  {
+    "title": "Künstlerische*r Mitarbeiter*in — Hochschulübergreifendes Zentrum Tanz",
+    "institution": "UdK Berlin",
+    "city": "Berlin",
+    "type": "Künstlerische Mitarbeit",
+    "deadline": "Deadline Passed",
+    "description": "'Crip, Choreo, Care' — Künstlerische Mitarbeit im Hochschulübergreifenden Zentrum Tanz Berlin. 50%, befristet bis Sept. 2028. Deadline abgelaufen — jährlicher Zyklus.",
+    "source": "udk-berlin.de",
+    "url": "https://jobs.udk-berlin.de"
+  },
+  {
+    "title": "Künstlerische*r Mitarbeiter*in Klasse Malerei",
+    "institution": "AdBK München",
+    "city": "München",
+    "type": "Künstlerische Mitarbeit",
+    "deadline": "Deadline Passed",
+    "description": "Künstlerische Mitarbeit in einer Malereiklasse an der AdBK München. 20h/Woche. Deadline abgelaufen — jährlicher Zyklus, nächste Ausschreibung voraussichtlich 2027.",
+    "source": "adbk-muenchen.de",
+    "url": "https://www.adbk.de/de/akademie/stellenangebote.html"
+  },
+  {
+    "title": "Künstlerische Mitarbeit MA Film Dokumentar- & Experimentalfilm",
+    "institution": "HSLU Design Film Kunst",
+    "city": "Other",
+    "type": "Künstlerische Mitarbeit",
+    "deadline": "Deadline Passed",
+    "description": "Künstlerische Mitarbeit im MA Film Dokumentar- & Experimentalfilm (Hochschule Luzern). 50%, Start September 2026. Deadline 01.03.2026 abgelaufen — jährlicher Zyklus.",
+    "source": "hslu-jobs.ch",
+    "url": "https://www.hslu.ch/de-ch/hochschule-luzern/ueber-uns/jobs/"
+  },
+  {
+    "title": "PhD Position — Art Practice Research",
+    "institution": "HFBK Hamburg",
+    "city": "Hamburg",
+    "type": "PhD / Promotion",
+    "deadline": "Rolling",
+    "description": "Promotionsprogramm für künstlerische Forschung an der HFBK Hamburg. Praxisbasierte Forschung in Verbindung mit künstlerischer Produktion. Kontakt mit Betreuungsprofessur notwendig.",
+    "source": "hfbk-hamburg.de",
+    "url": "https://www.hfbk-hamburg.de/studium/promotion/"
+  },
+  {
+    "title": "Binational PhD Programme in Artistic Research",
+    "institution": "HfK Bremen",
+    "city": "Bremen",
+    "type": "PhD / Promotion",
+    "deadline": "Rolling",
+    "description": "Binational doctoral programme in artistic research in cooperation with partner universities across Europe. Practice-based, international faculty supervision. Annual intake.",
+    "source": "hfk-bremen.de",
+    "url": "https://www.hfk-bremen.de/en/research/binational-artistic-phd-program"
+  },
+  {
+    "title": "PhD / Promotionsstelle — Künstlerische Forschung",
+    "institution": "UdK Berlin",
+    "city": "Berlin",
+    "type": "PhD / Promotion",
+    "deadline": "Rolling",
+    "description": "Laufende Promotionsmöglichkeiten an der UdK Berlin, Graduate School of Arts and Sciences. Künstlerisch-wissenschaftliche Forschungsprojekte in allen Fachbereichen.",
+    "source": "udk-berlin.de",
+    "url": "https://www.udk-berlin.de/en/research/graduate-school/application/"
+  },
+  {
+    "title": "Promotionsstelle Künstlerische Forschung / Medienkunst",
+    "institution": "Kunsthochschule Kassel",
+    "city": "Kassel",
+    "type": "PhD / Promotion",
+    "deadline": "Rolling",
+    "description": "Promotionsstelle an der Kunsthochschule Kassel im Bereich künstlerische Forschung mit Schwerpunkt Medienkunst und zeitbasierte Praktiken.",
+    "source": "kunsthochschule-kassel.de",
+    "url": "https://kunsthochschulekassel.de/willkommen/ausschreibungen.html"
+  },
+  {
+    "title": "PhD Position — Artistic Research (Leuphana)",
+    "institution": "Leuphana Universität Lüneburg",
+    "city": "Lüneburg",
+    "type": "PhD / Promotion",
+    "deadline": "Deadline Passed",
+    "description": "Promotionsstelle im Bereich Künstlerische Forschung an der Leuphana Universität (ausgeschrieben März 2026, Deadline abgelaufen). Nächste Runde verfolgen.",
+    "source": "leuphana.de",
+    "url": "https://www.leuphana.de/universitaet/stellen.html"
+  },
+  {
+    "title": "Prae-Doc Stelle Kunstwissenschaft / Künstlerische Forschung (3×)",
+    "institution": "Akademie der Bildenden Künste Wien",
+    "city": "Wien",
+    "type": "PhD / Promotion",
+    "deadline": "13.04.2026",
+    "description": "Drei Prae-Doc Stellen (§26 KV Universitäten) an der AdBK Wien. Forschungsfelder: Kunstwissenschaft, Bildwissenschaften, praxisbasierte Forschung. Bewerbungsschluss 13. April 2026.",
+    "source": "akbild.ac.at",
+    "url": "https://www.akbild.ac.at/de/universitaet/offene-stellen/aktuelle-jobs"
+  },
+  {
+    "title": "PhD Programme Künstlerische Forschung (Ausschreibung Aug–Sept 2026)",
+    "institution": "Kunstuniversität Linz",
+    "city": "Linz",
+    "type": "PhD / Promotion",
+    "deadline": "Rolling",
+    "description": "Jährliche Ausschreibung Aug–Sept 2026 (Deadline ca. 10. Sept.). Schwerpunkte: Interface Cultures, Time-based Media, Medienkunst. Praxisbasierte Promotionsprojekte.",
+    "source": "kunstuni-linz.at",
+    "url": "https://www.kunstuni-linz.at/en/studies/degree-programmes/phd-study/phd-programme-application"
+  },
+  {
+    "title": "Make/Sense PhD Programme (Practice-Based, Critical Media)",
+    "institution": "FHNW HGK Basel / Kunstuniversität Linz",
+    "city": "Basel",
+    "type": "PhD / Promotion",
+    "deadline": "Rolling",
+    "description": "3-year practice-based PhD in artistic and design research. Up to 6 positions per cohort. Transdisciplinary, experimental, critical approach. Co-supervised at FHNW HGK Basel and Kunstuniversität Linz. Details for next cohort publish mid-2026.",
+    "source": "makesensephd.ch",
+    "url": "https://makesensephd.ch/"
+  },
+  {
+    "title": "PhD Positions — Theory and History of Images · eikones (3×)",
+    "institution": "Universität Basel / eikones",
+    "city": "Basel",
+    "type": "PhD / Promotion",
+    "deadline": "12.04.2026",
+    "description": "Three PhD positions at eikones – Center for the Theory and History of the Image, University of Basel. Focus: visual culture, image theory, iconology. Bewerbungsschluss 12. April 2026.",
+    "source": "eikones.ch",
+    "url": "https://eikones.philhist.unibas.ch/en/graduate-school/phd-program/"
+  },
+  {
+    "title": "PhD Fellowships — Multimodal Digital Humanities",
+    "institution": "Universität Zürich",
+    "city": "Zürich",
+    "type": "PhD / Promotion",
+    "deadline": "31.05.2026",
+    "description": "PhD fellowships in Multimodal Digital Humanities at UZH. Interdisciplinary: art history, digital methods, computational image analysis. Deadline 31 May 2026.",
+    "source": "mdh.uzh.ch",
+    "url": "https://www.mdh.uzh.ch/en.html"
+  },
+  {
+    "title": "PhD in Artistic Research — Pre-Doc & PhD Programme",
+    "institution": "ZHdK / IFCAR Zürich",
+    "city": "Zürich",
+    "type": "PhD / Promotion",
+    "deadline": "Rolling",
+    "description": "Practice-based doctoral research at the Institute for Contemporary Art Research (IFCAR), Zurich University of the Arts. SNSF-funded positions on a rolling basis.",
+    "source": "zhdk.ch",
+    "url": "https://www.zhdk.ch/en/research/ifcar/pre-doc-and-phd-programme-5329"
+  },
+  {
+    "title": "PhD in Artistic Research — Doc.Art Programme",
+    "institution": "Universität für angewandte Kunst Wien",
+    "city": "Wien",
+    "type": "PhD / Promotion",
+    "deadline": "Deadline Passed",
+    "description": "Doctoral programme at the Angewandte Wien. Artistic research, design, architecture and media arts. Annual call, deadline typically Jan–Feb. Next call: early 2027.",
+    "source": "dieangewandte.at",
+    "url": "https://www.dieangewandte.at/doc_art"
+  },
+  {
+    "title": "PhD in the Arts — Doctoral Programme",
+    "institution": "Universität Mozarteum Salzburg",
+    "city": "Other",
+    "type": "PhD / Promotion",
+    "deadline": "28.03.2026",
+    "description": "Artistic doctoral programme at Mozarteum University Salzburg. Practice-based and research-oriented tracks in performance and interdisciplinary arts. Bewerbungsschluss 28.03.2026.",
+    "source": "moz.ac.at",
+    "url": "https://www.moz.ac.at/en/study/course-finder/doctoral-studies/phd-in-the-arts"
+  },
+  {
+    "title": "Creator Doctus — Artistic Research PhD",
+    "institution": "Gerrit Rietveld Academie / Sandberg Instituut",
+    "city": "Amsterdam",
+    "type": "PhD / Promotion",
+    "deadline": "Rolling",
+    "description": "Creator Doctus is the Dutch doctoral programme for fine art and design, Gerrit Rietveld Academie and Sandberg Instituut Amsterdam. Practice-based, internationally connected. Annual intake.",
+    "source": "creatordoctus.eu",
+    "url": "https://creatordoctus.eu/"
+  },
+  {
+    "title": "PhDArts — International Doctorate in Art & Design",
+    "institution": "Leiden University / KABK The Hague",
+    "city": "Other",
+    "type": "PhD / Promotion",
+    "deadline": "Deadline Passed",
+    "description": "International doctoral programme, joint Leiden University / KABK The Hague / Sint-Lukas Brussels. Free tuition. Note: no 2026 intake announced; next round expected autumn 2026.",
+    "source": "phdarts.eu",
+    "url": "https://phdarts.eu/"
+  },
+  {
+    "title": "JUST ART PhD — ReStor(y)ing Multispecies Futures Through Digital Media",
+    "institution": "University of Twente",
+    "city": "Amsterdam",
+    "type": "PhD / Promotion",
+    "deadline": "27.03.2026",
+    "description": "NWO JUST ART consortium PhD (Position 5). Research: digital media and multispecies artistic futures. Full-time 4-year position. Bewerbungsschluss 27. März 2026.",
+    "source": "utwentecareers.nl",
+    "url": "https://utwentecareers.nl/en/vacancies/2373/phd-position-just-futures-restorying-multispecies-futures-through-digital-media/"
+  },
+  {
+    "title": "JUST ART PhD — ReStor(y)ing Unjust Land-Water Relationships Through Art",
+    "institution": "University of Twente",
+    "city": "Amsterdam",
+    "type": "PhD / Promotion",
+    "deadline": "27.03.2026",
+    "description": "NWO JUST ART consortium PhD (Position 4). Research: artistic practices addressing land-water and ecological transformation. Full-time 4-year position. Bewerbungsschluss 27. März 2026.",
+    "source": "utwentecareers.nl",
+    "url": "https://utwentecareers.nl/en/vacancies/2374/phd-position-just-futures-restorying-unjust-land-water-relationships-through-art-activism/"
+  },
+  {
+    "title": "JUST PRACTICES PhD — Artistic Research, Curating & Climate Justice",
+    "institution": "University of Amsterdam",
+    "city": "Amsterdam",
+    "type": "PhD / Promotion",
+    "deadline": "Deadline Passed",
+    "description": "NWO JUST PRACTICES PhD at UvA. Topic: artistic research, curating and climate justice. €3,059–€3,881/month. Start Sept 2026. Deadline passed (13.03.2026) — track for next call.",
+    "source": "werkenbij.uva.nl",
+    "url": "https://werkenbij.uva.nl/en/vacancies/phd-position-in-just-practices-artistic-research-curating-and-climate-justice-netherlands-14801"
+  },
+  {
+    "title": "Artistic Assistant / PhD Positions (4× — April Interviews)",
+    "institution": "KASK & Conservatorium / School of Arts Ghent",
+    "city": "Ghent",
+    "type": "PhD / Promotion",
+    "deadline": "Rolling",
+    "description": "Four Artistic Assistant positions, 6-year practice-based artistic research programme at KASK Ghent. Interdisciplinary arts, media and performance. Selection interviews April 2026.",
+    "source": "schoolofartsgent.be",
+    "url": "https://schoolofartsgent.be/en/research/applications"
+  },
+  {
+    "title": "PhD in Arts / Artistic Research — Annual Call",
+    "institution": "LUCA School of Arts Brussels",
+    "city": "Brussels",
+    "type": "PhD / Promotion",
+    "deadline": "30.03.2026",
+    "description": "Annual doctoral call at LUCA School of Arts Brussels, connected to KU Leuven doctoral school. Practice-based and theoretical tracks. Interviews May 20, 2026. Bewerbungsschluss 30.03.2026.",
+    "source": "luca-arts.be",
+    "url": "https://luca.kuleuven.be/english/research/doctoral-programme-in-the-arts"
+  },
+  {
+    "title": "PhD Position — Artistic Research",
+    "institution": "Sint Lucas Antwerpen / ARIA",
+    "city": "Other",
+    "type": "PhD / Promotion",
+    "deadline": "Deadline Passed",
+    "description": "Doctoral position with research assistantship (50%) at Sint Lucas Antwerpen / ARIA (University of Antwerp). Start September 2026. Deadline passed — track for next annual call.",
+    "source": "sintlucasantwerpen.be",
+    "url": "https://www.sintlucasantwerpen.be/en/research/"
+  },
+  {
+    "title": "Low-Residency PhD in Creative Research",
+    "institution": "Transart Institute",
+    "city": "Berlin",
+    "type": "PhD / Promotion",
+    "deadline": "Rolling",
+    "description": "Low-residency doctoral programme in creative research. Berlin-based intensives plus online supervision. Interdisciplinary, practice-based. 2026–27 admissions TBA.",
+    "source": "transartinstitute.org",
+    "url": "https://www.transartinstitute.org/phd"
+  },
+  {
+    "title": "Mads Øvlisen PhD Scholarships — Art History & Artistic Research",
+    "institution": "Det Kongelige Akademi / Copenhagen",
+    "city": "Other",
+    "type": "PhD / Promotion",
+    "deadline": "Deadline Passed",
+    "description": "Annual PhD scholarship in art history and practice-based artistic research, Royal Danish Academy / Novo Nordisk Foundation. 2026 deadline Jan 15 — track for 2027 call.",
+    "source": "novonordiskfonden.dk",
+    "url": "https://novonordiskfonden.dk/en/grant/mads-oevlisen-phd-scholarships-within-art-history-and-practice-based-artistic-research-2026/"
+  }
+];
+
+// ── Render cards ──
+function deadlineClass(deadlineStr) {
+  if (!deadlineStr || deadlineStr === 'Rolling' || deadlineStr === 'Open') return '';
+  if (deadlineStr === 'Deadline Passed') return 'expired';
+  const parts = deadlineStr.match(/(\d{2})\.(\d{2})\.(\d{4})/);
+  if (!parts) return '';
+  const d = new Date(parts[3], parts[2]-1, parts[1]);
+  const diff = (d - new Date()) / 86400000;
+  if (diff < 0) return 'expired';
+  if (diff <= 10) return 'urgent';
+  if (diff <= 21) return 'soon';
+  return '';
+}
+
+function typeClass(type) {
+  if (!type) return 'mitarbeiter';
+  const t = type.toLowerCase();
+  if (t.includes('phd') || t.includes('promot') || t.includes('doktor') || t.includes('prae-doc') || t.includes('doctoral')) return 'phd';
+  if (t.includes('künstlerisch') || t.includes('kuenstlerisch') || t.includes('artistic staff') || t.includes('artistic assistant')) return 'kuenstlerisch';
+  return 'mitarbeiter';
+}
+
+const typeLabels = { phd: 'PhD / Promotion', kuenstlerisch: 'Künstlerische Mitarbeit', mitarbeiter: 'Wissenschaftliche Mitarbeit' };
+
+function renderCard(p) {
+  const dl = p.deadline || 'Open';
+  const dlClass = deadlineClass(dl);
+  // Keep expired PhD/künstlerisch positions (user request) — only hide expired Mitarbeiter
+  if (dlClass === 'expired' && typeClass(p.type) === 'mitarbeiter') return '';
+  const tc = typeClass(p.type);
+  const typeLabel = typeLabels[tc] || 'Mitarbeiter';
+  const city = p.city || 'Germany';
+  const cityKey = ['Berlin','Hamburg','München','Köln','Düsseldorf','Leipzig','Bremen','Braunschweig','Halle','Essen','Stuttgart','Frankfurt','Weimar','Wien','Zürich','Amsterdam','Ghent'].includes(city) ? city : 'Other Cities';
+
+  return `<div class="card" data-type="${tc}" data-city="${cityKey}">
+    <div class="card-top">
+      <span class="type-badge ${tc}">${typeLabel}</span>
+      <span class="source-tag">${p.source || ''}</span>
+    </div>
+    <h2>${p.title}</h2>
+    <div class="institution">${p.institution} · <span class="city">${city}</span></div>
+    ${p.description ? `<div class="card-desc">${p.description}</div>` : ''}
+    <div class="card-footer">
+      <div class="deadline ${dlClass}">
+        <span>Deadline</span>${dl === 'Rolling' || dl === 'Open' ? 'Rolling' : dl === 'Deadline Passed' ? 'Deadline Passed' : dl}
+      </div>
+      <a href="${p.url}" target="_blank" rel="noopener" class="view-btn">
+        View Position
+        <svg width="11" height="11" viewBox="0 0 11 11" fill="none">
+          <path d="M1 10L10 1M10 1H4M10 1V7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </a>
+    </div>
+  </div>`;
+}
+
+const grid = document.getElementById('card-grid');
+const noResults = document.getElementById('no-results');
+const visibleCount = document.getElementById('visible-count');
+grid.innerHTML = POSITIONS.map(renderCard).join('');
+
+// ── Filter logic ──
+const buttons = document.querySelectorAll('.filter-btn');
+buttons.forEach(btn => {
+  btn.addEventListener('click', () => {
+    buttons.forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    const f = btn.dataset.filter;
+    const cards = grid.querySelectorAll('.card');
+    let shown = 0;
+    cards.forEach(card => {
+      let visible = false;
+      if (f === 'all') visible = true;
+      else if (f === 'phd') visible = card.dataset.type === 'phd';
+      else if (f === 'kuenstlerisch') visible = card.dataset.type === 'kuenstlerisch';
+      else if (f === 'mitarbeiter') visible = card.dataset.type === 'mitarbeiter';
+      else visible = card.dataset.city === f;
+      card.classList.toggle('hidden', !visible);
+      if (visible) shown++;
+    });
+    noResults.style.display = shown === 0 ? 'block' : 'none';
+    visibleCount.textContent = shown;
+  });
+});
+
+// Set initial count
+visibleCount.textContent = grid.querySelectorAll('.card:not(.hidden)').length;
+</script>
+</body>
+</html>
